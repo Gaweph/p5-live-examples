@@ -1,0 +1,100 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script language="javascript" type="text/javascript" src="lib/p5.js"></script>
+  <script language="javascript" type="text/javascript" src="code/vehicle.js"></script>
+  <script language="javascript" type="text/javascript" src="code/color.js"></script>
+  <script language="javascript" type="text/javascript" src="code/sketch.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <style> body {padding: 0; margin: 0;} </style>
+
+  <script>        
+    var sketch = new Sketch();
+
+    function preload() {
+      sketch.preload();
+    }
+
+    function setup() {
+        frameRate(30);
+        var canvasDiv = document.getElementById("sketch-holder");
+        p.fullscreen(true);
+        createCanvas(windowWidth, windowHeight);
+        sketch.setup();
+
+        changeText(document.getElementById("theText").value);
+
+        document.getElementById("theSize").value = sketch.dotSize;
+        document.getElementById("theResolution").value = sketch.sampleFactor;
+        
+	  }
+
+    function draw() {
+        sketch.draw();
+    }
+
+    function windowResized() {
+      var canvasDiv = document.getElementById("sketch-holder");
+      resizeCanvas(windowWidth, windowHeight);
+      sketch.setupBoidsForWord(document.getElementById("theText").value, true);
+    }
+
+    function changeText(txt) {
+      sketch.setupBoidsForWord(txt, false);
+    }
+
+    function changeSize(size) {
+      sketch.dotSize = isNaN(parseInt(size,10)) ? 1 : size;
+      sketch.setupBoidsForWord(document.getElementById("theText").value, true);
+    }    
+
+    function changeResolution(res) {
+      sketch.sampleFactor = isNaN(parseInt(res,10)) ? 1 : res;
+      sketch.setupBoidsForWord(document.getElementById("theText").value, true);
+    }
+    
+  </script>
+
+  <style>
+    * {
+      margin: 0px;
+      padding: 0px;
+    }
+    #sketch-holder {
+      height: 100%;
+      min-height: 100%;
+    }
+    #controls {
+      position: fixed; 
+      width: 100%;
+      top: 0px; 
+      left: 0px;
+    }
+  </style>
+</head>
+
+<body>
+  <nav id="controls" class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="form-horizontal row" role="form">
+      <h1 class="col-xs-4">Steering Behaviour</h1>
+      <div class="form-group col-xs-4">
+        <label for="theText" class="control-label">Text</label>
+        <input id="theText" class="form-control" value="Coding Train" onkeyup="changeText(this.value)" />
+      </div>
+      <div class="form-group col-xs-2">
+        <label for="theSize" class="control-label">Dot Size</label>
+        <input id="theSize" class="form-control" value="20" onkeyup="changeSize(this.value)" />
+      </div>
+      <div class="form-group col-xs-2">
+        <label for="theResolution" class="control-label">Resolution</label>
+        <input id="theResolution" class="form-control" value="20" onkeyup="changeResolution(this.value)" />
+      </div>
+    </div>
+  </div>
+</nav>   
+    
+</body>
+</html>
