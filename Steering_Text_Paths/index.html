@@ -79,18 +79,26 @@
   <nav id="controls" class="navbar navbar-default">
   <div class="container-fluid">
     <div class="form-horizontal row" role="form">
-      <h1 class="col-xs-4">Steering Behaviour</h1>
-      <div class="form-group col-xs-4">
-        <label for="theText" class="control-label">Text</label>
-        <input id="theText" class="form-control" value="Coding Train" onkeyup="changeText(this.value)" />
-      </div>
-      <div class="form-group col-xs-2">
-        <label for="theSize" class="control-label">Dot Size</label>
-        <input id="theSize" class="form-control" value="20" onkeyup="changeSize(this.value)" />
-      </div>
-      <div class="form-group col-xs-2">
-        <label for="theResolution" class="control-label">Resolution</label>
-        <input id="theResolution" class="form-control" value="20" onkeyup="changeResolution(this.value)" />
+      <h2 class="col-xs-5">Steering Behaviour</h2>
+      <div class="col-xs-7">
+        <div class="row">
+          <div class="col-xs-2">
+            <label for="theText" class="control-label">Text</label>
+          </div>
+          <div class="col-xs-10">
+            <input id="theText" class="col-xs-8 form-control" value="Coding Train" onkeyup="changeText(this.value)" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="form-group col-xs-6">
+            <label for="theSize" class="control-label">Dot Size</label>
+            <input id="theSize" class="form-control" value="20" onkeyup="changeSize(this.value)" />
+          </div>
+          <div class="form-group col-xs-6">
+            <label for="theResolution" class="control-label">Resolution</label>
+            <input id="theResolution" class="form-control" value="20" onkeyup="changeResolution(this.value)" />
+          </div>
+        </div>
       </div>
     </div>
   </div>
