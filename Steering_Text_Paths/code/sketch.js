@@ -5,7 +5,7 @@ class Sketch {
         this.vehicles = new Array();
         this.font = './assets/Hi.otf';
         this.dotSize = 10;
-        this.sampleFactor = 0.2;
+        this.sampleFactor = 0.1;
     }
     preload() {
     }
@@ -23,8 +23,8 @@ class Sketch {
         if (str != "" && (str != this.text || forceRedraw)) {
             this.text = str;
             p.loadFont(this.font, (f) => {
-                let padding = 10;
-                let fontSize = this.getFontSizeTextInBounds(f, str, p.width, p.height);
+                let padding = 20;
+                let fontSize = this.getFontSizeTextInBounds(f, str, p.width - padding, p.height - padding);
                 var bbox = f.textBounds(str, 0, 0, fontSize);
                 let x = 0;
                 let y = (p.height / 2) + (bbox.h / 2);

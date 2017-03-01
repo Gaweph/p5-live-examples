@@ -9,7 +9,7 @@ class Sketch {
     public font:string = './assets/Hi.otf'
 
     public dotSize: number = 10;
-    public sampleFactor: number = 0.2;
+    public sampleFactor: number = 0.1;
     //public sampleFactor: number = 0.25;
 
     preload () {        
@@ -33,9 +33,9 @@ class Sketch {
         if(str != "" && (str != this.text || forceRedraw)) {
             this.text = str;
             (<any>p).loadFont(this.font,  (f) => {  
-                let padding = 10;
+                let padding = 20;
                 
-                let fontSize = this.getFontSizeTextInBounds(f, str, p.width, p.height);
+                let fontSize = this.getFontSizeTextInBounds(f, str, p.width - padding, p.height - padding);
                 var bbox = (<any>f).textBounds(str, 0, 0, fontSize);
                 let x = 0;
                 let y = (p.height / 2) + (bbox.h/2);
