@@ -29,6 +29,7 @@ class Sketch {
     var topAngle = topStartingAngle;
     var colors = ColorHelper.getColorsArray(5);
     
+    //add more if you like :)
     for(var i = 1; i <= 1; i++) {
       this.suns.push(new Sun(p.width/4/i, 10/i, -k, leftAngle, colors[0], fullRotation/4));
       this.suns.push(new Sun(p.width/4/i, 10/i, -k, topAngle, colors[1], fullRotation/4));
@@ -36,19 +37,6 @@ class Sketch {
       this.suns.push(new Sun(p.width/4/i, 10/i, -k, bottomAngle, colors[3], fullRotation/4));
       this.suns.push(new Sun(p.width/4/i, 10/i, -k, bottomLeftStartingAngle, colors[4], fullRotation/4));
     }
-    // this.suns.push(new Sun(p.width/4, 10, k-1, leftAngle, colors[0], fullRotation));
-    // this.suns.push(new Sun(p.width/5, 8, k-2, topAngle, colors[1], fullRotation));
-    //  this.suns.push(new Sun(p.width/6, 6, k-3, rightAngle, colors[2], fullRotation));
-    // this.suns.push(new Sun(p.width/7, 4, k-4, bottomAngle, colors[3], fullRotation));
-    // this.suns.push(new Sun(p.width/8, 2, k-5, bottomLeftStartingAngle, colors[5], fullRotation));
-    
-    // this.suns.push(new Sun(p.width/4, 10, -4, rightStartingAngle, colors[1], fullRotation/2));
-    // this.suns.push(new Sun(p.width/4, 10, -4, bottomStartingAngle, colors[2], fullRotation/2));
-    // this.suns.push(new Sun(p.width/5, 8, -3, rightStartingAngle, colors[1], fullRotation/2));
-    // this.suns.push(new Sun(p.width/6, 6, -2, rightStartingAngle, colors[2], fullRotation/2));
-    // this.suns.push(new Sun(p.width/7, 4, -1, rightStartingAngle, colors[3], fullRotation/2));
-    // this.suns.push(new Sun(p.width/4, 10, -5, rightStartingAngle, colors[4], fullRotation/2));
-    // this.suns.push(new Sun(p.width/4, 10, -6, rightStartingAngle, colors[5], fullRotation/2));
   }
 
   draw () {
