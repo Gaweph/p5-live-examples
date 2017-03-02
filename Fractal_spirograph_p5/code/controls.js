@@ -1,6 +1,5 @@
 class Controls {
     setup() {
-        p.createCanvas(710, 400);
         p.textSize(15);
         p.noStroke();
         this.graphWeight = createSlider(0, 100, 50);

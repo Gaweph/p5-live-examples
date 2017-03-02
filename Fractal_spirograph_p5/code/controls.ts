@@ -15,7 +15,6 @@ class Controls {
 
     public setup() {
         // create canvas
-        p.createCanvas(710, 400);
         p.textSize(15);
         p.noStroke();
 
