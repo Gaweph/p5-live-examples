@@ -6,6 +6,7 @@ let rightStartingAngle = (p.PI * 2) - (p.PI / 10);
 let bottomStartingAngle = p.PI / 2 - (p.PI / 5);
 let bottomLeftStartingAngle = p.PI / 2 + (p.PI / 5);
 let topStartingAngle = -p.PI / 2;
+let controls;
 class Sketch {
     constructor() {
         this.suns = [];
@@ -20,10 +21,12 @@ class Sketch {
             this.suns.push(new Sun(p.width / 4 / i, 10 / i, -k, bottomStartingAngle, colors[3], fullRotation / 4));
             this.suns.push(new Sun(p.width / 4 / i, 10 / i, -k, bottomLeftStartingAngle, colors[4], fullRotation / 4));
         }
+        controls = new Controls();
+        controls.setup();
     }
     draw() {
         p.background(51);
-        p.strokeWeight(5);
+        controls.draw();
         for (var s of this.suns) {
             s.update();
             s.show();

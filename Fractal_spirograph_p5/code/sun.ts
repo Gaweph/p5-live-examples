@@ -46,6 +46,7 @@ class Sun {
   }
 
   show () {
+      p.strokeWeight(controls.circleWeight.value()/10);
       var next = this.sun;
         while (next != null) {
             next.show();
@@ -54,6 +55,7 @@ class Sun {
         
         p.beginShape();
         //p.stroke(255, 0, 255);
+        p.strokeWeight(controls.graphWeight.value()/10);
         p.stroke(this.color);
         p.noFill();
         for (var pos of this.path) {
