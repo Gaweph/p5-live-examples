@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Fractal Spirograph</title>
+    <script src="lib/p5.js" type="text/javascript"></script>
+    <script src="code/sketch.js" type="text/javascript"></script>
+    <script src="code/color.js" type="text/javascript"></script>
+    <script src="code/sun.js" type="text/javascript"></script>
+    <script src="code/orbit.js" type="text/javascript"></script>
+
+    <script>        
+        var sketch = new Sketch();
+
+        function setup() {
+            // frameRate(30);
+            // p.fullscreen(true);
+            p.createCanvas(600, 600);
+            sketch.setup();
+        }
+
+        function draw() {
+            sketch.draw();
+        }    
+  </script>
+
+  </head>
+  <body>
+  </body>
+</html>
