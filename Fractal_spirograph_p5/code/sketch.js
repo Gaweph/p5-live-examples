@@ -20,16 +20,18 @@ class Sketch {
         console.log(change);
         var bottomAngle = bottomStartingAngle - (p.PI / change);
         var topAngle = topStartingAngle;
-        var colors = ColorHelper.getColorsArray(6);
-        this.suns.push(new Sun(p.width / 4, 10, -k, leftAngle, colors[0], fullRotation / 4));
-        this.suns.push(new Sun(p.width / 4, 10, -k, topAngle, colors[1], fullRotation / 4));
-        this.suns.push(new Sun(p.width / 4, 10, -k, rightAngle, colors[2], fullRotation / 4));
-        this.suns.push(new Sun(p.width / 4, 10, -k, bottomAngle, colors[3], fullRotation / 4));
-        this.suns.push(new Sun(p.width / 4, 10, -k, bottomLeftStartingAngle, colors[5], fullRotation / 4));
+        var colors = ColorHelper.getColorsArray(5);
+        for (var i = 1; i <= 1; i++) {
+            this.suns.push(new Sun(p.width / 4 / i, 10 / i, -k, leftAngle, colors[0], fullRotation / 4));
+            this.suns.push(new Sun(p.width / 4 / i, 10 / i, -k, topAngle, colors[1], fullRotation / 4));
+            this.suns.push(new Sun(p.width / 4 / i, 10 / i, -k, rightAngle, colors[2], fullRotation / 4));
+            this.suns.push(new Sun(p.width / 4 / i, 10 / i, -k, bottomAngle, colors[3], fullRotation / 4));
+            this.suns.push(new Sun(p.width / 4 / i, 10 / i, -k, bottomLeftStartingAngle, colors[4], fullRotation / 4));
+        }
     }
     draw() {
         p.background(51);
-        p.strokeWeight(2);
+        p.strokeWeight(5);
         for (var s of this.suns) {
             s.update();
             s.show();

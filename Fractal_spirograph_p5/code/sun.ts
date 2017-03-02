@@ -13,7 +13,7 @@ class Sun {
     constructor (private radius: number, private planets: number, private k:number, private angle: number, private color: p5.Color, private rotationToDraw: number) {        
         
         this.firstChildSingleRotationAngle = this.rotationToDraw + (this.angle);
-        this.sun = new Orbit(p.width/2, p.height/2, p.width/4, 0, this.k, this.angle, null);
+        this.sun = new Orbit(p.width/2, p.height/2, this.radius, 0, this.k, this.angle, null);
         let next = this.sun;
         for (var i = 0; i < this.planets; i++) {
             next = next.addChild();

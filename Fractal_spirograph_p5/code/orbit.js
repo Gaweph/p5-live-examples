@@ -28,7 +28,6 @@ class Orbit {
     }
     show() {
         p.stroke(255, 100);
-        p.strokeWeight(1);
         p.noFill();
         p.ellipse(this.x, this.y, this.r * 2, this.r * 2);
     }
