@@ -1,9 +1,10 @@
 let grid;
-let cols = 20;
-let rows = 20;
-let totalBees = 30;
+let cols = 25;
+let rows = 25;
+let totalBees = 50;
 let w;
 let padding = 15;
+let colors;
 function windowResized() {
     var gridSize = min([windowWidth - padding, windowHeight - padding]);
     resizeCanvas(gridSize, gridSize);
@@ -31,6 +32,7 @@ function placeBees(beeCount) {
     }
 }
 function setup() {
+    colors = ColorHelper.getColorsArray(rows);
     var gridSize = min([windowWidth - padding, windowHeight - padding]);
     createCanvas(gridSize, gridSize);
     w = floor(gridSize / cols);
@@ -75,9 +77,11 @@ function draw() {
             cell.show();
         }
     }
+    strokeWeight(4);
     for (var i = 0; i < cols; i++) {
         for (var j = 0; j < rows; j++) {
             var cell = grid[i][j];
+            cell.drawHighlightBorder();
         }
     }
 }

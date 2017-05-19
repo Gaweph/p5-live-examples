@@ -19,7 +19,11 @@ class Cell {
                 var i = this.i + xoff;
                 var j = this.j + yoff;
                 if (i > -1 && i < cols && j > -1 && j < rows) {
-                    this.neighbors.push(grid[i][j]);
+                    if (xoff == 0 && yoff == 0) {
+                    }
+                    else {
+                        this.neighbors.push(grid[i][j]);
+                    }
                 }
             }
         }
@@ -48,7 +52,7 @@ class Cell {
         rect(this.x, this.y, this.w, this.w);
         if (this.revealed) {
             if (this.bee) {
-                fill(127);
+                fill(color('red'));
                 ellipse(this.x + this.w * 0.5, this.y + this.w * 0.5, this.w * 0.5);
             }
             else {
@@ -61,6 +65,48 @@ class Cell {
                 }
             }
         }
+    }
+    drawHighlightBorder() {
+        this.neighbors.forEach((neighbor) => {
+            var neighbourIsUnknownOrBee = !neighbor.revealed || neighbor.bee;
+            if (this.revealed && neighbourIsUnknownOrBee) {
+                push();
+                translate(neighbor.x + neighbor.w * 0.5, neighbor.y + neighbor.w * 0.5);
+                neighbor.neighbors.forEach((n) => {
+                    if (n.revealed) {
+                        var x1 = 0;
+                        var y1 = 0;
+                        var x2 = 0;
+                        var y2 = 0;
+                        var xoff = n.i - neighbor.i;
+                        var yoff = n.j - neighbor.j;
+                        textAlign(CENTER);
+                        stroke(colors[n.j]);
+                        fill(0);
+                        var draw = false;
+                        if (xoff == -1 && yoff == 0) {
+                            line(-n.w / 2, -n.w / 2, -n.w / 2, n.w / 2);
+                            draw = true;
+                        }
+                        else if (xoff == 1 && yoff == 0) {
+                            line(n.w / 2, -n.w / 2, n.w / 2, n.w / 2);
+                            draw = true;
+                        }
+                        else if (xoff == 0 && yoff == -1) {
+                            line(-n.w / 2, -n.w / 2, n.w / 2, -n.w / 2);
+                            draw = true;
+                        }
+                        else if (xoff == 0 && yoff == 1) {
+                            line(-n.w / 2, n.w / 2, n.w / 2, n.w / 2);
+                            draw = true;
+                        }
+                        var x = (n.w * 0.5 * xoff);
+                        var y = (n.w * 0.5 * yoff);
+                    }
+                });
+                pop();
+            }
+        });
     }
 }
 //# sourceMappingURL=cell.js.map

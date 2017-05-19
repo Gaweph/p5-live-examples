@@ -25,8 +25,14 @@ class Cell {
       for (var yoff = -1; yoff <= 1; yoff++) {
         var i = this.i + xoff;
         var j = this.j + yoff;
-        if (i > -1 && i < cols && j > -1 && j < rows) {
-          this.neighbors.push(grid[i][j]);
+        if (i > -1 && i < cols && j > -1 && j < rows) { //valid i,j combo?
+
+          if(xoff == 0 && yoff == 0) { 
+            //its me
+          }
+          else {
+            this.neighbors.push(grid[i][j]);
+          }
         }
       }
     }
@@ -62,7 +68,7 @@ class Cell {
 
         //draw something
         if (this.bee) {
-          fill(127);
+          fill(color('red'));
           ellipse(this.x + this.w * 0.5, this.y + this.w * 0.5, this.w * 0.5);
         } else {
           fill(200);
@@ -76,27 +82,63 @@ class Cell {
       }
   }
 
-  // public highlight = false;
-  // drawHighlightBorder() {
+  drawHighlightBorder() {
 
-  //   //up
-  //   var i = this.i + 0; //xoff
-  //   var j = this.j + -1; //yoff
-  //   if (i > -1 && i < cols && j > -1 && j < rows) {
-  //     var neighbor = grid[i][j];
-  //     if (!neighbor.bee && !neighbor.revealed) {
-  //       neighbor.reveal();
-  //     }
-  //   }
+    this.neighbors.forEach((neighbor)=>{
+      var neighbourIsUnknownOrBee = !neighbor.revealed || neighbor.bee;
+      if (this.revealed && neighbourIsUnknownOrBee) {
+                
+	      push();
+        translate(neighbor.x + neighbor.w * 0.5, neighbor.y + neighbor.w * 0.5);
+        neighbor.neighbors.forEach((n)=>{
+          if(n.revealed) {
 
-  //   //
+            //draw a line between n and neighbor
+            var x1 = 0;
+            var y1 = 0;
+            var x2 = 0;
+            var y2 = 0;
+            var xoff = n.i - neighbor.i;
+            var yoff = n.j - neighbor.j;
 
-  //   if(this.highlight) {
-  //     stroke(color('red'));
-  //     strokeWeight(5);
-  //     noFill();
-  //     rect(this.x, this.y, this.w, this.w);
-  //   }    
-  // }
+            textAlign(CENTER);
+
+            //pick a color for the line
+            stroke(colors[n.j]);
+
+            fill(0);
+            var draw = false;
+            if(xoff == -1 && yoff == 0) {
+              line(-n.w/2, -n.w/2, -n.w/2, n.w/2);
+              draw = true;
+            }
+            else if(xoff == 1 && yoff == 0) {
+              line(n.w/2, -n.w/2, n.w/2, n.w/2);
+              draw = true;
+            }
+            else if(xoff == 0 && yoff == -1) {
+              line(-n.w/2, -n.w/2,n.w/2,-n.w/2);
+              draw = true;
+            }
+            else if(xoff == 0 && yoff == 1) {
+              line(-n.w/2, n.w/2,n.w/2,n.w/2);
+              draw = true;
+            }
+            var x = (n.w * 0.5 * xoff);
+            var y = (n.w * 0.5 * yoff);
+          }
+        });
+        pop();
+
+      }
+    });
+
+    // if(this.highlight) {
+    //   stroke(color('red'));
+    //   strokeWeight(5);
+    //   noFill();
+    //   rect(this.x, this.y, this.w, this.w);
+    // }    
+  }
 
 }

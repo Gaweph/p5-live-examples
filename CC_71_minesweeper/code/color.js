@@ -6,8 +6,7 @@ class ColorHelper {
         var rainbowColors = [
             this.getColorVector(color('red')),
             this.getColorVector(color('orange')),
-            this.getColorVector(color('yellow')),
-            this.getColorVector(color('green')),
+            this.getColorVector(color('purple')),
             createVector(38, 58, 150),
             this.getColorVector(color('indigo')),
             this.getColorVector(color('violet'))
@@ -19,7 +18,7 @@ class ColorHelper {
             var colorIndex = Math.floor(scaledColorPosition);
             var colorPercentage = scaledColorPosition - colorIndex;
             var nameColor = this.getColorByPercentage(rainbowColors[colorIndex], rainbowColors[colorIndex + 1], colorPercentage);
-            colours.push(p.color(nameColor.x, nameColor.y, nameColor.z));
+            colours.push(color(nameColor.x, nameColor.y, nameColor.z));
         }
         return colours;
     }

@@ -1,10 +1,12 @@
+
 // Minesweeper
 let grid:Cell[][];
-let cols = 20;
-let rows = 20;
-let totalBees = 30;
+let cols = 25;
+let rows = 25;
+let totalBees = 50;
 let w: number;
 let padding = 15;
+let colors: p5.Color[]
 //let controls: Controls;
 
 function windowResized() {
@@ -40,6 +42,7 @@ function placeBees(beeCount: number) {
 
 function setup() {
   //fullscreen(true);
+  colors = ColorHelper.getColorsArray(rows);
 
   var gridSize = min([windowWidth - padding, windowHeight - padding]);
   createCanvas(gridSize, gridSize);
@@ -47,9 +50,11 @@ function setup() {
   grid = Helper.make2DArray(cols, rows);
   for (var i = 0; i < cols; i++) {
     for (var j = 0; j < rows; j++) {
-      grid[i][j] = new Cell(i, j, w);
+      grid[i][j] = new Cell(i, j, w);      
     }
   }
+
+
 
   placeBees(totalBees);  
 
@@ -60,8 +65,9 @@ function setup() {
     }
   }
 
-    // controls = new Controls();
-    // controls.setup();
+  //TODO: Controls
+  // controls = new Controls();
+  // controls.setup();
 }
 
 function gameOver() {
@@ -90,42 +96,45 @@ function mousePressed() {
   }
 }
 
-function draw() {
-  background(255);
-  for (var i = 0; i < cols; i++) {
-    for (var j = 0; j < rows; j++) {
-      var cell = grid[i][j];
-      cell.show();
+  function draw() {
+    background(255);
+    for (var i = 0; i < cols; i++) {
+      for (var j = 0; j < rows; j++) {
+        var cell = grid[i][j];
+        cell.show();
+      }
     }
-  }
 
-  for (var i = 0; i < cols; i++) {
-    for (var j = 0; j < rows; j++) {
-      var cell = grid[i][j];
-      //cell.drawHighlightBorder();
+    strokeWeight(4);
+    //stroke(color('indigo'));
+
+    for (var i = 0; i < cols; i++) {
+      for (var j = 0; j < rows; j++) {
+        var cell = grid[i][j];
+        cell.drawHighlightBorder();
+      }
     }
-  }
 
 
-  
-  // foundEdges.forEach((edge)=>{
-  //     for (var xoff = -1; xoff <= 1; xoff++) {
-  //       for (var yoff = -1; yoff <= 1; yoff++) {
-  //         var i = edge.i + xoff;
-  //         var j = edge.j + yoff;
-  //         if (i > -1 && i < cols && j > -1 && j < rows) {
-  //           var neighbor = grid[i][j];
-  //           if (!neighbor.bee && !neighbor.revealed) {
-  //             //draw outline
-              
-  //                 fill(255);
-  //                 rect(edge.x, edge.y, edge.w, edge.w);
+    
+    // foundEdges.forEach((edge)=>{
+    //     for (var xoff = -1; xoff <= 1; xoff++) {
+    //       for (var yoff = -1; yoff <= 1; yoff++) {
+    //         var i = edge.i + xoff;
+    //         var j = edge.j + yoff;
+    //         if (i > -1 && i < cols && j > -1 && j < rows) {
+    //           var neighbor = grid[i][j];
+    //           if (!neighbor.bee && !neighbor.revealed) {
+    //             //draw outline
+                
+    //                 fill(255);
+    //                 rect(edge.x, edge.y, edge.w, edge.w);
 
-  //           }
-  //         }
-  //       }
-  //     }
-  //   });
+    //           }
+    //         }
+    //       }
+    //     }
+    //   });
 
-  // controls.draw();
+    // controls.draw();
 }
