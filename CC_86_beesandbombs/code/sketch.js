@@ -13,10 +13,13 @@ function setup() {
 function draw() {
     p.colorMode(p.RGB);
     p.background(200);
-    p.colorMode(p.HSB);
     p.ortho(-400, 400, 400, -400, 0, 1000);
     p.rotateX(-ma);
     p.rotateY(-p.QUARTER_PI);
+    p.colorMode(p.HSB);
+    p.pointLight(255, 255, 255, 0, 0, 400);
+    p.pointLight(100, 50, 100, -300, -300, p.height / 2);
+    p.directionalLight(150, 150, 150, -0.8, -0.8, 0);
     for (let z = 0; z < p.height; z += w) {
         for (let x = 0; x < p.width; x += w) {
             p.push();
@@ -25,9 +28,7 @@ function draw() {
             let a = angle + offset;
             let h = p.floor(p.map(p.sin(a), -1, 1, 100, 300));
             p.translate(x - p.width / 2, 0, z - p.height / 2);
-            p.normalMaterial();
-            var color = p.map(h, 100, 300, 0, 100);
-            p.ambientMaterial(210, color, 100, 1);
+            p.ambientMaterial(210);
             p.box(w, h, w);
             p.pop();
         }
