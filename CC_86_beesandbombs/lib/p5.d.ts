@@ -315,8 +315,6 @@ declare class p5 {
      */
     TWO_PI: any
     
-    WEBGL: any;
-
     // src/core/core.js
     
     /**
@@ -560,14 +558,6 @@ declare class p5 {
      * Rotates a shape the amount specified by the angle parameter.
      */
     rotate(angle: number): p5
-    /**
-     * Rotates a shape the amount specified by the angle parameter.
-     */
-    rotateX(angle: number): p5
-    /**
-     * Rotates a shape the amount specified by the angle parameter.
-     */
-    rotateY(angle: number): p5
     
     // TODO: Fix scale() errors in src/core/transform.js:
     //
@@ -592,12 +582,6 @@ declare class p5 {
      */
     translate(x: number, y: number): p5
     
-    /**
-     * Specifies an amount to displace objects within the display window.
-     */
-    translate(x: number, y: number, z: number): p5
-
-    dist(a: number, b: number, c: number, d:number): number
     // src/core/vertex.js
     
     /**

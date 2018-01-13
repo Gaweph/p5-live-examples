@@ -1,4 +1,6 @@
-var p = new p5();
+class myP5 extends p5 {
+}
+var p = new myP5();
 let angle = 0;
 let w = 24;
 let ma;
@@ -9,7 +11,9 @@ function setup() {
     maxD = p.dist(0, 0, 200, 200);
 }
 function draw() {
-    p.background(100);
+    p.colorMode(p.RGB);
+    p.background(200);
+    p.colorMode(p.HSB);
     p.ortho(-400, 400, 400, -400, 0, 1000);
     p.rotateX(-ma);
     p.rotateY(-p.QUARTER_PI);
@@ -22,6 +26,8 @@ function draw() {
             let h = p.floor(p.map(p.sin(a), -1, 1, 100, 300));
             p.translate(x - p.width / 2, 0, z - p.height / 2);
             p.normalMaterial();
+            var color = p.map(h, 100, 300, 0, 100);
+            p.ambientMaterial(210, color, 100, 1);
             p.box(w, h, w);
             p.pop();
         }
