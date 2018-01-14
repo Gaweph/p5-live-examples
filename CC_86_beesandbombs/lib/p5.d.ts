@@ -4,6 +4,16 @@
 // This file was auto-generated. Please do not edit it.
 
 declare class p5 {
+  pointLight;
+    directionalLight;
+    WEBGL;
+    dist;
+    rotateX;
+    rotateY;
+    colorMode;
+    RGB;
+    HSB;
+    
     // Properties from p5
     
     // src/3d/3d_primitives.js

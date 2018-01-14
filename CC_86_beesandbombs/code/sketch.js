@@ -1,6 +1,4 @@
-class myP5 extends p5 {
-}
-var p = new myP5();
+var p = new p5();
 let canvasWidth = 400;
 let canvasHeight = 400;
 let angle = 0;

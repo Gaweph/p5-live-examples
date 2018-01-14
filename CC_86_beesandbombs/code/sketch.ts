@@ -4,20 +4,7 @@
 // Video: https://youtu.be/H81Tdrmz2LA
 // Original GIF: https://beesandbombs.tumblr.com/post/149654056864/cube-wave
 
-//missing from p5.d.ts
-class myP5 extends p5 {
-    pointLight;
-    directionalLight;
-    WEBGL;
-    dist;
-    rotateX;
-    rotateY;
-    colorMode;
-    RGB;
-    HSB;
-}
-
-var p: myP5 = new myP5();
+var p = new p5();
 
 let canvasWidth = 400;
 let canvasHeight = 400;
