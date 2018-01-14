@@ -18,6 +18,7 @@ let maxHeight = 300;
 var leftBuffer;
 var rightBuffer;
 var pg;
+var speed = 0.06;
 
 var heightsColors;
 var rowColors;
@@ -78,7 +79,7 @@ function draw() {
             p.pop();
         }
     }
-  angle -= 0.1;  
+  angle -= speed;  
 }
 
 var toggleRainbow = () => {
