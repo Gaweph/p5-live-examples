@@ -2,7 +2,7 @@ Live version: https://gaweph.github.io/CodingTrain-RainbowCode-Challenges/CC_86_
 
 Community variation of https://github.com/CodingTrain/Rainbow-Code/tree/master/CodingChallenges/CC_86_beesandbombs
 
-Includes toggel to change between FLowing and Stationary Rainbow colors
+Includes toggle to change between Flowing and Stationary Rainbow colors
 
 ![colors](https://gaweph.github.io/CodingTrain-RainbowCode-Challenges/CC_86_beesandbombs/images/beesandbombs_colors.png)
 
