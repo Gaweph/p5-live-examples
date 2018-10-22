@@ -4,7 +4,9 @@
 // Code for: https://youtu.be/0jjeOYMjmDU
 
 var angle = 0;
-var slider: any;
+var growth  = 100;
+var sliderAngle: any;
+// var sliderBranches: any;
 
 var sketch = (p: p5) => {
   p.preload = () => {
@@ -13,7 +15,8 @@ var sketch = (p: p5) => {
   
   p.setup = () => {
     p.createCanvas(400, 400);
-    slider = p.createSlider(0, p.TWO_PI, p.PI / 4, 0.01);
+    sliderAngle = p.createSlider(0, p.TWO_PI, p.PI / 4, 0.01);
+    // sliderBranches = p.createSlider(1, 50, 4);
   }
   
   p.windowResized = () => {
@@ -22,27 +25,31 @@ var sketch = (p: p5) => {
   
   p.draw = () => {
     p.background(51);
-    angle = slider.value();
+    angle = sliderAngle.value();
     p.stroke(p.color(255));
     p.translate(200, p.height);
-    this.branch(100);   
+    // var threshold = sliderBranches.value();
+    growth -= 1;
+    if(growth < 4) {
+      growth = 4;
+    }
+    this.branch(100, growth);   
   }
 
-  this.branch = (len: number) => {
+  this.branch = (len: number, threshold: number) => {
     p.line(0, 0, 0, -len);
     p.translate(0, -len);
-    if (len > 4) {
+    if (len > threshold) {
       p.push();
       p.rotate(angle);
-      this.branch(len * 0.67);
+      this.branch(len * 0.67, threshold);
       p.pop();
       p.push();
       p.rotate(-angle);
-      this.branch(len * 0.67);
+      this.branch(len * 0.67, threshold);
       p.pop();
     }
   
-    //line(0, 0, 0, -len * 0.67);
   }
 }
 
