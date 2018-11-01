@@ -4,8 +4,8 @@
 // Code for: https://youtu.be/0jjeOYMjmDU
 
 var angle = 50;
-var growth  = 0.01;
-var maxLevel = 5;
+var growth  = 0.05;
+var maxLevel = 8;
 // var sliderAngle: any;
 // var sliderBranches: any;
 
@@ -24,39 +24,39 @@ var sketch = (p: p5) => {
       p.resizeCanvas(p.windowWidth, p.windowHeight);
   }
   
-  let currentLevel = 0;
-  let currentLevelGrowth = 0;
-  let finishedGrowing = false;
+  this.currentLevel = 0;
+  this.currentLevelGrowth = 0;
+  this.finishedGrowing = false;
   p.draw = () => {
     p.background(51);
     // angle = sliderAngle.value();
     p.translate(p.width/2, p.height);
 
-    if(!finishedGrowing) {
-      currentLevelGrowth += growth;
-      if(currentLevelGrowth > 1) {
-        currentLevel++;
-        currentLevelGrowth = 0;
+    if(!this.finishedGrowing) {
+      this.currentLevelGrowth += growth;
+      if(this.currentLevelGrowth > 1) {
+        this.currentLevel++;
+        this.currentLevelGrowth = 0;
       }
-      if(currentLevel > this.maxLevel) {
-        currentLevel = this.maxLevel;
-        finishedGrowing = true;
-        currentLevelGrowth = 1;
+      if(this.currentLevel > this.maxLevel) {
+        this.currentLevel = this.maxLevel;
+        this.finishedGrowing = true;
+        this.currentLevelGrowth = 1;
       }
     }
     
-    this.branch(p.height/3, 0, currentLevel);   
+    this.branch(p.height/3, 1, this.currentLevel);   
   }
 
   this.branch = (len: number, level: number, maxLevel: number) => {
 
     p.stroke(p.color(255));
-    const lastBranch = (level >= maxLevel);
-
+    p.strokeWeight(maxLevel / level);
+    const lastBranch = (level > maxLevel);
     
     if(lastBranch) {
       p.stroke(p.color('red'));
-      let partialLen = p.lerp(0, -len, currentLevelGrowth);
+      let partialLen = p.lerp(0, -len, this.currentLevelGrowth);
       p.line(0, 0, 0, partialLen);
     }
     else {
