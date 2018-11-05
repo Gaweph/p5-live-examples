@@ -1,4 +1,4 @@
-let angle = 50;
+let angle = 26;
 let growth = 0.05;
 let maxLevel = 8;
 let wind = 1;

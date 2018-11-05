@@ -3,7 +3,7 @@
 // http://patreon.com/codingtrain
 // Code for: https://youtu.be/0jjeOYMjmDU
 
-let angle = 50;
+let angle = 26;
 let growth  = 0.05;
 let maxLevel = 8;
 let wind = 1;
