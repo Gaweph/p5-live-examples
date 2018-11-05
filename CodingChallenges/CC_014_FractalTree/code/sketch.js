@@ -7,6 +7,8 @@ var sketch = (p) => {
     };
     p.setup = () => {
         p.createCanvas(p.windowWidth, p.windowHeight);
+        wind = p.random(1.96, 2.01);
+        currentWind = wind;
     };
     p.windowResized = () => {
         p.resizeCanvas(p.windowWidth, p.windowHeight);
@@ -14,6 +16,7 @@ var sketch = (p) => {
     let currentLevel = 0;
     let currentLevelGrowth = 0;
     let finishedGrowing = false;
+    let currentWind = 0;
     p.draw = () => {
         p.background(51);
         p.translate(p.width / 2, p.height);
@@ -29,7 +32,15 @@ var sketch = (p) => {
                 currentLevelGrowth = 1;
             }
         }
-        wind = p.random(1.96, 2.01);
+        if (currentWind.toPrecision(3) > wind.toPrecision(3)) {
+            currentWind -= 0.001;
+        }
+        else if (currentWind.toPrecision(3) < wind.toPrecision(3)) {
+            currentWind += 0.001;
+        }
+        else {
+            wind = p.random(1.96, 2.01);
+        }
         branch(p.height / 3, 1, 0, currentLevel);
     };
     const branch = (len, level, branchno, maxLevel) => {
@@ -52,7 +63,7 @@ var sketch = (p) => {
             branch(len * 0.67, newLevel, 1, maxLevel);
             p.pop();
             p.push();
-            p.rotate(-angle / wind);
+            p.rotate(-angle / currentWind);
             branch(len * 0.67, newLevel, 2, maxLevel);
             p.pop();
         }

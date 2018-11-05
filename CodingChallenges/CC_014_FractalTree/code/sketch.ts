@@ -17,6 +17,10 @@ var sketch = (p: p5) => {
   
   p.setup = () => {
     p.createCanvas(p.windowWidth, p.windowHeight);
+    
+    wind = p.random(1.96,2.01);
+    currentWind = wind;
+
     // sliderAngle = p.createSlider(0, p.TWO_PI, p.PI / 4, 0.01);
     // sliderBranches = p.createSlider(1, 50, 4);
   }
@@ -28,6 +32,7 @@ var sketch = (p: p5) => {
   let currentLevel = 0;
   let currentLevelGrowth = 0;
   let finishedGrowing = false;
+  let currentWind = 0;
   p.draw = () => {
     p.background(51);
     // angle = sliderAngle.value();
@@ -45,9 +50,19 @@ var sketch = (p: p5) => {
         currentLevelGrowth = 1;
       }
     }
-    wind = p.random(1.96,2.01);
+    if(currentWind.toPrecision(3) > wind.toPrecision(3)) {
+      currentWind -= 0.001;
+    } 
+    else if(currentWind.toPrecision(3) < wind.toPrecision(3)) {
+      currentWind += 0.001;
+    }
+    else {
+      wind = p.random(1.96,2.01);
+    }
     branch(p.height/3, 1, 0, currentLevel);   
   }
+
+
 
   const branch = (len: number, level: number, branchno: number, maxLevel: number) => {
   
@@ -72,7 +87,7 @@ var sketch = (p: p5) => {
       branch(len * 0.67, newLevel, 1, maxLevel);
       p.pop();
       p.push(); 
-      p.rotate(-angle / wind);
+      p.rotate(-angle / currentWind);
       branch(len * 0.67, newLevel, 2, maxLevel);
       p.pop();
     }
