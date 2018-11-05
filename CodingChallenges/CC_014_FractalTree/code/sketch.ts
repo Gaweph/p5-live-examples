@@ -6,7 +6,7 @@
 let angle = 50;
 let growth  = 0.05;
 let maxLevel = 8;
-let wind = 0;
+let wind = 1;
 // var sliderAngle: any;
 // var sliderBranches: any;
 
@@ -45,7 +45,7 @@ var sketch = (p: p5) => {
         currentLevelGrowth = 1;
       }
     }
-    wind = p.random(1.97,2.01);
+    wind = p.random(1.96,2.01);
     branch(p.height/3, 1, 0, currentLevel);   
   }
 
