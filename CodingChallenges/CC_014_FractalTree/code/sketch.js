@@ -1,6 +1,6 @@
-var angle = 50;
-var growth = 0.05;
-var maxLevel = 8;
+let angle = 50;
+let growth = 0.05;
+let maxLevel = 8;
 var sketch = (p) => {
     p.preload = () => {
     };
@@ -10,33 +10,40 @@ var sketch = (p) => {
     p.windowResized = () => {
         p.resizeCanvas(p.windowWidth, p.windowHeight);
     };
-    this.currentLevel = 0;
-    this.currentLevelGrowth = 0;
-    this.finishedGrowing = false;
+    let currentLevel = 0;
+    let currentLevelGrowth = 0;
+    let finishedGrowing = false;
     p.draw = () => {
         p.background(51);
         p.translate(p.width / 2, p.height);
-        if (!this.finishedGrowing) {
-            this.currentLevelGrowth += growth;
-            if (this.currentLevelGrowth > 1) {
-                this.currentLevel++;
-                this.currentLevelGrowth = 0;
+        if (!finishedGrowing) {
+            currentLevelGrowth += growth;
+            if (currentLevelGrowth > 1) {
+                currentLevel++;
+                currentLevelGrowth = 0;
             }
-            if (this.currentLevel > this.maxLevel) {
-                this.currentLevel = this.maxLevel;
-                this.finishedGrowing = true;
-                this.currentLevelGrowth = 1;
+            if (currentLevel > maxLevel) {
+                currentLevel = maxLevel;
+                finishedGrowing = true;
+                currentLevelGrowth = 1;
             }
         }
-        this.branch(p.height / 3, 1, this.currentLevel);
+        branch(p.height / 3, 1, 0, currentLevel);
     };
-    this.branch = (len, level, maxLevel) => {
+    let branchAngles = {};
+    const branch = (len, level, branchno, maxLevel) => {
+        if (branchAngles[`${level}_${branchno}_1`] == null) {
+            branchAngles[`${level}_${branchno}_1`] = p.random(0, 2);
+        }
+        if (branchAngles[`${level}_${branchno}_2`] == null) {
+            branchAngles[`${level}_${branchno}_2`] = p.random(0, 2);
+        }
         p.stroke(p.color(255));
         p.strokeWeight(maxLevel / level);
         const lastBranch = (level > maxLevel);
         if (lastBranch) {
             p.stroke(p.color('red'));
-            let partialLen = p.lerp(0, -len, this.currentLevelGrowth);
+            let partialLen = p.lerp(0, -len, currentLevelGrowth);
             p.line(0, 0, 0, partialLen);
         }
         else {
@@ -46,12 +53,12 @@ var sketch = (p) => {
         if (!lastBranch) {
             const newLevel = level + 1;
             p.push();
-            p.rotate(angle);
-            this.branch(len * 0.67, newLevel, maxLevel);
+            p.rotate(angle / branchAngles[`${level}_${branchno}_1`]);
+            branch(len * 0.67, newLevel, 1, maxLevel);
             p.pop();
             p.push();
-            p.rotate(-angle);
-            this.branch(len * 0.67, newLevel, maxLevel);
+            p.rotate(-angle / branchAngles[`${level}_${branchno}_2`]);
+            branch(len * 0.67, newLevel, 2, maxLevel);
             p.pop();
         }
     };
