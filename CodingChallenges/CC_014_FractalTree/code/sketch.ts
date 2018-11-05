@@ -6,6 +6,7 @@
 let angle = 50;
 let growth  = 0.05;
 let maxLevel = 8;
+let wind = 0;
 // var sliderAngle: any;
 // var sliderBranches: any;
 
@@ -44,21 +45,12 @@ var sketch = (p: p5) => {
         currentLevelGrowth = 1;
       }
     }
+    wind = p.random(1.97,2.01);
     branch(p.height/3, 1, 0, currentLevel);   
   }
 
-  let branchAngles: {
-    [index: string]: number
-  } = {};
   const branch = (len: number, level: number, branchno: number, maxLevel: number) => {
   
-    if(branchAngles[`${level}_${branchno}_1`] == null) {
-      branchAngles[`${level}_${branchno}_1`] =  p.random(0,2);
-    }
-    if(branchAngles[`${level}_${branchno}_2`] == null) {
-      branchAngles[`${level}_${branchno}_2`] =  p.random(0,2);
-    }
-
     p.stroke(p.color(255));
     p.strokeWeight(maxLevel / level);
     const lastBranch = (level > maxLevel);
@@ -76,11 +68,11 @@ var sketch = (p: p5) => {
     if (!lastBranch) {
       const newLevel = level + 1;
       p.push();
-      p.rotate(angle / branchAngles[`${level}_${branchno}_1`]); // divide by 2 for wind?
+      p.rotate(angle);
       branch(len * 0.67, newLevel, 1, maxLevel);
       p.pop();
-      p.push();
-      p.rotate(-angle / branchAngles[`${level}_${branchno}_2`]);
+      p.push(); 
+      p.rotate(-angle / wind);
       branch(len * 0.67, newLevel, 2, maxLevel);
       p.pop();
     }
