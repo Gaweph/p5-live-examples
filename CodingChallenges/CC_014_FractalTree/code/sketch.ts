@@ -20,6 +20,7 @@ var sketch = (p: p5) => {
     
     wind = p.random(1.96,2.01);
     currentWind = wind;
+    currentAngle = angle;
 
     // sliderAngle = p.createSlider(0, p.TWO_PI, p.PI / 4, 0.01);
     // sliderBranches = p.createSlider(1, 50, 4);
@@ -33,6 +34,7 @@ var sketch = (p: p5) => {
   let currentLevelGrowth = 0;
   let finishedGrowing = false;
   let currentWind = 0;
+  let currentAngle = 0;
   p.draw = () => {
     p.background(51);
     // angle = sliderAngle.value();
@@ -51,14 +53,28 @@ var sketch = (p: p5) => {
       }
     }
     if(currentWind.toPrecision(3) > wind.toPrecision(3)) {
-      currentWind -= 0.001;
+      currentWind -= p.random(0.0001, 0.001);
     } 
     else if(currentWind.toPrecision(3) < wind.toPrecision(3)) {
-      currentWind += 0.001;
+      currentWind += p.random(0.0001, 0.001);
     }
     else {
       wind = p.random(1.96,2.01);
     }
+
+    if(currentAngle.toPrecision(3) > angle.toPrecision(3)) {
+      currentAngle -= p.random(0.0001, 0.00001);
+      console.log("<");
+    }
+    if(currentAngle.toPrecision(3) < angle.toPrecision(3)) {
+      currentAngle += p.random(0.0001, 0.00001);
+      console.log(">",currentAngle, angle);
+    }
+    else {
+      angle = 26 * p.random(1, 0.99)
+      console.log("new angle");
+    }
+
     branch(p.height/3, 1, 0, currentLevel);   
   }
 
