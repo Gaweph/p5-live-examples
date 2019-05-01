@@ -1,26 +1,38 @@
+var x = 0;
+var y = 0;
+var directionX = 1;
+var directionY = 1;
+var speedx = 0;
+var speedy = 0;
+var bounds = 0;
 function setup() {
-    createCanvas(710, 400, WEBGL);
+    createCanvas(windowWidth, windowHeight, WEBGL);
+    bounds = windowWidth / 4;
+    speedx = random(1, 10);
+    speedy = random(1, 10);
 }
 function draw() {
     background(250);
     var radius = width * 1.5;
-    orbitControl();
     normalMaterial();
-    translate(0, 0, -600);
-    for (var i = 0; i <= 12; i++) {
-        for (var j = 0; j <= 12; j++) {
-            push();
-            var a = (j / 12) * PI;
-            var b = (i / 12) * PI;
-            translate(sin(2 * a) * radius * sin(b), (cos(b) * radius) / 2, cos(2 * a) * radius * sin(b));
-            if (j % 2 === 0) {
-                cone(30, 30);
-            }
-            else {
-                box(30, 30, 30);
-            }
-            pop();
-        }
+    translate(x, 0, y);
+    box(10, 10, 10, 0, 0);
+    x += speedx * directionX;
+    y += speedy * directionY;
+    debugMode();
+    rotateX(frameCount * 0.01);
+    orbitControl();
+    if (x > bounds) {
+        directionX *= -1;
+    }
+    else if (x < -bounds) {
+        directionX *= -1;
+    }
+    if (y > bounds) {
+        directionY *= -1;
+    }
+    else if (y < -bounds) {
+        directionY *= -1;
     }
 }
 //# sourceMappingURL=build.js.map
