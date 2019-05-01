@@ -23,6 +23,12 @@ class World {
     }
 
     public draw() {
+        push();
+            noStroke();
+            rotateX(PI / 2.0, );
+            ambientMaterial(color('gray'));
+            plane(this.bounds * 2, this.bounds * 2)
+        pop();
         this.agents.forEach(a => {              
             a.draw();
         });

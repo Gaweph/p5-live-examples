@@ -22,14 +22,12 @@ var Agent = (function () {
         }
         this.position.x += this.speed.x * this.direction.x;
         this.position.y += this.speed.y * this.direction.y;
-        console.log('move', outOfBounds, this.direction.x, this.direction.y);
     };
     Agent.prototype.draw = function () {
         push();
         noStroke();
-        ambientLight(200);
         ambientMaterial(this.color);
-        translate(this.position.x, 0, this.position.y);
+        translate(this.position.x, -this.size / 2, this.position.y);
         box(this.size, this.size, this.size);
         pop();
     };
@@ -90,10 +88,10 @@ function draw() {
     background(250);
     colorMode(HSB);
     directionalLight(150, 150, 150, 1, 1, 0);
+    ambientLight(200);
     world.step();
     world.draw();
     orbitControl();
-    debugMode();
 }
 function keyPressed() {
     if (key == 'p') {
@@ -115,6 +113,12 @@ var World = (function () {
         }
     }
     World.prototype.draw = function () {
+        push();
+        noStroke();
+        rotateX(PI / 2.0);
+        ambientMaterial(color('gray'));
+        plane(this.bounds * 2, this.bounds * 2);
+        pop();
         this.agents.forEach(function (a) {
             a.draw();
         });

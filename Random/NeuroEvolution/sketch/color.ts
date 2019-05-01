@@ -16,7 +16,7 @@ class ColorHelper
                 color('orange'),
                 color('yellow'),
                 color('green'),
-                color(38, 58, 150),
+                color(38, 58, 150), // blue
                 color('indigo'),
                 color('violet')
             ]

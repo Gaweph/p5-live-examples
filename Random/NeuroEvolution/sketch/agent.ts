@@ -27,17 +27,14 @@ class Agent {
 
         this.position.x += this.speed.x * this.direction.x;
         this.position.y += this.speed.y * this.direction.y;
-        
-        console.log('move', outOfBounds, this.direction.x, this.direction.y);
     }
 
     public draw() {
         
         push();
             noStroke();
-            ambientLight(200);
             ambientMaterial(this.color);
-            translate(this.position.x, 0, this.position.y);
+            translate(this.position.x, - this.size/2, this.position.y);
             box(this.size,this.size,this.size);            
         pop();
     }

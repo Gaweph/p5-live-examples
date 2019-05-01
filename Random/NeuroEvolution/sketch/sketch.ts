@@ -20,6 +20,7 @@ function draw() {
     // pointLight(255, 255, 255, 0, 0, 400);
     // pointLight(100, 50, 100, -300, -300, height / 2);
     directionalLight(150, 150, 150, 1, 1, 0);
+    ambientLight(200);
 
     world.step();
     world.draw();
@@ -27,7 +28,7 @@ function draw() {
 
     //drag to move the world.
     orbitControl();
-    debugMode();
+    // debugMode();
 }  
     function keyPressed() {
     if (key == 'p') {
