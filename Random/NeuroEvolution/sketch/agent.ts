@@ -25,6 +25,9 @@ class Agent {
     }
 
     public draw() {
+        
+  
+  
         push();
             translate(this.position.x, 0, this.position.y);
             box(this.size,this.size,this.size,0,0);            

@@ -33,12 +33,12 @@ var bounds = 0;
 var agentCount = 50;
 var agents;
 function setup() {
-    createCanvas(windowWidth, windowHeight, WEBGL);
-    bounds = windowWidth / 4;
+    createCanvas(windowWidth / 2, windowHeight, WEBGL);
+    bounds = width / 4;
     agents = new Array();
-    var size = 1;
+    var size = 10;
     for (var i = 0; i < agentCount; i++) {
-        agents[i] = new Agent(createVector(random(-bounds, bounds), random(-bounds, bounds)), createVector(random(1, 10), random(1, 10)), createVector(1, 1), size);
+        agents[i] = new Agent(createVector(random(-bounds, bounds), random(-bounds, bounds)), createVector(random(1, 5), random(1, 5)), createVector(1, 1), size);
     }
 }
 function draw() {
