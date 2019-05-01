@@ -3,7 +3,8 @@ class Agent {
         public position: p5.Vector, 
         public speed: p5.Vector, 
         public direction: p5.Vector,
-        public size: number
+        public size: number,
+        public color: p5.Color
     ) {}
 
     public move(outOfBounds: number) {
@@ -26,11 +27,12 @@ class Agent {
 
     public draw() {
         
-  
-  
         push();
+            noStroke();
+            ambientLight(200);
+            ambientMaterial(this.color);
             translate(this.position.x, 0, this.position.y);
-            box(this.size,this.size,this.size,0,0);            
+            box(this.size,this.size,this.size);            
         pop();
     }
 }
