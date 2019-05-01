@@ -1,5 +1,5 @@
 var bounds = 0;
-var agentCount = 50;
+var agentCount = 10;
 
 var agents: Agent[];
 function setup() {
@@ -12,9 +12,9 @@ function setup() {
     var size = 10;
     for(var i = 0; i < agentCount; i++) {
         agents[i] = new Agent(
-            createVector(random(-bounds, bounds),random(-bounds, bounds)),
-            createVector(random(1,5),random(1,5)),
-            createVector(1,1),
+            createVector(random(-bounds, bounds),0, random(-bounds, bounds)),
+            createVector(random(1,3),random(1,3)),
+            createVector(random([-1,1]),random([-1,1])),
             size //random(1,10)
            );
     }
