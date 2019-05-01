@@ -5,6 +5,7 @@ var Agent = (function () {
         this.direction = direction;
         this.size = size;
         this.color = color;
+        this.startingPosition = position.copy();
     }
     Agent.prototype.move = function (outOfBounds) {
         if (this.position.x > outOfBounds) {
@@ -21,6 +22,7 @@ var Agent = (function () {
         }
         this.position.x += this.speed.x * this.direction.x;
         this.position.y += this.speed.y * this.direction.y;
+        console.log('move', outOfBounds, this.direction.x, this.direction.y);
     };
     Agent.prototype.draw = function () {
         push();
@@ -76,33 +78,20 @@ var ColorHelper = (function () {
     };
     return ColorHelper;
 }());
-var bounds = 0;
-var agentCount = 50;
-var paused = true;
-var size = 10;
-var agents;
+var paused = false;
+var world;
 function setup() {
     createCanvas(windowWidth / 2, windowHeight, WEBGL);
-    bounds = width / 4;
-    agents = new Array();
-    var colors = ColorHelper.getColorsArray(5, [color('indigo'), color('violet')]);
-    for (var i = 0; i < agentCount; i++) {
-        var position = createVector(random(-bounds, bounds), random(-bounds, bounds));
-        var speed = createVector(random(1, 3), random(1, 3));
-        var direction = createVector(random([-1, 1]), random([-1, 1]));
-        agents[i] = new Agent(position, speed, direction, size, random(colors));
-    }
+    var bounds = width / 4;
+    var agentCount = 25;
+    world = new World(bounds, agentCount);
 }
 function draw() {
     background(250);
     colorMode(HSB);
     directionalLight(150, 150, 150, 1, 1, 0);
-    agents.forEach(function (a) {
-        if (!paused) {
-            a.move(bounds);
-        }
-        a.draw();
-    });
+    world.step();
+    world.draw();
     orbitControl();
     debugMode();
 }
@@ -111,4 +100,33 @@ function keyPressed() {
         paused = !paused;
     }
 }
+var World = (function () {
+    function World(bounds, agentCount) {
+        this.bounds = bounds;
+        this.agentCount = agentCount;
+        this.size = 10;
+        var colors = ColorHelper.getColorsArray(5, [color('indigo'), color('violet')]);
+        this.agents = [];
+        for (var i = 0; i < agentCount; i++) {
+            var position = createVector(random(-bounds, bounds), random(-bounds, bounds));
+            var speed = createVector(random(1, 3), random(1, 3));
+            var direction = createVector(random([-1, 1]), random([-1, 1]));
+            this.agents[i] = new Agent(position, speed, direction, this.size, random(colors));
+        }
+    }
+    World.prototype.draw = function () {
+        this.agents.forEach(function (a) {
+            a.draw();
+        });
+    };
+    World.prototype.step = function () {
+        var _this = this;
+        this.agents.forEach(function (a) {
+            if (!paused) {
+                a.move(_this.bounds);
+            }
+        });
+    };
+    return World;
+}());
 //# sourceMappingURL=build.js.map

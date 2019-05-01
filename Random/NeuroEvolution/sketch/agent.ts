@@ -1,11 +1,15 @@
 class Agent {
+
+    private startingPosition: p5.Vector;
     constructor(
         public position: p5.Vector, 
         public speed: p5.Vector, 
         public direction: p5.Vector,
         public size: number,
         public color: p5.Color
-    ) {}
+    ) {
+        this.startingPosition = position.copy();
+    }
 
     public move(outOfBounds: number) {
         if(this.position.x > outOfBounds) {
@@ -23,6 +27,8 @@ class Agent {
 
         this.position.x += this.speed.x * this.direction.x;
         this.position.y += this.speed.y * this.direction.y;
+        
+        console.log('move', outOfBounds, this.direction.x, this.direction.y);
     }
 
     public draw() {
