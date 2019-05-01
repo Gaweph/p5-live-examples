@@ -1,59 +1,38 @@
-
-var x = 0;
-var y = 0;
-var directionX = 1;
-var directionY = 1;
-var speedx = 0;
-var speedy = 0;
 var bounds = 0;
+var agentCount = 50;
 
+var agents: Agent[];
 function setup() {
     createCanvas(windowWidth, windowHeight, WEBGL);
 
     bounds = windowWidth / 4;
 
-    speedx = random(1,10);
-    speedy = random(1,10);
+    agents = new Array<Agent>();
+
+    var size = 1;
+    for(var i = 0; i < agentCount; i++) {
+        agents[i] = new Agent(
+            createVector(random(-bounds, bounds),random(-bounds, bounds)),
+            createVector(random(1,10),random(1,10)),
+            createVector(1,1),
+            size //random(1,10)
+           );
+    }
+    
   }
   
 
   function draw() {
-    background(250);
-    let radius = width * 1.5;
-  
-  
+
+    background(250);    
     normalMaterial();
-    // translate(x, 0);
-    //     box(10,10,10,0,0);
-    // pop();
 
-    // translate(-(windowWidth/4), 0);
-    //     box(10,10,10,0,0);
-    // pop();
+    agents.forEach(a => {        
+        a.move(bounds);
+        a.draw();
+    });
 
-    translate(x, 0, y);
-        box(10,10,10,0,0);
-    // pop();
-    x += speedx * directionX;
-    y += speedy * directionY;
-
-    debugMode();
-    rotateX(frameCount * 0.01);
-    //ortho(0, width, 0, height, 0, 2000);
-    // camera()
     //drag to move the world.
     orbitControl();
-
-    if(x > bounds) {
-        directionX *= -1;
-    }
-    else if(x < -bounds) {
-        directionX *= -1;
-    }
-    if(y > bounds) {
-        directionY *= -1;
-    }
-    else if(y < -bounds) {
-        directionY *= -1;
-    }
+    debugMode();
   }
