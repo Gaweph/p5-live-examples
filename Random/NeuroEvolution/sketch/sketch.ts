@@ -6,7 +6,8 @@ function setup() {
     createCanvas(windowWidth/2, windowHeight, WEBGL);
     var bounds = width / 4;
     var agentCount = 25;
-    world = new World(bounds, agentCount);
+    var foodCount = 10;
+    world = new World(bounds, agentCount, foodCount);
 }
   
 

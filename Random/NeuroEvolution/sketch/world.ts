@@ -2,8 +2,8 @@ class World {
 
     size= 10;
     agents: Agent[];
-
-    constructor(private bounds: number, private agentCount: number) {
+    foods: Food[];
+    constructor(private bounds: number, private agentCount: number, private foodCount: number) {
 
         var colors = ColorHelper.getColorsArray(5, [color('indigo'), color('violet')]); // 5 shades of purple
 
@@ -19,7 +19,12 @@ class World {
                 this.size,
                 random(colors)
             );
-        }    
+        }  
+        this.foods = [];
+        for(var i = 0; i < foodCount; i++) {
+            var position = createVector(random(-bounds/ 2, bounds/ 2),random(-bounds/ 2, bounds/ 2));
+            this.foods[i] = new Food(position);
+        }  
     }
 
     public draw() {
@@ -32,6 +37,10 @@ class World {
         this.agents.forEach(a => {              
             a.draw();
         });
+
+        this.foods.forEach(f=> {
+            f.draw();
+        })
     }
 
     public step() {

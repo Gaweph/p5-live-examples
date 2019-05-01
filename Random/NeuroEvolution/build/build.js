@@ -1,3 +1,18 @@
+var Food = (function () {
+    function Food(position) {
+        this.position = position;
+        this.size = 4;
+    }
+    Food.prototype.draw = function () {
+        push();
+        noStroke();
+        ambientMaterial(color('orange'));
+        translate(this.position.x, -this.size, this.position.y);
+        sphere(this.size, this.size, this.size);
+        pop();
+    };
+    return Food;
+}());
 var Agent = (function () {
     function Agent(position, speed, direction, size, color) {
         this.position = position;
@@ -82,7 +97,8 @@ function setup() {
     createCanvas(windowWidth / 2, windowHeight, WEBGL);
     var bounds = width / 4;
     var agentCount = 25;
-    world = new World(bounds, agentCount);
+    var foodCount = 10;
+    world = new World(bounds, agentCount, foodCount);
 }
 function draw() {
     background(250);
@@ -99,9 +115,10 @@ function keyPressed() {
     }
 }
 var World = (function () {
-    function World(bounds, agentCount) {
+    function World(bounds, agentCount, foodCount) {
         this.bounds = bounds;
         this.agentCount = agentCount;
+        this.foodCount = foodCount;
         this.size = 10;
         var colors = ColorHelper.getColorsArray(5, [color('indigo'), color('violet')]);
         this.agents = [];
@@ -110,6 +127,11 @@ var World = (function () {
             var speed = createVector(random(1, 3), random(1, 3));
             var direction = createVector(random([-1, 1]), random([-1, 1]));
             this.agents[i] = new Agent(position, speed, direction, this.size, random(colors));
+        }
+        this.foods = [];
+        for (var i = 0; i < foodCount; i++) {
+            var position = createVector(random(-bounds / 2, bounds / 2), random(-bounds / 2, bounds / 2));
+            this.foods[i] = new Food(position);
         }
     }
     World.prototype.draw = function () {
@@ -121,6 +143,9 @@ var World = (function () {
         pop();
         this.agents.forEach(function (a) {
             a.draw();
+        });
+        this.foods.forEach(function (f) {
+            f.draw();
         });
     };
     World.prototype.step = function () {
