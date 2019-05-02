@@ -2,6 +2,8 @@ let angle = 26;
 let growth = 0.05;
 let maxLevel = 8;
 let wind = 1;
+let doWind = true;
+let baseAngle = 26;
 var sketch = (p) => {
     p.preload = () => {
     };
@@ -34,25 +36,27 @@ var sketch = (p) => {
                 currentLevelGrowth = 1;
             }
         }
-        if (currentWind.toPrecision(3) > wind.toPrecision(3)) {
-            currentWind -= p.random(0.0001, 0.001);
-        }
-        else if (currentWind.toPrecision(3) < wind.toPrecision(3)) {
-            currentWind += p.random(0.0001, 0.001);
-        }
-        else {
-            wind = p.random(1.96, 2.01);
+        if (doWind) {
+            if (currentWind.toPrecision(3) > wind.toPrecision(3)) {
+                currentWind -= p.random(0.0001, 0.001);
+            }
+            else if (currentWind.toPrecision(3) < wind.toPrecision(3)) {
+                currentWind += p.random(0.0001, 0.001);
+            }
+            else {
+                wind = p.random(1.96, 2.01);
+            }
         }
         if (currentAngle.toPrecision(3) > angle.toPrecision(3)) {
             currentAngle -= p.random(0.0001, 0.00001);
             console.log("<");
         }
-        if (currentAngle.toPrecision(3) < angle.toPrecision(3)) {
+        else if (currentAngle.toPrecision(3) < angle.toPrecision(3)) {
             currentAngle += p.random(0.0001, 0.00001);
             console.log(">", currentAngle, angle);
         }
         else {
-            angle = 26 * p.random(1, 0.99);
+            angle = angle * p.random(1, 0.95);
             console.log("new angle");
         }
         branch(p.height / 3, 1, 0, currentLevel);
