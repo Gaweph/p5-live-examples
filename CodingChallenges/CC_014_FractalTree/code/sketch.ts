@@ -70,16 +70,19 @@ var sketch = (p: p5) => {
 
     if (currentAngle.toPrecision(3) > angle.toPrecision(3)) {
       currentAngle -= p.random(0.0001, 0.00001);
-      console.log("<");
-    }
-    else if (currentAngle.toPrecision(3) < angle.toPrecision(3)) {
-      currentAngle += p.random(0.0001, 0.00001);
-      console.log(">", currentAngle, angle);
+      // console.log("<");
     }
     else {
-      angle = angle * p.random(1, 0.95); // change shape of tree
-      console.log("new angle");
+      console.log("never get here");
     }
+    // else if (currentAngle.toPrecision(3) < angle.toPrecision(3)) {
+    //   currentAngle += p.random(0.0001, 0.00001);
+    //   console.log(">", currentAngle, angle);
+    // }
+    // else {
+    //   angle = angle * 1.05;// p.random(1, 0.95); // change shape of tree
+    //   console.log("new angle");
+    // }
 
     branch(p.height / 3, 1, 0, currentLevel);
   }
