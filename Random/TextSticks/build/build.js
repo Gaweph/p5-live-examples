@@ -9,8 +9,8 @@ function setup() {
     createCanvas(displayWidth, displayHeight);
     stroke(0);
     fill(255, 104, 204);
-    bounds = font.textBounds('Q', 0, 0, 200);
-    points = font.textToPoints('Q', 0, 0, 200, {
+    bounds = font.textBounds(' Hello ', 0, 0, 200);
+    points = font.textToPoints('Hello', 0, 0, 200, {
         sampleFactor: 5,
         simplifyThreshold: 0
     });
@@ -18,22 +18,16 @@ function setup() {
 function draw() {
     background(255);
     push();
-    translate(100, 100 + bounds.h);
+    translate(100, bounds.h);
+    rect(0, 0, bounds.w, -bounds.h);
     beginShape();
     strokeWeight(1);
-    for (var i_1 = 0; i_1 < points.length; i_1++) {
-        var p = points[i_1];
+    for (var i = 0; i < points.length; i++) {
+        var p = points[i];
         vertex(p.x, p.y);
     }
     endShape(CLOSE);
-    strokeWeight(5);
-    for (var i = 0; i < 10; i++) {
-        point(i * 10, -i * 10);
-        var v = createVector(i * 10, -i * 10);
-        if (pointInShape(v, points) == 1) {
-            ellipse(v.x, v.y, 15, 15);
-        }
-    }
+    strokeWeight(1);
     pop();
 }
 function pointInShape(p, shapePoint) {
