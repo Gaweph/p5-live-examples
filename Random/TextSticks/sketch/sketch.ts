@@ -6,19 +6,20 @@ function preload() {
 let points: p5.Vector[];
 let bounds: any;
 var lines: { a: p5.Vector, b: p5.Vector }[];
-
+var colors: p5.Color[];
 function setup() {
   createCanvas(displayWidth, displayHeight);
   stroke(0);
   fill(255, 104, 204);
 
-  bounds = font.textBounds(' Hello ', 0, 0, 200);
+  bounds = font.textBounds(' RANDOM ', 0, 0, 200);
 
-  points = font.textToPoints('Hello', 0, 0, 200, {
+  points = font.textToPoints('RANDOM', 0, 0, 200, {
     sampleFactor: 1,
     simplifyThreshold: 0
   });
 
+  console.time();
   // generate lines
   lines = [];
   var lineGap = 10; // lower is more
@@ -59,8 +60,9 @@ function setup() {
       }
     }
   }
+  console.timeEnd();
 
-  console.log(lines);
+  colors = ColorHelper.getColorsArray(lines.length);
 }
 
 function draw() {
@@ -82,10 +84,10 @@ function draw() {
   // endShape(CLOSE);
 
   strokeWeight(1);
-
   for (var i = 0; i < lines.length; i++) {
     // circle(linePoints[i].x, linePoints[i].y, 2);
-    line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y)
+    stroke(colors[i]);
+    line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y);
   }
 
   pop();

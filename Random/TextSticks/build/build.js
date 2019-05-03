@@ -1,3 +1,39 @@
+var ColorHelper = (function () {
+    function ColorHelper() {
+    }
+    ColorHelper.getColorVector = function (c) {
+        return createVector(red(c), green(c), blue(c));
+    };
+    ColorHelper.getColorsArray = function (total) {
+        var rainbowColors = [
+            this.getColorVector(color('red')),
+            this.getColorVector(color('orange')),
+            this.getColorVector(color('yellow')),
+            this.getColorVector(color('green')),
+            createVector(38, 58, 150),
+            this.getColorVector(color('indigo')),
+            this.getColorVector(color('violet'))
+        ];
+        var colours = new Array();
+        for (var i = 0; i < total; i++) {
+            var colorPosition = i / total;
+            var scaledColorPosition = colorPosition * (rainbowColors.length - 1);
+            var colorIndex = Math.floor(scaledColorPosition);
+            var colorPercentage = scaledColorPosition - colorIndex;
+            var nameColor = this.getColorByPercentage(rainbowColors[colorIndex], rainbowColors[colorIndex + 1], colorPercentage);
+            colours.push(color(nameColor.x, nameColor.y, nameColor.z));
+        }
+        return colours;
+    };
+    ColorHelper.getColorByPercentage = function (firstColor, secondColor, percentage) {
+        var firstColorCopy = firstColor.copy();
+        var secondColorCopy = secondColor.copy();
+        var deltaColor = secondColorCopy.sub(firstColorCopy);
+        var scaledDeltaColor = deltaColor.mult(percentage);
+        return firstColorCopy.add(scaledDeltaColor);
+    };
+    return ColorHelper;
+}());
 var font;
 function preload() {
     font = loadFont('/public/Digitalt.ttf');
@@ -5,15 +41,17 @@ function preload() {
 var points;
 var bounds;
 var lines;
+var colors;
 function setup() {
     createCanvas(displayWidth, displayHeight);
     stroke(0);
     fill(255, 104, 204);
-    bounds = font.textBounds(' Hello ', 0, 0, 200);
-    points = font.textToPoints('Hello', 0, 0, 200, {
+    bounds = font.textBounds(' RANDOM ', 0, 0, 200);
+    points = font.textToPoints('RANDOM', 0, 0, 200, {
         sampleFactor: 1,
         simplifyThreshold: 0
     });
+    console.time();
     lines = [];
     var lineGap = 10;
     for (var x = 0; x < bounds.w * 1.5; x += lineGap) {
@@ -42,7 +80,8 @@ function setup() {
             }
         }
     }
-    console.log(lines);
+    console.timeEnd();
+    colors = ColorHelper.getColorsArray(lines.length);
 }
 function draw() {
     background(255);
@@ -50,6 +89,7 @@ function draw() {
     translate(100, bounds.h);
     strokeWeight(1);
     for (var i = 0; i < lines.length; i++) {
+        stroke(colors[i]);
         line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y);
     }
     pop();
