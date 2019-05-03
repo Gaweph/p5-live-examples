@@ -9,15 +9,11 @@ function setup() {
     createCanvas(displayWidth, displayHeight);
     stroke(0);
     fill(255, 104, 204);
-    bounds = font.textBounds('A', 0, 0, 200);
-    points = font.textToPoints('A', 0, 0, 200, {
-        sampleFactor: 1,
+    bounds = font.textBounds('Q', 0, 0, 200);
+    points = font.textToPoints('Q', 0, 0, 200, {
+        sampleFactor: 5,
         simplifyThreshold: 0
     });
-    polyCorners = points.length;
-    polyX = points.map(function (p) { return p.x; });
-    polyY = points.map(function (p) { return p.y; });
-    precalc_values();
 }
 function draw() {
     background(255);
@@ -33,62 +29,37 @@ function draw() {
     strokeWeight(5);
     for (var i = 0; i < 10; i++) {
         point(i * 10, -i * 10);
-        var tmp = pointInPolygonx(1 * 10, -i * 10);
-        if (tmp) {
-            console.log(tmp);
+        var v = createVector(i * 10, -i * 10);
+        if (pointInShape(v, points) == 1) {
+            ellipse(v.x, v.y, 15, 15);
         }
     }
     pop();
 }
-function pointInPolygonx(x, y) {
-    var i = polyCorners - 1;
-    var j = polyCorners - 1;
-    var oddNodes = false;
-    for (i = 0; i < polyCorners; i++) {
-        if ((polyY[i] < y && polyY[j] >= y
-            || polyY[j] < y && polyY[i] >= y)
-            && (polyX[i] <= x || polyX[j] <= x)) {
-            oddNodes || (polyX[i] + (y - polyY[i]) / (polyY[j] - polyY[i]) * (polyX[j] - polyX[i]) < x);
-        }
-        j = i;
+function pointInShape(p, shapePoint) {
+    var a = 0;
+    for (var i = 0; i < shapePoint.length - 1; ++i) {
+        var v1 = shapePoint[i];
+        var v2 = shapePoint[i + 1];
+        a += vAtan2cent180(p, v1, v2);
     }
-    return oddNodes;
+    var v1 = shapePoint[shapePoint.length - 1];
+    var v2 = shapePoint[0];
+    a += vAtan2cent180(p, v1, v2);
+    if (abs(abs(a) - TWO_PI) < 0.01)
+        return 1;
+    else
+        return 0;
 }
-var polyCorners;
-var polyX;
-var polyY;
-var constant;
-var multiple;
-function precalc_values() {
-    constant = [];
-    multiple = [];
-    var i = polyCorners - 1;
-    var j = polyCorners - 1;
-    for (i = 0; i < polyCorners; i++) {
-        if (polyY[j] == polyY[i]) {
-            constant[i] = polyX[i];
-            multiple[i] = 0;
-        }
-        else {
-            constant[i] = polyX[i] - (polyY[i] * polyX[j]) / (polyY[j] - polyY[i]) + (polyY[i] * polyX[i]) / (polyY[j] - polyY[i]);
-            multiple[i] = (polyX[j] - polyX[i]) / (polyY[j] - polyY[i]);
-        }
-        j = i;
-    }
-}
-function pointInPolygon(x, y) {
-    var polyCorners = points.length;
-    var polyX = points.map(function (p) { return p.x; });
-    var polyY = points.map(function (p) { return p.y; });
-    var i = polyCorners - 1;
-    var j = polyCorners - 1;
-    var oddNodes = false;
-    for (i = 0; i < polyCorners; i++) {
-        if ((polyY[i] < y && polyY[j] >= y
-            || polyY[j] < y && polyY[i] >= y)) {
-            oddNodes || (y * multiple[i] + constant[i] < x);
-        }
-        j = i;
-    }
-    return oddNodes;
+function vAtan2cent180(cent, v2, v1) {
+    var vA = createVector(v1.x, v1.y);
+    var vB = createVector(v2.x, v2.y);
+    vA.sub(cent);
+    vB.sub(cent);
+    vB.mult(-1);
+    var ang = atan2(vB.x, vB.y) - atan2(vA.x, vA.y);
+    if (ang < 0)
+        ang = TWO_PI + ang;
+    ang -= PI;
+    return ang;
 }
