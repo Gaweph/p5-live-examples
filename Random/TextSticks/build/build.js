@@ -4,55 +4,70 @@ function preload() {
 }
 var points;
 var bounds;
-var pairs;
-var linePoints;
+var lines;
 function setup() {
     createCanvas(displayWidth, displayHeight);
     stroke(0);
     fill(255, 104, 204);
-    bounds = font.textBounds(' foo ', 0, 0, 200);
-    points = font.textToPoints('foo', 0, 0, 200, {
-        sampleFactor: 5,
+    bounds = font.textBounds(' Hello ', 0, 0, 200);
+    points = font.textToPoints('Hello', 0, 0, 200, {
+        sampleFactor: 1,
         simplifyThreshold: 0
     });
-    linePoints = [];
-    for (var x = 0; x < bounds.w * 1.5; x += 10) {
-        for (var y = bounds.h; y > -bounds.h * 2; y -= 10) {
-            var v = createVector(x, y);
-            if (pointInShape(v, points) == 1) {
-                linePoints.push(v);
+    lines = [];
+    var lineGap = 10;
+    for (var x = 0; x < bounds.w * 1.5; x += lineGap) {
+        if (!pointHorizontallyOut(x, points)) {
+            var lineStart = null;
+            var lineEnd = null;
+            for (var y = bounds.h; y > -bounds.h * 2; y -= lineGap) {
+                if (!pointVerticallyOut(y, points)) {
+                    var v = createVector(x, y);
+                    if (pointInShape(v, points) == 1) {
+                        if (lineStart == null) {
+                            lineStart = v;
+                        }
+                        else {
+                            lineEnd = v;
+                        }
+                    }
+                    else {
+                        if (lineStart && lineEnd) {
+                            lines.push({ a: lineStart, b: lineEnd });
+                        }
+                        lineStart = null;
+                        lineEnd = null;
+                    }
+                }
             }
         }
     }
-    console.log(linePoints);
+    console.log(lines);
 }
 function draw() {
     background(255);
     push();
     translate(100, bounds.h);
-    rect(0, 0, bounds.w, -bounds.h);
-    beginShape();
     strokeWeight(1);
-    for (var i_1 = 0; i_1 < points.length; i_1++) {
-        var p = points[i_1];
-        vertex(p.x, p.y);
-    }
-    endShape(CLOSE);
-    strokeWeight(1);
-    for (var i = 0; i < linePoints.length; i++) {
-        circle(linePoints[i].x, linePoints[i].y, 2);
+    for (var i = 0; i < lines.length; i++) {
+        line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y);
     }
     pop();
 }
+function pointHorizontallyOut(x, shapePoints) {
+    return false;
+    var right = shapePoints.filter(function (v) { return v.x < x; });
+    var left = shapePoints.filter(function (v) { return v.x > x; });
+    return right.length == 0 || left.length == 0;
+}
+function pointVerticallyOut(y, shapePoints) {
+    return false;
+    var top = shapePoints.filter(function (v) { return v.y < y; });
+    var bottom = shapePoints.filter(function (v) { return v.y > y; });
+    return top.length == 0 || bottom.length == 0;
+}
 function pointInShape(p, shapePoints) {
     var a = 0;
-    var right = shapePoints.filter(function (v) { return v.x < p.x; });
-    var left = shapePoints.filter(function (v) { return v.x > p.x; });
-    var top = shapePoints.filter(function (v) { return v.y < p.y; });
-    var bottom = shapePoints.filter(function (v) { return v.y > p.y; });
-    if (right.length == 0 || left.length == 0 || top.length == 0 || bottom.length == 0) {
-        return false;
-    }
     for (var i = 0; i < shapePoints.length - 1; ++i) {
         var v1 = shapePoints[i];
         var v2 = shapePoints[i + 1];

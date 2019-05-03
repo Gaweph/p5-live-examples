@@ -5,33 +5,62 @@ function preload() {
 
 let points: p5.Vector[];
 let bounds: any;
-var pairs: { a: p5.Vector, b: p5.Vector }[];
+var lines: { a: p5.Vector, b: p5.Vector }[];
 
-var linePoints: p5.Vector[];
 function setup() {
   createCanvas(displayWidth, displayHeight);
   stroke(0);
   fill(255, 104, 204);
 
-  bounds = font.textBounds(' foo ', 0, 0, 200);
+  bounds = font.textBounds(' Hello ', 0, 0, 200);
 
-  points = font.textToPoints('foo', 0, 0, 200, {
-    sampleFactor: 5,
+  points = font.textToPoints('Hello', 0, 0, 200, {
+    sampleFactor: 1,
     simplifyThreshold: 0
   });
 
-  linePoints = [];
-  for (var x = 0; x < bounds.w * 1.5; x += 10) {
-    for (var y = bounds.h; y > -bounds.h * 2; y -= 10) {
+  // generate lines
+  lines = [];
+  var lineGap = 10; // lower is more
+  for (var x = 0; x < bounds.w * 1.5; x += lineGap) {
 
-      var v = createVector(x, y);
-      if (pointInShape(v, points) == 1) {
-        linePoints.push(v);
+    if (!pointHorizontallyOut(x, points)) {
+
+      var lineStart: p5.Vector = null;
+      var lineEnd: p5.Vector = null;
+      for (var y = bounds.h; y > -bounds.h * 2; y -= lineGap) {
+
+        if (!pointVerticallyOut(y, points)) {
+
+          var v = createVector(x, y);
+          if (pointInShape(v, points) == 1) {
+            //linePoints.push(v);
+
+            if (lineStart == null) {
+              lineStart = v;
+            }
+            else {
+              lineEnd = v;
+            }
+
+          }
+          else {
+            // not in shape
+            if (lineStart && lineEnd) {
+              // we have a line
+              lines.push({ a: lineStart, b: lineEnd });
+            }
+
+            //reset line
+            lineStart = null;
+            lineEnd = null;
+          }
+        }
       }
     }
   }
 
-  console.log(linePoints);
+  console.log(lines);
 }
 
 function draw() {
@@ -39,38 +68,50 @@ function draw() {
 
   push();
   translate(100, bounds.h);
+
   // box around whole phrase 
-  rect(0, 0, bounds.w, -bounds.h);
-  beginShape();
-  strokeWeight(1);
-  for (let i = 0; i < points.length; i++) {
-    let p = points[i];
-    vertex(p.x, p.y);
-  }
-  endShape(CLOSE);
+  // rect(0, 0, bounds.w, -bounds.h);
+
+  // draw text
+  // beginShape();
+  // strokeWeight(1);
+  // for (let i = 0; i < points.length; i++) {
+  //   let p = points[i];
+  //   vertex(p.x, p.y);
+  // }
+  // endShape(CLOSE);
 
   strokeWeight(1);
 
-  for (var i = 0; i < linePoints.length; i++) {
-    circle(linePoints[i].x, linePoints[i].y, 2);
+  for (var i = 0; i < lines.length; i++) {
+    // circle(linePoints[i].x, linePoints[i].y, 2);
+    line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y)
   }
 
   pop();
 }
 
+function pointHorizontallyOut(x: number, shapePoints: p5.Vector[]) {
+
+  return false;
+  // if point is totally out horizontally
+  var right = shapePoints.filter(v => v.x < x); // all to the right
+  var left = shapePoints.filter(v => v.x > x); // all to the left
+
+  return right.length == 0 || left.length == 0;
+}
+function pointVerticallyOut(y: number, shapePoints: p5.Vector[]) {
+
+  return false;
+  // if point is totally out vertically
+  var top = shapePoints.filter(v => v.y < y);
+  var bottom = shapePoints.filter(v => v.y > y);
+
+  return top.length == 0 || bottom.length == 0;
+}
+
 function pointInShape(p: p5.Vector, shapePoints: p5.Vector[]) {
   var a = 0;
-
-  // if point is totally out horizontally
-  var right = shapePoints.filter(v => v.x < p.x); // all to the right
-  var left = shapePoints.filter(v => v.x > p.x); // all to the left
-
-  var top = shapePoints.filter(v => v.y < p.y);
-  var bottom = shapePoints.filter(v => v.y > p.y);
-
-  if (right.length == 0 || left.length == 0 || top.length == 0 || bottom.length == 0) {
-    return false;
-  }
 
   for (var i = 0; i < shapePoints.length - 1; ++i) {
     var v1 = shapePoints[i];
