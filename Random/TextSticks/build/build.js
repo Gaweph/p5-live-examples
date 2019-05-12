@@ -41,56 +41,45 @@ function preload() {
 var points;
 var bounds;
 var lines;
+var shapeLines;
+var overlapPoints;
 var colors;
 function setup() {
     createCanvas(displayWidth, displayHeight);
     stroke(0);
     fill(255, 104, 204);
-    bounds = font.textBounds(' RANDOM ', 0, 0, 200);
-    points = font.textToPoints('RANDOM', 0, 0, 200, {
+    console.time();
+    bounds = font.textBounds(' Hello ', 0, 0, 200);
+    points = font.textToPoints('Hello', 0, 0, 200, {
         sampleFactor: 1,
         simplifyThreshold: 0
     });
-    console.time();
-    lines = [];
+    shapeLines = [];
+    overlapPoints = [];
+    for (var i = 0; i < points.length - 1; i++) {
+        shapeLines.push({ a: points[i], b: points[i + 1] });
+    }
     var lineGap = 10;
     for (var x = 0; x < bounds.w * 1.5; x += lineGap) {
-        if (!pointHorizontallyOut(x, points)) {
-            var lineStart = null;
-            var lineEnd = null;
-            for (var y = bounds.h; y > -bounds.h * 2; y -= lineGap) {
-                if (!pointVerticallyOut(y, points)) {
-                    var v = createVector(x, y);
-                    if (pointInShape(v, points) == 1) {
-                        if (lineStart == null) {
-                            lineStart = v;
-                        }
-                        else {
-                            lineEnd = v;
-                        }
-                    }
-                    else {
-                        if (lineStart && lineEnd) {
-                            lines.push({ a: lineStart, b: lineEnd });
-                        }
-                        lineStart = null;
-                        lineEnd = null;
-                    }
-                }
+        for (var l = 0; l < shapeLines.length; l++) {
+            var res = overlap(shapeLines[l], { a: createVector(x, bounds.h), b: createVector(x, -1) });
+            if (res != null) {
+                overlapPoints.push(res);
             }
         }
     }
     console.timeEnd();
-    colors = ColorHelper.getColorsArray(lines.length);
 }
 function draw() {
     background(255);
     push();
     translate(100, bounds.h);
     strokeWeight(1);
-    for (var i = 0; i < lines.length; i++) {
-        stroke(colors[i]);
-        line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y);
+    for (var i = 0; i < shapeLines.length; i++) {
+        line(shapeLines[i].a.x, shapeLines[i].a.y, shapeLines[i].b.x, shapeLines[i].b.y);
+    }
+    for (var i = 0; i < overlapPoints.length; i++) {
+        circle(overlapPoints[i].x, overlapPoints[i].y, 2);
     }
     pop();
 }
@@ -132,4 +121,29 @@ function vAtan2cent180(cent, v2, v1) {
         ang = TWO_PI + ang;
     ang -= PI;
     return ang;
+}
+function overlap(lineA, lineB) {
+    var x1 = lineA.a.x;
+    var y1 = lineA.a.y;
+    var x2 = lineA.b.x;
+    var y2 = lineA.b.y;
+    var x3 = lineB.a.x;
+    var y3 = lineB.a.y;
+    var x4 = lineB.b.x;
+    var y4 = lineB.b.y;
+    var den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+    if (den == 0) {
+        return null;
+    }
+    var t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
+    var u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
+    if (t > 0 && t < 1 && u > 0) {
+        var pt = createVector();
+        pt.x = x1 + t * (x2 - x1);
+        pt.y = y1 + t * (y2 - y1);
+        return pt;
+    }
+    else {
+        return null;
+    }
 }

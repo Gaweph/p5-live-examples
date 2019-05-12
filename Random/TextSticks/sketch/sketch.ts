@@ -6,63 +6,88 @@ function preload() {
 let points: p5.Vector[];
 let bounds: any;
 var lines: { a: p5.Vector, b: p5.Vector }[];
+var shapeLines: { a: p5.Vector, b: p5.Vector }[];
+var overlapPoints: p5.Vector[];
 var colors: p5.Color[];
 function setup() {
   createCanvas(displayWidth, displayHeight);
   stroke(0);
   fill(255, 104, 204);
 
-  bounds = font.textBounds(' RANDOM ', 0, 0, 200);
+  console.time();
 
-  points = font.textToPoints('RANDOM', 0, 0, 200, {
+  bounds = font.textBounds(' Hello ', 0, 0, 200);
+
+  points = font.textToPoints('Hello', 0, 0, 200, {
     sampleFactor: 1,
     simplifyThreshold: 0
   });
 
-  console.time();
+  shapeLines = [];
+  overlapPoints = [];
+  for (var i = 0; i < points.length - 1; i++) {
+
+    // if (i == points.length - 1) {
+    //   shapeLines.push({ a: points[i], b: points[0] });
+    // }
+    // else {
+    shapeLines.push({ a: points[i], b: points[i + 1] });
+    // }
+
+  }
+
   // generate lines
-  lines = [];
+  // lines = [];
   var lineGap = 10; // lower is more
   for (var x = 0; x < bounds.w * 1.5; x += lineGap) {
 
-    if (!pointHorizontallyOut(x, points)) {
+    // for (var y = bounds.h; y > -bounds.h * 2; y -= lineGap) {
 
-      var lineStart: p5.Vector = null;
-      var lineEnd: p5.Vector = null;
-      for (var y = bounds.h; y > -bounds.h * 2; y -= lineGap) {
-
-        if (!pointVerticallyOut(y, points)) {
-
-          var v = createVector(x, y);
-          if (pointInShape(v, points) == 1) {
-            //linePoints.push(v);
-
-            if (lineStart == null) {
-              lineStart = v;
-            }
-            else {
-              lineEnd = v;
-            }
-
-          }
-          else {
-            // not in shape
-            if (lineStart && lineEnd) {
-              // we have a line
-              lines.push({ a: lineStart, b: lineEnd });
-            }
-
-            //reset line
-            lineStart = null;
-            lineEnd = null;
-          }
-        }
+    for (var l = 0; l < shapeLines.length; l++) {
+      let res = overlap(shapeLines[l], { a: createVector(x, bounds.h), b: createVector(x, -1) });
+      if (res != null) {
+        overlapPoints.push(res);
       }
     }
+    // }
+    // if (!pointHorizontallyOut(x, points)) {
+
+    //   var lineStart: p5.Vector = null;
+    //   var lineEnd: p5.Vector = null;
+    //   for (var y = bounds.h; y > -bounds.h * 2; y -= lineGap) {
+
+    //     if (!pointVerticallyOut(y, points)) {
+
+    //       var v = createVector(x, y);
+    //       if (pointInShape(v, points) == 1) {
+    //         //linePoints.push(v);
+
+    //         if (lineStart == null) {
+    //           lineStart = v;
+    //         }
+    //         else {
+    //           lineEnd = v;
+    //         }
+
+    //       }
+    //       else {
+    //         // not in shape
+    //         if (lineStart && lineEnd) {
+    //           // we have a line
+    //           lines.push({ a: lineStart, b: lineEnd });
+    //         }
+
+    //         //reset line
+    //         lineStart = null;
+    //         lineEnd = null;
+    //       }
+    //     }
+    //   }
+    // }
   }
   console.timeEnd();
 
-  colors = ColorHelper.getColorsArray(lines.length);
+  // colors = ColorHelper.getColorsArray(lines.length);
 }
 
 function draw() {
@@ -84,11 +109,21 @@ function draw() {
   // endShape(CLOSE);
 
   strokeWeight(1);
-  for (var i = 0; i < lines.length; i++) {
-    // circle(linePoints[i].x, linePoints[i].y, 2);
-    stroke(colors[i]);
-    line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y);
+
+
+  for (var i = 0; i < shapeLines.length; i++) {
+    line(shapeLines[i].a.x, shapeLines[i].a.y, shapeLines[i].b.x, shapeLines[i].b.y);
   }
+
+  for (var i = 0; i < overlapPoints.length; i++) {
+    circle(overlapPoints[i].x, overlapPoints[i].y, 2);
+  }
+
+  // for (var i = 0; i < lines.length; i++) {
+  //   // circle(linePoints[i].x, linePoints[i].y, 2);
+  //   stroke(colors[i]);
+  //   line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y);
+  // }
 
   pop();
 }
@@ -139,4 +174,32 @@ function vAtan2cent180(cent: p5.Vector, v2: p5.Vector, v1: p5.Vector) {
   if (ang < 0) ang = TWO_PI + ang;
   ang -= PI;
   return ang;
+}
+
+function overlap(lineA: { a: p5.Vector, b: p5.Vector }, lineB: { a: p5.Vector, b: p5.Vector }): p5.Vector {
+  const x1 = lineA.a.x;
+  const y1 = lineA.a.y;
+  const x2 = lineA.b.x;
+  const y2 = lineA.b.y;
+
+  const x3 = lineB.a.x;
+  const y3 = lineB.a.y;
+  const x4 = lineB.b.x;
+  const y4 = lineB.b.y;
+
+  const den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+  if (den == 0) {
+    return null;
+  }
+
+  const t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
+  const u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
+  if (t > 0 && t < 1 && u > 0) {
+    const pt = createVector();
+    pt.x = x1 + t * (x2 - x1);
+    pt.y = y1 + t * (y2 - y1);
+    return pt;
+  } else {
+    return null;
+  }
 }
