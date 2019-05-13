@@ -38,48 +38,72 @@ var font;
 function preload() {
     font = loadFont('/public/Digitalt.ttf');
 }
-var bounds;
 var lines;
-var shapeLines;
-var overlapPoints;
-var colors;
-var points;
-var renderer;
+var dotGap = 4;
 function setup() {
-    renderer = createCanvas(windowWidth, windowHeight);
+    var canvas = createCanvas(windowWidth, windowHeight).canvas;
     stroke(0);
     fill(255, 104, 204);
-    console.time(' setup canvas');
     push();
-    bounds = font.textBounds(' Hello ', 0, 0, 200);
+    var bounds = font.textBounds(' Gareth Williams ', 0, 0, 200);
     translate(100, bounds.h);
     textFont(font);
     textSize(200);
     fill(0);
-    text('Hello', 0, 0);
+    text('Gareth Williams', 0, 0);
     fill('red');
     rect(400, 400, 500, 100);
     fill('purple');
     circle(200, 200, 75);
     pop();
-    console.timeEnd();
-    console.time(' convert to lines ');
-    var canvas = renderer.canvas;
-    points = canvasToPoints(canvas);
-    console.timeEnd();
+    lines = canvasTolines(canvas);
     background(255);
 }
 function draw() {
     background(255);
-    for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
-        var p = points_1[_i];
-        stroke(p.color);
-        point(p.pos.x, p.pos.y);
+    for (var i = 0; i < lines.length; i++) {
+        stroke(lines[i].color);
+        line(lines[i].line.pointA.x, lines[i].line.pointA.y, lines[i].line.pointB.x, lines[i].line.pointB.y);
     }
+}
+function canvasTolines(canvas) {
+    var data = canvas.getContext('2d').getImageData(0, 0, width, height).data;
+    var lines = [];
+    for (var x = 0; x < canvas.width; x += dotGap) {
+        var lineStart = null;
+        var lineEnd = null;
+        var colorStart = null;
+        for (var y = 0; y < canvas.height; y += dotGap) {
+            var i = (y * canvas.width + x) * 4;
+            var red = data[i];
+            var green = data[i + 1];
+            var blue = data[i + 2];
+            var alpha = data[i + 3];
+            var pointInShape = (red != 0 || green != 0 || blue != 0 || alpha != 0);
+            var c = color(red, green, blue, alpha);
+            var v = createVector(x, y);
+            if (pointInShape) {
+                if (lineStart == null) {
+                    lineStart = v;
+                    colorStart = c;
+                }
+                else {
+                    lineEnd = v;
+                }
+            }
+            else {
+                if (lineStart && lineEnd) {
+                    lines.push({ line: { pointA: lineStart, pointB: lineEnd }, color: colorStart });
+                }
+                lineStart = null;
+                lineEnd = null;
+            }
+        }
+    }
+    return lines;
 }
 function canvasToPoints(canvas) {
     var data = canvas.getContext('2d').getImageData(0, 0, width, height).data;
-    var dotGap = 10;
     var res = [];
     for (var y = 0; y < canvas.height; y += dotGap) {
         for (var x = 0; x < canvas.width; x += dotGap) {

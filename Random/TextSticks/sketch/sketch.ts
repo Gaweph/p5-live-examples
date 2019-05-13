@@ -3,43 +3,33 @@ function preload() {
   font = loadFont('/public/Digitalt.ttf');
 }
 
-let bounds: any;
-var lines: { a: p5.Vector, b: p5.Vector }[];
-var shapeLines: { a: p5.Vector, b: p5.Vector }[];
-var overlapPoints: p5.Vector[];
-var colors: p5.Color[];
-
-var points: {pos: p5.Vector, color: p5.Color}[];
-var renderer: any;
+// let bounds: any;
+var lines: {line: { pointA: p5.Vector, pointB: p5.Vector }, color: p5.Color}[];
+var dotGap = 4; // lower is more
 function setup() {
-  renderer = createCanvas(windowWidth, windowHeight);
+  var canvas = <HTMLCanvasElement>(<any>createCanvas(windowWidth, windowHeight)).canvas;
   stroke(0);
   fill(255, 104, 204);
 
-  console.time(' setup canvas');
-
   // set up canvas
   push();
-    bounds = font.textBounds(' Hello ', 0, 0, 200);
+    var bounds = <any>font.textBounds(' Gareth Williams ', 0, 0, 200);
     translate(100, bounds.h);
     // rect(0, 0, bounds.w, -bounds.h);
     textFont(font);
     textSize(200);
     fill(0);
-    text('Hello', 0, 0);
+    text('Gareth Williams', 0, 0);
     fill('red');
     rect(400, 400, 500, 100);
     
     fill('purple');
     circle(200, 200, 75);
   pop();
-  console.timeEnd();
 
-  console.time(' convert to lines ');
   // convert to lines
-  var canvas = (<HTMLCanvasElement>renderer.canvas);
-  points = canvasToPoints(canvas);
-  console.timeEnd();
+  // points = canvasToPoints(canvas);
+  lines = canvasTolines(canvas);
 
   // clean canvas
   background(255);
@@ -49,48 +39,65 @@ function setup() {
 function draw() {
   background(255);
 
-  for(let p of points) {
-    stroke(p.color);
-    point(p.pos.x, p.pos.y);
+  for (var i = 0; i < lines.length; i++) {
+    // circle(linePoints[i].x, linePoints[i].y, 2);
+    stroke(lines[i].color);
+    line(lines[i].line.pointA.x, lines[i].line.pointA.y, lines[i].line.pointB.x, lines[i].line.pointB.y);
   }
-  // push();
-  // translate(100, bounds.h);
-
-  // // box around whole phrase 
-  // // rect(0, 0, bounds.w, -bounds.h);
-
-  // // draw text
-  // // beginShape();
-  // // strokeWeight(1);
-  // // for (let i = 0; i < points.length; i++) {
-  // //   let p = points[i];
-  // //   vertex(p.x, p.y);
-  // // }
-  // // endShape(CLOSE);
-
-  // strokeWeight(1);
+}
 
 
-  // for (var i = 0; i < shapeLines.length; i++) {
-  //   line(shapeLines[i].a.x, shapeLines[i].a.y, shapeLines[i].b.x, shapeLines[i].b.y);
-  // }
+function canvasTolines(canvas: HTMLCanvasElement) {
+  var data = canvas.getContext('2d').getImageData(0, 0, width, height).data;
+  // for (var x = 0; x < bounds.w * 1.5; x += dotGap) {
+  //   for (var y = bounds.h; y > -bounds.h * 2; y -= dotGap) {
 
-  // for (var i = 0; i < overlapPoints.length; i++) {
-  //   circle(overlapPoints[i].x, overlapPoints[i].y, 2);
-  // }
+  var lines: {line: { pointA: p5.Vector, pointB: p5.Vector }, color: p5.Color}[] = [];
+  for (var x = 0; x < canvas.width; x += dotGap) {
 
-  // // for (var i = 0; i < lines.length; i++) {
-  // //   // circle(linePoints[i].x, linePoints[i].y, 2);
-  // //   stroke(colors[i]);
-  // //   line(lines[i].a.x, lines[i].a.y, lines[i].b.x, lines[i].b.y);
-  // // }
+    var lineStart: p5.Vector = null;
+    var lineEnd: p5.Vector = null;
+    var colorStart: p5.Color = null;
 
-  // pop();
+    for (var y = 0; y < canvas.height; y += dotGap) {
+      var i = (y * canvas.width + x) * 4;
+      var red = data[i];
+      var green = data[i+1];
+      var blue = data[i+2];
+      var alpha = data[i+3];
+      var pointInShape = (red != 0 || green != 0 || blue != 0  || alpha != 0);
+      var c = color(red, green, blue, alpha);
+      var v = createVector(x, y);
+        if (pointInShape) {
+          //linePoints.push(v);
+
+          if (lineStart == null) {
+            lineStart = v;
+            colorStart = c;
+          }
+          else {
+            lineEnd = v;
+          }
+
+        }
+        else {
+          // not in shape
+          if (lineStart && lineEnd) {
+            // we have a line
+            lines.push({ line: {pointA: lineStart, pointB: lineEnd }, color: colorStart});
+          }
+
+          //reset line
+          lineStart = null;
+          lineEnd = null;
+        }
+      }
+    }
+  return lines;
 }
 
 function canvasToPoints(canvas: HTMLCanvasElement): {pos: p5.Vector, color: p5.Color}[] {
   var data = canvas.getContext('2d').getImageData(0, 0, width, height).data;
-  var dotGap = 10; // lower is more
   // for (var x = 0; x < bounds.w * 1.5; x += dotGap) {
   //   for (var y = bounds.h; y > -bounds.h * 2; y -= dotGap) {
 
