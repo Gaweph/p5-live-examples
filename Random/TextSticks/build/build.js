@@ -38,50 +38,63 @@ var font;
 function preload() {
     font = loadFont('/public/Digitalt.ttf');
 }
-var points;
 var bounds;
 var lines;
 var shapeLines;
 var overlapPoints;
 var colors;
+var points;
+var renderer;
 function setup() {
-    createCanvas(displayWidth, displayHeight);
+    renderer = createCanvas(windowWidth, windowHeight);
     stroke(0);
     fill(255, 104, 204);
-    console.time();
+    console.time(' setup canvas');
+    push();
     bounds = font.textBounds(' Hello ', 0, 0, 200);
-    points = font.textToPoints('Hello', 0, 0, 200, {
-        sampleFactor: 1,
-        simplifyThreshold: 0
-    });
-    shapeLines = [];
-    overlapPoints = [];
-    for (var i = 0; i < points.length - 1; i++) {
-        shapeLines.push({ a: points[i], b: points[i + 1] });
-    }
-    var lineGap = 10;
-    for (var x = 0; x < bounds.w * 1.5; x += lineGap) {
-        for (var l = 0; l < shapeLines.length; l++) {
-            var res = overlap(shapeLines[l], { a: createVector(x, bounds.h), b: createVector(x, -1) });
-            if (res != null) {
-                overlapPoints.push(res);
-            }
-        }
-    }
+    translate(100, bounds.h);
+    textFont(font);
+    textSize(200);
+    fill(0);
+    text('Hello', 0, 0);
+    fill('red');
+    rect(400, 400, 500, 100);
+    fill('purple');
+    circle(200, 200, 75);
+    pop();
     console.timeEnd();
+    console.time(' convert to lines ');
+    var canvas = renderer.canvas;
+    points = canvasToPoints(canvas);
+    console.timeEnd();
+    background(255);
 }
 function draw() {
     background(255);
-    push();
-    translate(100, bounds.h);
-    strokeWeight(1);
-    for (var i = 0; i < shapeLines.length; i++) {
-        line(shapeLines[i].a.x, shapeLines[i].a.y, shapeLines[i].b.x, shapeLines[i].b.y);
+    for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
+        var p = points_1[_i];
+        stroke(p.color);
+        point(p.pos.x, p.pos.y);
     }
-    for (var i = 0; i < overlapPoints.length; i++) {
-        circle(overlapPoints[i].x, overlapPoints[i].y, 2);
+}
+function canvasToPoints(canvas) {
+    var data = canvas.getContext('2d').getImageData(0, 0, width, height).data;
+    var dotGap = 10;
+    var res = [];
+    for (var y = 0; y < canvas.height; y += dotGap) {
+        for (var x = 0; x < canvas.width; x += dotGap) {
+            var i = (y * canvas.width + x) * 4;
+            var red = data[i];
+            var green = data[i + 1];
+            var blue = data[i + 2];
+            var alpha = data[i + 3];
+            if (red != 0 || green != 0 || blue != 0 || alpha != 0) {
+                var c = color(red, green, blue, alpha);
+                res.push({ pos: createVector(x, y), color: c });
+            }
+        }
     }
-    pop();
+    return res;
 }
 function pointHorizontallyOut(x, shapePoints) {
     return false;
