@@ -23,7 +23,7 @@ class ColorHelper
     public static getColorsArray (total: number, baseColorArray: p5.Color[] = null): p5.Color[] {
         
         if(baseColorArray == null) {
-            baseColorArray = ColorHelper.RainbowColorBase();
+            baseColorArray = ColorHelper.rainbowColorBase();
         }
       var rainbowColors = baseColorArray.map(x=> this.getColorVector(x));;
         

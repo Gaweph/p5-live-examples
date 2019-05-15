@@ -3,7 +3,7 @@ class MarchingCubes {
     
     points: Point[];
     squares: ((x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {start: p5.Vector, end: p5.Vector})[];
-    lines: {start: p5.Vector, end: p5.Vector, color: p5.Color}[];
+    lines: {start: p5.Vector, end: p5.Vector}[];
     constructor(private gridSpace: number, private numPoints: number, private strength: number, private colors: p5.Color[]) {
         this.setupSquares();
         this.setupPoints();
@@ -27,13 +27,12 @@ class MarchingCubes {
 
     draw() {
         // drawGrid();
-        // this.drawPoints();
+        //this.drawPoints();
         this.drawLines();
 
     }
 
     setupPoints() {
-        var colorsArray = ColorHelper.getColorsArray(this.numPoints, this.colors);
         this.points = [];
         var i;
         for (i = 0; i < this.numPoints; i++) {
@@ -42,8 +41,7 @@ class MarchingCubes {
             var vx = Math.random() * 3 - 1;
             var vy = Math.random() * 3 - 1;
             var r = (Math.random() * 65) + 25;
-            var color = colorsArray[i];
-            this.points[i] = new Point(x,y,vx,vy,r, color);
+            this.points[i] = new Point(x,y,vx,vy,r);
         }
     }
 
@@ -66,17 +64,14 @@ class MarchingCubes {
 
     generateLines() {
         var potentials: number[][] = [];
-        var potentialColors: p5.Color[][] = [];
         // Initialise potentials
         var imax = Math.ceil(width/this.gridSpace);
         var jmax = Math.ceil(height/this.gridSpace);
         var white = color('white');
         for (var i = 0; i < imax; i++) {
             potentials[i] = [];
-            potentialColors[i] = [];
             for (var j = 0; j < jmax; j++) {
                 potentials[i][j] = 0;
-                potentialColors[i][j] = white;
             }
         }
         // Add Potentials from points
@@ -91,7 +86,6 @@ class MarchingCubes {
             for (; i < ilim; i++) {
                 for (j0 = j; j0 < jlim; j0++) {
                     potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i*this.gridSpace, j0*this.gridSpace)));
-                    potentialColors[i][j0] = p.color;
                 }
             }
         };
@@ -108,11 +102,6 @@ class MarchingCubes {
                 p4 = potentials[i][j+1]/100;
                 p8 = potentials[i+1][j+1]/100;
 
-                c1 = potentialColors[i][j];
-                c2 = potentialColors[i+1][j];
-                c4 = potentialColors[i][j+1];
-                c8 = potentialColors[i+1][j+1];
-
                 var square = (p1 >= 0.2 ? 1 : 0) +
                 (p2 >= 0.2 ? 2 : 0) +
                 (p4 >= 0.2 ? 4 : 0) +
@@ -124,7 +113,7 @@ class MarchingCubes {
 
                 if(linePoints != null) {
                     var c = random([c1,c2,c4,c8]);
-                    this.lines.push({start: linePoints.start, end: linePoints.end, color: c});
+                    this.lines.push({start: linePoints.start, end: linePoints.end});
                 }
                 
             }
@@ -134,9 +123,10 @@ class MarchingCubes {
 
     drawLines() {
 
+        var colorsArray = ColorHelper.getColorsArray(floor(width));
         for (let l of this.lines) {
-            stroke(l.color);
-            strokeWeight(1);
+            stroke(colorsArray[floor(l.start.x)]);
+            strokeWeight(2);
             line(l.start.x, l.start.y, l.end.x, l.end.y);
         }
     }

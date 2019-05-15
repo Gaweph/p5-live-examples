@@ -4,13 +4,12 @@ class Point {
       public y: number, 
       public vx: number, 
       public vy: number, 
-      public r: number,
-      public color: p5.Color
+      public r: number
    )
    {}
 
    draw() {
-      stroke(this.color);
+      stroke('white');
       strokeWeight(0.5);
       
       circle(this.x, this.y, this.r);

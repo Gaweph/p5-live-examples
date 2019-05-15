@@ -25,7 +25,7 @@ function setup() {
 }
 
 function draw() {
-    background(255);
+    background(1);
     marchingCubes.move();
     marchingCubes.draw();
 }
