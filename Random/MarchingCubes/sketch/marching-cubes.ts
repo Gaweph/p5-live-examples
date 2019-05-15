@@ -48,7 +48,7 @@ class MarchingCubes {
             var y = Math.random() * height;
             var vx = Math.random() * 3;
             var vy = Math.random() * 3;
-            var r = (Math.random() * 90) + 35;
+            var r = (Math.random() * width / 20) + 35;
             this.points[i] = new Point(x, y, vx, vy, r);
         }
     }

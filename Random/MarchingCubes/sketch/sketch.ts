@@ -35,8 +35,8 @@ function draw() {
     marchingCubes.draw();
 
 
-    textSize(15);
-    noStroke();
-    fill(255);
-    text(frameRate(), 10, 50);
+    // textSize(15);
+    // noStroke();
+    // fill(255);
+    // text(frameRate(), 10, 50);
 }
