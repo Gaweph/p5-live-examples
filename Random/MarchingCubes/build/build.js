@@ -267,7 +267,7 @@ function setup() {
         color('indigo'),
         color('violet')
     ];
-    marchingCubes = new MarchingCubes(gridSpace, numpoints / 2, strength, purples.slice());
+    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength, purples.slice());
 }
 function draw() {
     background(1);

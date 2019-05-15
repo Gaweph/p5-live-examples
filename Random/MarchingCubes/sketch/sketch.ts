@@ -20,7 +20,7 @@ function setup() {
         color('violet')
     ];
 
-    marchingCubes = new MarchingCubes(gridSpace, numpoints / 2, strength, [...purples]);    
+    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength, [...purples]);    
 
 }
 
