@@ -2,10 +2,9 @@
 class MarchingCubes {
     
     points: Point[];
-    squares: ((x:number, y:number, p1:number, p2:number, p4:number, p8:number) => void)[];
-    potentials: number[][];
-
-    constructor(private gridSpace: number, private numPoints: number, private strength: number) {
+    squares: ((x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {start: p5.Vector, end: p5.Vector})[];
+    lines: {start: p5.Vector, end: p5.Vector}[];
+    constructor(private gridSpace: number, private numPoints: number, private strength: number, private colors: p5.Color[]) {
         this.setupSquares();
         this.setupPoints();
     }
@@ -28,12 +27,13 @@ class MarchingCubes {
 
     draw() {
         // drawGrid();
-        // drawPoints();
+        this.drawPoints();
         this.drawLines();
 
     }
 
     setupPoints() {
+        var colorsArray = ColorHelper.getColorsArray(this.numPoints, this.colors);
         this.points = [];
         var i;
         for (i = 0; i < this.numPoints; i++) {
@@ -42,7 +42,8 @@ class MarchingCubes {
             var vx = Math.random() * 3 - 1;
             var vy = Math.random() * 3 - 1;
             var r = (Math.random() * 65) + 25;
-            this.points[i] = new Point(x,y,vx,vy,r);
+            var color = colorsArray[i];
+            this.points[i] = new Point(x,y,vx,vy,r, color);
         }
     }
 
@@ -64,14 +65,14 @@ class MarchingCubes {
     };
 
     generateLines() {
-        this.potentials = [];
+        var potentials: number[][] = [];
         // Initialise potentials
         var imax = Math.ceil(width/this.gridSpace);
         var jmax = Math.ceil(height/this.gridSpace);
         for (var i = 0; i < imax; i++) {
-            this.potentials[i] = [];
+            potentials[i] = [];
             for (var j = 0; j < jmax; j++) {
-            this.potentials[i][j] = 0;
+            potentials[i][j] = 0;
             }
         }
         // Add Potentials from points
@@ -85,36 +86,46 @@ class MarchingCubes {
             var j0;
             for (; i < ilim; i++) {
                 for (j0 = j; j0 < jlim; j0++) {
-                    this.potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i*this.gridSpace, j0*this.gridSpace)));
+                    potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i*this.gridSpace, j0*this.gridSpace)));
                 }
             }
         };
 
-        
-    }
-
-    drawLines() {
-        stroke('black');
-        strokeWeight(1);
+        this.lines = [];
         var p1, p2, p4, p8;
         var imax = Math.ceil(width/this.gridSpace);
         var jmax = Math.ceil(height/this.gridSpace);
         for (var i = 0; i < imax-1; i++) {
             for (var j = 0; j < jmax-1; j++) {
-                p1 = this.potentials[i][j]/100;
-                p2 = this.potentials[i+1][j]/100;
-                p4 = this.potentials[i][j+1]/100;
-                p8 = this.potentials[i+1][j+1]/100;
+                p1 = potentials[i][j]/100;
+                p2 = potentials[i+1][j]/100;
+                p4 = potentials[i][j+1]/100;
+                p8 = potentials[i+1][j+1]/100;
 
                 var square = (p1 >= 0.2 ? 1 : 0) +
                 (p2 >= 0.2 ? 2 : 0) +
                 (p4 >= 0.2 ? 4 : 0) +
                 (p8 >= 0.2 ? 8 : 0);
 
-                this.squares[square](
+                var linePoints = this.squares[square](
                     i*this.gridSpace, j*this.gridSpace, p1, p2, p4, p8
                 );
+
+                if(linePoints != null) {
+                    this.lines.push(linePoints);
+                }
+                
             }
+        }
+        
+    }
+
+    drawLines() {
+        stroke('black');
+        strokeWeight(1);
+
+        for (let l of this.lines) {
+            line(l.start.x, l.start.y, l.end.x, l.end.y);
         }
     }
     
@@ -137,39 +148,41 @@ class MarchingCubes {
         this.squares = [];
         this.squares[0] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             // 0 means no corner is in the surface so do nothing
+            return null;
         };
         this.squares[1] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
         
             var start = createVector(x, y + this.gridSpace - this.side(p4, p1));
             var end =  createVector(x + this.gridSpace - this.side(p2, p1), y);    
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
         }
         this.squares[2] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x + this.side(p1, p2), y);
             var end =  createVector(x + this.gridSpace, y + this.gridSpace - this.side(p8, p2));
-            line(start.x, start.y, end.x, end.y);
+
+            return {start, end};
             
         }
         this.squares[3] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x, y + this.gridSpace - this.side(p4, p1));
             var end =  createVector(x + this.gridSpace, y + this.gridSpace - this.side(p8, p2));
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[4] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x, y + this.side(p1, p4));
             var end =  createVector(x + this.gridSpace - this.side(p8, p4), y + this.gridSpace);
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[5] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x + this.gridSpace - this.side(p2, p1), y);
             var end =  createVector(x + this.gridSpace - this.side(p8, p4), y + this.gridSpace);
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[6] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
@@ -178,61 +191,64 @@ class MarchingCubes {
             // and if it does will be so temporary that it I am okay
             // with leaving these cases blank. If anyone forks and implements
             // them let me know!
+            return null;
         }
         this.squares[7] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x + this.gridSpace - this.side(p8, p4), y + this.gridSpace);
             var end =  createVector(x + this.gridSpace, y + this.gridSpace - this.side(p8, p2));
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[8] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x + this.side(p4, p8), y + this.gridSpace);
             var end =  createVector(x + this.gridSpace, y + this.side(p2, p8));
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[9] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             // 'Saddle' case where there are to ways to draw the surface.
+            return null;
         }
         this.squares[10] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x + this.side(p1, p2), y);
             var end =  createVector(x + this.side(p4, p8), y + this.gridSpace);
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[11] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x, y + this.gridSpace - this.side(p4, p1));
             var end =  createVector(x + this.side(p4, p8), y  + this.gridSpace);
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[12] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x, y + this.side(p1, p4));
             var end =  createVector(x + this.gridSpace, y + this.side(p2, p8));
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[13] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             
             var start = createVector(x + this.gridSpace - this.side(p2, p1), y);
             var end =  createVector(x + this.gridSpace, y + this.side(p2, p8));
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[14] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
         
             var start = createVector(x, y + this.side(p1, p4));
             var end =  createVector(x + this.side(p1, p2), y);
-            line(start.x, start.y, end.x, end.y);
+            return {start, end};
             
         }
         this.squares[15] = (x:number, y:number, p1:number, p2:number, p4:number, p8:number) => {
             // 15 means every corner is in the surface so do nothing
+            return null;
         }
     }
 }

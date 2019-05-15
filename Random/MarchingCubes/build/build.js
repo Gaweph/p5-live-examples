@@ -1,8 +1,51 @@
+var ColorHelper = (function () {
+    function ColorHelper() {
+    }
+    ColorHelper.getColorVector = function (c) {
+        return createVector(red(c), green(c), blue(c));
+    };
+    ColorHelper.getColorsArray = function (total, baseColorArray) {
+        var _this = this;
+        if (baseColorArray === void 0) { baseColorArray = null; }
+        if (baseColorArray == null) {
+            baseColorArray = [
+                color('red'),
+                color('orange'),
+                color('yellow'),
+                color('green'),
+                color(38, 58, 150),
+                color('indigo'),
+                color('violet')
+            ];
+        }
+        var rainbowColors = baseColorArray.map(function (x) { return _this.getColorVector(x); });
+        ;
+        var colours = new Array();
+        for (var i = 0; i < total; i++) {
+            var colorPosition = i / total;
+            var scaledColorPosition = colorPosition * (rainbowColors.length - 1);
+            var colorIndex = Math.floor(scaledColorPosition);
+            var colorPercentage = scaledColorPosition - colorIndex;
+            var nameColor = this.getColorByPercentage(rainbowColors[colorIndex], rainbowColors[colorIndex + 1], colorPercentage);
+            colours.push(color(nameColor.x, nameColor.y, nameColor.z));
+        }
+        return colours;
+    };
+    ColorHelper.getColorByPercentage = function (firstColor, secondColor, percentage) {
+        var firstColorCopy = firstColor.copy();
+        var secondColorCopy = secondColor.copy();
+        var deltaColor = secondColorCopy.sub(firstColorCopy);
+        var scaledDeltaColor = deltaColor.mult(percentage);
+        return firstColorCopy.add(scaledDeltaColor);
+    };
+    return ColorHelper;
+}());
 var MarchingCubes = (function () {
-    function MarchingCubes(gridSpace, numPoints, strength) {
+    function MarchingCubes(gridSpace, numPoints, strength, colors) {
         this.gridSpace = gridSpace;
         this.numPoints = numPoints;
         this.strength = strength;
+        this.colors = colors;
         this.setupSquares();
         this.setupPoints();
     }
@@ -22,9 +65,11 @@ var MarchingCubes = (function () {
         this.generateLines();
     };
     MarchingCubes.prototype.draw = function () {
+        this.drawPoints();
         this.drawLines();
     };
     MarchingCubes.prototype.setupPoints = function () {
+        var colorsArray = ColorHelper.getColorsArray(this.numPoints, this.colors);
         this.points = [];
         var i;
         for (i = 0; i < this.numPoints; i++) {
@@ -33,7 +78,8 @@ var MarchingCubes = (function () {
             var vx = Math.random() * 3 - 1;
             var vy = Math.random() * 3 - 1;
             var r = (Math.random() * 65) + 25;
-            this.points[i] = new Point(x, y, vx, vy, r);
+            var color = colorsArray[i];
+            this.points[i] = new Point(x, y, vx, vy, r, color);
         }
     };
     MarchingCubes.prototype.drawPoints = function () {
@@ -57,13 +103,13 @@ var MarchingCubes = (function () {
     };
     ;
     MarchingCubes.prototype.generateLines = function () {
-        this.potentials = [];
+        var potentials = [];
         var imax = Math.ceil(width / this.gridSpace);
         var jmax = Math.ceil(height / this.gridSpace);
         for (var i = 0; i < imax; i++) {
-            this.potentials[i] = [];
+            potentials[i] = [];
             for (var j = 0; j < jmax; j++) {
-                this.potentials[i][j] = 0;
+                potentials[i][j] = 0;
             }
         }
         for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
@@ -75,30 +121,38 @@ var MarchingCubes = (function () {
             var j0;
             for (; i < ilim; i++) {
                 for (j0 = j; j0 < jlim; j0++) {
-                    this.potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i * this.gridSpace, j0 * this.gridSpace)));
+                    potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i * this.gridSpace, j0 * this.gridSpace)));
                 }
             }
         }
         ;
-    };
-    MarchingCubes.prototype.drawLines = function () {
-        stroke('black');
-        strokeWeight(1);
+        this.lines = [];
         var p1, p2, p4, p8;
         var imax = Math.ceil(width / this.gridSpace);
         var jmax = Math.ceil(height / this.gridSpace);
         for (var i = 0; i < imax - 1; i++) {
             for (var j = 0; j < jmax - 1; j++) {
-                p1 = this.potentials[i][j] / 100;
-                p2 = this.potentials[i + 1][j] / 100;
-                p4 = this.potentials[i][j + 1] / 100;
-                p8 = this.potentials[i + 1][j + 1] / 100;
+                p1 = potentials[i][j] / 100;
+                p2 = potentials[i + 1][j] / 100;
+                p4 = potentials[i][j + 1] / 100;
+                p8 = potentials[i + 1][j + 1] / 100;
                 var square = (p1 >= 0.2 ? 1 : 0) +
                     (p2 >= 0.2 ? 2 : 0) +
                     (p4 >= 0.2 ? 4 : 0) +
                     (p8 >= 0.2 ? 8 : 0);
-                this.squares[square](i * this.gridSpace, j * this.gridSpace, p1, p2, p4, p8);
+                var linePoints = this.squares[square](i * this.gridSpace, j * this.gridSpace, p1, p2, p4, p8);
+                if (linePoints != null) {
+                    this.lines.push(linePoints);
+                }
             }
+        }
+    };
+    MarchingCubes.prototype.drawLines = function () {
+        stroke('black');
+        strokeWeight(1);
+        for (var _i = 0, _a = this.lines; _i < _a.length; _i++) {
+            var l = _a[_i];
+            line(l.start.x, l.start.y, l.end.x, l.end.y);
         }
     };
     MarchingCubes.prototype.side = function (a, b) {
@@ -108,101 +162,113 @@ var MarchingCubes = (function () {
         var _this = this;
         this.squares = [];
         this.squares[0] = function (x, y, p1, p2, p4, p8) {
+            return null;
         };
         this.squares[1] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x, y + _this.gridSpace - _this.side(p4, p1));
             var end = createVector(x + _this.gridSpace - _this.side(p2, p1), y);
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[2] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x + _this.side(p1, p2), y);
             var end = createVector(x + _this.gridSpace, y + _this.gridSpace - _this.side(p8, p2));
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[3] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x, y + _this.gridSpace - _this.side(p4, p1));
             var end = createVector(x + _this.gridSpace, y + _this.gridSpace - _this.side(p8, p2));
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[4] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x, y + _this.side(p1, p4));
             var end = createVector(x + _this.gridSpace - _this.side(p8, p4), y + _this.gridSpace);
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[5] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x + _this.gridSpace - _this.side(p2, p1), y);
             var end = createVector(x + _this.gridSpace - _this.side(p8, p4), y + _this.gridSpace);
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[6] = function (x, y, p1, p2, p4, p8) {
+            return null;
         };
         this.squares[7] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x + _this.gridSpace - _this.side(p8, p4), y + _this.gridSpace);
             var end = createVector(x + _this.gridSpace, y + _this.gridSpace - _this.side(p8, p2));
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[8] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x + _this.side(p4, p8), y + _this.gridSpace);
             var end = createVector(x + _this.gridSpace, y + _this.side(p2, p8));
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[9] = function (x, y, p1, p2, p4, p8) {
+            return null;
         };
         this.squares[10] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x + _this.side(p1, p2), y);
             var end = createVector(x + _this.side(p4, p8), y + _this.gridSpace);
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[11] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x, y + _this.gridSpace - _this.side(p4, p1));
             var end = createVector(x + _this.side(p4, p8), y + _this.gridSpace);
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[12] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x, y + _this.side(p1, p4));
             var end = createVector(x + _this.gridSpace, y + _this.side(p2, p8));
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[13] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x + _this.gridSpace - _this.side(p2, p1), y);
             var end = createVector(x + _this.gridSpace, y + _this.side(p2, p8));
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[14] = function (x, y, p1, p2, p4, p8) {
             var start = createVector(x, y + _this.side(p1, p4));
             var end = createVector(x + _this.side(p1, p2), y);
-            line(start.x, start.y, end.x, end.y);
+            return { start: start, end: end };
         };
         this.squares[15] = function (x, y, p1, p2, p4, p8) {
+            return null;
         };
     };
     return MarchingCubes;
 }());
 var Point = (function () {
-    function Point(x, y, vx, vy, r) {
+    function Point(x, y, vx, vy, r, color) {
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
         this.r = r;
+        this.color = color;
     }
     Point.prototype.draw = function () {
-        stroke('blue');
+        stroke(this.color);
         strokeWeight(0.5);
         circle(this.x, this.y, this.r);
     };
     return Point;
 }());
 var marchingCubes;
+var colors;
 function setup() {
     createCanvas(windowWidth, windowHeight);
     var gridSpace = 10;
     var numpoints = 50;
     var strength = 100;
-    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength);
+    marchingCubes = [];
+    var reds = [color('red'), color('orange')];
+    var purples = [color('indigo'), color('violet')];
+    marchingCubes[0] = new MarchingCubes(gridSpace, numpoints / 2, strength, reds);
+    marchingCubes[1] = new MarchingCubes(gridSpace, numpoints / 2, strength, purples);
 }
 function draw() {
     background(255);
-    marchingCubes.move();
-    marchingCubes.draw();
+    marchingCubes[0].move();
+    marchingCubes[0].draw();
+    marchingCubes[1].move();
+    marchingCubes[1].draw();
 }
