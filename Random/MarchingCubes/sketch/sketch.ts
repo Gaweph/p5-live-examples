@@ -19,8 +19,14 @@ function setup() {
 
 function draw() {
     background(1);
+
     marchingCubes.move();
+
+    marchingCubes.drawGrid();
+    marchingCubes.drawPoints();
+
     marchingCubes.draw();
+
 
     textSize(15);
     noStroke();

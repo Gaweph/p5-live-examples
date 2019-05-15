@@ -69,9 +69,12 @@ var MarchingCubes = (function () {
         this.generateLines();
     };
     MarchingCubes.prototype.draw = function () {
-        this.drawGrid();
-        this.drawPoints();
-        this.drawLines();
+        strokeWeight(2);
+        for (var _i = 0, _a = this.lines; _i < _a.length; _i++) {
+            var l = _a[_i];
+            stroke(this.colorsArray[floor(l.x1)]);
+            line(l.x1, l.y1, l.x2, l.y2);
+        }
     };
     MarchingCubes.prototype.setupPoints = function () {
         this.points = [];
@@ -151,14 +154,6 @@ var MarchingCubes = (function () {
                     this.lines.push(linePoints);
                 }
             }
-        }
-    };
-    MarchingCubes.prototype.drawLines = function () {
-        strokeWeight(2);
-        for (var _i = 0, _a = this.lines; _i < _a.length; _i++) {
-            var l = _a[_i];
-            stroke(this.colorsArray[floor(l.x1)]);
-            line(l.x1, l.y1, l.x2, l.y2);
         }
     };
     MarchingCubes.prototype.side = function (a, b) {
@@ -255,8 +250,6 @@ var MarchingCubes = (function () {
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[14] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x);
-            var end = createVector(y);
             var x1 = x;
             var y1 = y + _this.side(p1, p4);
             var x2 = x + _this.side(p1, p2);
@@ -297,6 +290,8 @@ function setup() {
 function draw() {
     background(1);
     marchingCubes.move();
+    marchingCubes.drawGrid();
+    marchingCubes.drawPoints();
     marchingCubes.draw();
     textSize(15);
     noStroke();

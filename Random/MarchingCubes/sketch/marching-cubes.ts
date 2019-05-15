@@ -32,9 +32,11 @@ class MarchingCubes {
     }
 
     draw() {
-        this.drawGrid();
-        this.drawPoints();
-        this.drawLines();
+        strokeWeight(2);
+        for (let l of this.lines) {
+            stroke(this.colorsArray[floor(l.x1)]);
+            line(l.x1, l.y1, l.x2, l.y2);
+        }
 
     }
 
@@ -126,14 +128,6 @@ class MarchingCubes {
             }
         }
 
-    }
-
-    drawLines() {
-        strokeWeight(2);
-        for (let l of this.lines) {
-            stroke(this.colorsArray[floor(l.x1)]);
-            line(l.x1, l.y1, l.x2, l.y2);
-        }
     }
 
     side(a: number, b: number) {
@@ -270,8 +264,6 @@ class MarchingCubes {
         }
         this.squares[14] = (x: number, y: number, p1: number, p2: number, p4: number, p8: number) => {
 
-            var start = createVector(x);
-            var end = createVector(, y);
             var x1 = x;
             var y1 = y + this.side(p1, p4);
             var x2 = x + this.side(p1, p2);
