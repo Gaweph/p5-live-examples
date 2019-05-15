@@ -1,28 +1,12 @@
-var WIDTH = window.innerWidth;
-var HEIGHT = window.innerHeight;
 var PARAMS = {
-    numpoints: 40,
+    numpoints: 50,
     rRange: 65,
-    rMin: 20,
+    rMin: 25,
     gridSpace: 10,
-    strength: 100,
-    drawGrid: false,
-    drawPoints: true,
-    drawPotentialIn: false,
-    drawPotentialOut: false,
-    drawSurface: true,
-    reset: function () {
-        generatePoints();
-    },
-    pointColor: '#ff0000',
-    potentialColor: '#ff6600',
-    surfaceColor: '#ffffff',
-    pointAlpha: 0.5,
-    potentialAlpha: 0.3,
-    surfaceAlpha: 1.0
+    strength: 100
 };
 function setup() {
-    createCanvas(WIDTH, HEIGHT);
+    createCanvas(windowWidth, windowHeight);
     generatePoints();
 }
 function draw() {
@@ -30,7 +14,7 @@ function draw() {
         p.x += p.vx;
         p.y += p.vy;
     });
-    drawPoints();
+    background(255);
     generateLines();
 }
 function dist(x, y, a, b) {
@@ -39,8 +23,8 @@ function dist(x, y, a, b) {
 var points = [];
 var Point = (function () {
     function Point() {
-        this.x = Math.random() * WIDTH;
-        this.y = Math.random() * HEIGHT;
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
         this.vx = Math.random() * 2 - 1;
         this.vy = Math.random() * 2 - 1;
         this.r = Math.random() * PARAMS.rRange + PARAMS.rMin;
@@ -55,19 +39,21 @@ var generatePoints = function () {
     }
 };
 var drawPoints = function () {
-    background(255);
-    if (PARAMS.drawPoints) {
-        points.forEach(function (p) {
-            circle(p.x, p.y, p.r);
-        });
+    stroke('blue');
+    strokeWeight(0.5);
+    points.forEach(function (p) {
+        circle(p.x, p.y, p.r);
+    });
+};
+var drawGrid = function () {
+    stroke('#f00');
+    strokeWeight(0.2);
+    for (var i = 0; i < width / PARAMS.gridSpace; i++) {
+        line(i * PARAMS.gridSpace, 0, i * PARAMS.gridSpace, height);
     }
-    if (PARAMS.drawGrid) {
-        for (var i = 0; i < WIDTH / PARAMS.gridSpace; i++) {
-            line(i * PARAMS.gridSpace, 0, i * PARAMS.gridSpace, HEIGHT);
-        }
-        for (var j = 0; j < HEIGHT / PARAMS.gridSpace; j++) {
-            line(0, j * PARAMS.gridSpace, WIDTH, j * PARAMS.gridSpace);
-        }
+    for (var j = 0; j < height / PARAMS.gridSpace; j++) {
+        ;
+        line(0, j * PARAMS.gridSpace, width, j * PARAMS.gridSpace);
     }
 };
 var side = function (a, b) {
@@ -145,8 +131,8 @@ squares[15] = function (x, y, p1, p2, p4, p8) {
 var generateLines = function () {
     var potentials = [];
     var imax, jmax;
-    imax = Math.ceil(WIDTH / PARAMS.gridSpace);
-    jmax = Math.ceil(HEIGHT / PARAMS.gridSpace);
+    imax = Math.ceil(width / PARAMS.gridSpace);
+    jmax = Math.ceil(height / PARAMS.gridSpace);
     for (var i = 0; i < imax; i++) {
         potentials[i] = [];
         for (var j = 0; j < jmax; j++) {
@@ -165,20 +151,20 @@ var generateLines = function () {
             }
         }
     });
-    if (PARAMS.drawSurface) {
-        var p1, p2, p4, p8;
-        for (i = 0; i < imax - 1; i++) {
-            for (j = 0; j < jmax - 1; j++) {
-                p1 = potentials[i][j] / 100;
-                p2 = potentials[i + 1][j] / 100;
-                p4 = potentials[i][j + 1] / 100;
-                p8 = potentials[i + 1][j + 1] / 100;
-                var square = (p1 >= 0.2 ? 1 : 0) +
-                    (p2 >= 0.2 ? 2 : 0) +
-                    (p4 >= 0.2 ? 4 : 0) +
-                    (p8 >= 0.2 ? 8 : 0);
-                squares[square](i * PARAMS.gridSpace, j * PARAMS.gridSpace, p1, p2, p4, p8);
-            }
+    stroke('black');
+    strokeWeight(1);
+    var p1, p2, p4, p8;
+    for (i = 0; i < imax - 1; i++) {
+        for (j = 0; j < jmax - 1; j++) {
+            p1 = potentials[i][j] / 100;
+            p2 = potentials[i + 1][j] / 100;
+            p4 = potentials[i][j + 1] / 100;
+            p8 = potentials[i + 1][j + 1] / 100;
+            var square = (p1 >= 0.2 ? 1 : 0) +
+                (p2 >= 0.2 ? 2 : 0) +
+                (p4 >= 0.2 ? 4 : 0) +
+                (p8 >= 0.2 ? 8 : 0);
+            squares[square](i * PARAMS.gridSpace, j * PARAMS.gridSpace, p1, p2, p4, p8);
         }
     }
 };

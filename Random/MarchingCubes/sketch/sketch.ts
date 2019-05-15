@@ -3,40 +3,17 @@ An implementation of the Marching Squares algorithm for computing an isosurface.
 http://en.wikipedia.org/wiki/Marching_squares
 ***/
 
-var WIDTH = window.innerWidth;
-var HEIGHT = window.innerHeight;
-
 // Parameters that can be edited by dat.GUI
-var PARAMS = {
-  numpoints: 40,
-  rRange: 65,
-  rMin: 20,
-  gridSpace: 10,
-  strength: 100,
-  drawGrid: false,
-  drawPoints: true,
-  drawPotentialIn: false,
-  drawPotentialOut: false,
-  drawSurface: true,
-  reset: function() {
-    generatePoints();
-  },
-  pointColor: '#ff0000',
-  potentialColor: '#ff6600',
-  surfaceColor: '#ffffff',
-  pointAlpha: 0.5,
-  potentialAlpha: 0.3,
-  surfaceAlpha: 1.0
-}
+ var PARAMS = {
+   numpoints: 50,
+   rRange: 65,
+   rMin: 25,
+   gridSpace: 10,
+   strength: 100
+ }
 
 function setup() {
-    // var canvas = document.createElement('canvas');
-    // document.body.appendChild(canvas);
-    // canvas.width = WIDTH;
-    // canvas.height = HEIGHT;
-    // var ctx = canvas.getContext('2d');
-    // ctx.fillStyle = '#f00';
-    createCanvas(WIDTH, HEIGHT);
+    createCanvas(windowWidth, windowHeight);
     generatePoints();
 }
 
@@ -45,9 +22,13 @@ function draw() {
     points.forEach(function(p) {
         p.x += p.vx;
         p.y += p.vy;
-      });
-      drawPoints();
-      generateLines();
+    });
+
+    background(255);
+
+    // drawGrid();
+    // drawPoints();
+    generateLines();
 }
 
 // Distance between two points
@@ -58,8 +39,8 @@ function dist(x: number, y: number, a: number, b: number) {
 var points: Point[] = [];
 
 class Point {
-   x = Math.random() * WIDTH;
-   y = Math.random() * HEIGHT;
+   x = Math.random() * width;
+   y = Math.random() * height;
    vx = Math.random() * 2 - 1;
    vy = Math.random() * 2 - 1;
    r = Math.random() * PARAMS.rRange + PARAMS.rMin
@@ -72,42 +53,30 @@ var generatePoints = function() {
     points[i] = new Point();
   }
 }
+var drawPoints = () => {
+    
+    stroke('blue');
+    strokeWeight(0.5);
+        points.forEach(function(p) {
+          // ctx.beginPath();
+          //arc(p.x, p.y, p.r, 0, 2*Math.PI, false);
+          // ctx.fill();
+          // arc()
+          circle(p.x,p.y, p.r)
+        });
+};
 
-var drawPoints = function() {
-  // ctx.clearRect(0,0,WIDTH,HEIGHT);
-  background(255);
-  // ctx.globalAlpha = PARAMS.pointAlpha;
-  // ctx.fillStyle = PARAMS.pointColor;
-  if (PARAMS.drawPoints) {
-    points.forEach(function(p) {
-      // ctx.beginPath();
-      //arc(p.x, p.y, p.r, 0, 2*Math.PI, false);
-      // ctx.fill();
-      // arc()
-      circle(p.x,p.y, p.r)
-    });
-  }
-  // Draw grid
-  if (PARAMS.drawGrid) {
-    // ctx.globalAlpha = 0.8;
-    // ctx.strokeStyle = '#f00';
-    // ctx.lineWidth = 0.2;
-    for (var i = 0; i < WIDTH/PARAMS.gridSpace; i++) {
-    //   ctx.beginPath();
-    //   ctx.moveTo(i*PARAMS.gridSpace, 0);
-    //   ctx.lineTo(i*PARAMS.gridSpace, HEIGHT);
-    //   ctx.stroke();
-      line(i*PARAMS.gridSpace, 0, i*PARAMS.gridSpace, HEIGHT);
+var drawGrid = () => {
+    
+    stroke('#f00');
+    strokeWeight(0.2);
+    for (var i = 0; i < width/PARAMS.gridSpace; i++) {
+        line(i*PARAMS.gridSpace, 0, i*PARAMS.gridSpace, height);
     }
-    for (var j = 0; j < HEIGHT/PARAMS.gridSpace; j++) {
-    //   ctx.beginPath();
-    //   ctx.moveTo(0, j*PARAMS.gridSpace);
-    //   ctx.lineTo(WIDTH, j*PARAMS.gridSpace);
-    //   ctx.stroke();
-      line(0, j*PARAMS.gridSpace, WIDTH, j*PARAMS.gridSpace);
+    for (var j = 0; j < height/PARAMS.gridSpace; j++) {;
+        line(0, j*PARAMS.gridSpace, width, j*PARAMS.gridSpace);
     }
-  }
-}
+};
 
 var side = function(a: number, b: number) {
   //return PARAMS.gridSpace/2;
@@ -230,8 +199,8 @@ var generateLines = function() {
   var potentials: number[][] = [];
   var imax: number, jmax: number;
   // Initialise potentials
-  imax = Math.ceil(WIDTH/PARAMS.gridSpace);
-  jmax = Math.ceil(HEIGHT/PARAMS.gridSpace);
+  imax = Math.ceil(width/PARAMS.gridSpace);
+  jmax = Math.ceil(height/PARAMS.gridSpace);
   for (var i = 0; i < imax; i++) {
     potentials[i] = [];
     for (var j = 0; j < jmax; j++) {
@@ -252,24 +221,9 @@ var generateLines = function() {
       }
     }
   });
-  // Draw potentials
-  // ctx.globalAlpha = PARAMS.potentialAlpha;
-  // ctx.fillStyle = PARAMS.potentialColor;
-//   for (i = 0; i < imax; i++) {
-//     for (j = 0; j < jmax; j++) {
-//       if ((potentials[i][j] >= 20 && PARAMS.drawPotentialIn) ||
-//           (potentials[i][j] < 20 && potentials[i][j] > 2 && PARAMS.drawPotentialOut)){
-//         ctx.beginPath();
-//         ctx.arc(i*PARAMS.gridSpace, j*PARAMS.gridSpace, Math.min(100, potentials[i][j])/5, 0, 2*Math.PI, false);
-//         ctx.fill();
-//       }
-//     }
-//   }
   
-  if (PARAMS.drawSurface) {
-    // ctx.globalAlpha = PARAMS.surfaceAlpha;
-    // ctx.strokeStyle = PARAMS.surfaceColor;
-    // ctx.lineWidth = 1;
+    stroke('black');
+    strokeWeight(1);
     var p1, p2, p4, p8;
     for (i = 0; i < imax-1; i++) {
       for (j = 0; j < jmax-1; j++) {
@@ -282,13 +236,11 @@ var generateLines = function() {
         (p2 >= 0.2 ? 2 : 0) +
         (p4 >= 0.2 ? 4 : 0) +
         (p8 >= 0.2 ? 8 : 0);
-        // console.log(square);
         squares[square](
           i*PARAMS.gridSpace, j*PARAMS.gridSpace, p1, p2, p4, p8
         );
       }
     }
-  }
 }
 
 
