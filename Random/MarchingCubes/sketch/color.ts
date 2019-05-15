@@ -8,18 +8,22 @@ class ColorHelper
         );
     }
 
+    public static rainbowColorBase() {
+        return [
+            color('red'),
+            color('orange'),
+            color('yellow'),
+            color('green'),
+            color(38,58,150), // blue
+            color('indigo'),
+            color('violet')
+        ];
+    }
+
     public static getColorsArray (total: number, baseColorArray: p5.Color[] = null): p5.Color[] {
         
         if(baseColorArray == null) {
-            baseColorArray = [
-                color('red'),
-                color('orange'),
-                color('yellow'),
-                color('green'),
-                color(38,58,150), // blue
-                color('indigo'),
-                color('violet')
-            ]
+            baseColorArray = ColorHelper.RainbowColorBase();
         }
       var rainbowColors = baseColorArray.map(x=> this.getColorVector(x));;
         

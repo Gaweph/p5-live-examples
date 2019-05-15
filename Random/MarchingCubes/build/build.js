@@ -4,19 +4,22 @@ var ColorHelper = (function () {
     ColorHelper.getColorVector = function (c) {
         return createVector(red(c), green(c), blue(c));
     };
+    ColorHelper.rainbowColorBase = function () {
+        return [
+            color('red'),
+            color('orange'),
+            color('yellow'),
+            color('green'),
+            color(38, 58, 150),
+            color('indigo'),
+            color('violet')
+        ];
+    };
     ColorHelper.getColorsArray = function (total, baseColorArray) {
         var _this = this;
         if (baseColorArray === void 0) { baseColorArray = null; }
         if (baseColorArray == null) {
-            baseColorArray = [
-                color('red'),
-                color('orange'),
-                color('yellow'),
-                color('green'),
-                color(38, 58, 150),
-                color('indigo'),
-                color('violet')
-            ];
+            baseColorArray = ColorHelper.RainbowColorBase();
         }
         var rainbowColors = baseColorArray.map(function (x) { return _this.getColorVector(x); });
         ;
@@ -65,7 +68,6 @@ var MarchingCubes = (function () {
         this.generateLines();
     };
     MarchingCubes.prototype.draw = function () {
-        this.drawPoints();
         this.drawLines();
     };
     MarchingCubes.prototype.setupPoints = function () {
@@ -104,12 +106,16 @@ var MarchingCubes = (function () {
     ;
     MarchingCubes.prototype.generateLines = function () {
         var potentials = [];
+        var potentialColors = [];
         var imax = Math.ceil(width / this.gridSpace);
         var jmax = Math.ceil(height / this.gridSpace);
+        var white = color('white');
         for (var i = 0; i < imax; i++) {
             potentials[i] = [];
+            potentialColors[i] = [];
             for (var j = 0; j < jmax; j++) {
                 potentials[i][j] = 0;
+                potentialColors[i][j] = white;
             }
         }
         for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
@@ -122,12 +128,14 @@ var MarchingCubes = (function () {
             for (; i < ilim; i++) {
                 for (j0 = j; j0 < jlim; j0++) {
                     potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i * this.gridSpace, j0 * this.gridSpace)));
+                    potentialColors[i][j0] = p.color;
                 }
             }
         }
         ;
         this.lines = [];
         var p1, p2, p4, p8;
+        var c1, c2, c4, c8;
         var imax = Math.ceil(width / this.gridSpace);
         var jmax = Math.ceil(height / this.gridSpace);
         for (var i = 0; i < imax - 1; i++) {
@@ -136,22 +144,27 @@ var MarchingCubes = (function () {
                 p2 = potentials[i + 1][j] / 100;
                 p4 = potentials[i][j + 1] / 100;
                 p8 = potentials[i + 1][j + 1] / 100;
+                c1 = potentialColors[i][j];
+                c2 = potentialColors[i + 1][j];
+                c4 = potentialColors[i][j + 1];
+                c8 = potentialColors[i + 1][j + 1];
                 var square = (p1 >= 0.2 ? 1 : 0) +
                     (p2 >= 0.2 ? 2 : 0) +
                     (p4 >= 0.2 ? 4 : 0) +
                     (p8 >= 0.2 ? 8 : 0);
                 var linePoints = this.squares[square](i * this.gridSpace, j * this.gridSpace, p1, p2, p4, p8);
                 if (linePoints != null) {
-                    this.lines.push(linePoints);
+                    var c = random([c1, c2, c4, c8]);
+                    this.lines.push({ start: linePoints.start, end: linePoints.end, color: c });
                 }
             }
         }
     };
     MarchingCubes.prototype.drawLines = function () {
-        stroke('black');
-        strokeWeight(1);
         for (var _i = 0, _a = this.lines; _i < _a.length; _i++) {
             var l = _a[_i];
+            stroke(l.color);
+            strokeWeight(1);
             line(l.start.x, l.start.y, l.end.x, l.end.y);
         }
     };
@@ -259,16 +272,15 @@ function setup() {
     var gridSpace = 10;
     var numpoints = 50;
     var strength = 100;
-    marchingCubes = [];
-    var reds = [color('red'), color('orange')];
-    var purples = [color('indigo'), color('violet')];
-    marchingCubes[0] = new MarchingCubes(gridSpace, numpoints / 2, strength, reds);
-    marchingCubes[1] = new MarchingCubes(gridSpace, numpoints / 2, strength, purples);
+    var purples = [
+        color(38, 58, 150),
+        color('indigo'),
+        color('violet')
+    ];
+    marchingCubes = new MarchingCubes(gridSpace, numpoints / 2, strength, purples.slice());
 }
 function draw() {
     background(255);
-    marchingCubes[0].move();
-    marchingCubes[0].draw();
-    marchingCubes[1].move();
-    marchingCubes[1].draw();
+    marchingCubes.move();
+    marchingCubes.draw();
 }
