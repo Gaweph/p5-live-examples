@@ -13,14 +13,7 @@ function setup() {
     var numpoints = 50;
     var strength = 100;
 
-    // var reds = [color('red'),color ('orange')];
-    var purples = [
-        color(38,58,150), // blue
-        color('indigo'),
-        color('violet')
-    ];
-
-    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength, [...purples]);    
+    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength);
 
 }
 
@@ -28,4 +21,9 @@ function draw() {
     background(1);
     marchingCubes.move();
     marchingCubes.draw();
+
+    textSize(15);
+    noStroke();
+    fill(255);
+    text(frameRate(), 10, 50);
 }

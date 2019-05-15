@@ -44,13 +44,14 @@ var ColorHelper = (function () {
     return ColorHelper;
 }());
 var MarchingCubes = (function () {
-    function MarchingCubes(gridSpace, numPoints, strength, colors) {
+    function MarchingCubes(gridSpace, numPoints, strength) {
         this.gridSpace = gridSpace;
         this.numPoints = numPoints;
         this.strength = strength;
-        this.colors = colors;
         this.setupSquares();
         this.setupPoints();
+        this.colorsArray = ColorHelper.getColorsArray(floor(width));
+        this.generateLines();
     }
     MarchingCubes.prototype.move = function () {
         for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
@@ -68,6 +69,8 @@ var MarchingCubes = (function () {
         this.generateLines();
     };
     MarchingCubes.prototype.draw = function () {
+        this.drawGrid();
+        this.drawPoints();
         this.drawLines();
     };
     MarchingCubes.prototype.setupPoints = function () {
@@ -145,18 +148,17 @@ var MarchingCubes = (function () {
                 var linePoints = this.squares[square](i * this.gridSpace, j * this.gridSpace, p1, p2, p4, p8);
                 if (linePoints != null) {
                     var c = random([c1, c2, c4, c8]);
-                    this.lines.push({ start: linePoints.start, end: linePoints.end });
+                    this.lines.push(linePoints);
                 }
             }
         }
     };
     MarchingCubes.prototype.drawLines = function () {
-        var colorsArray = ColorHelper.getColorsArray(floor(width));
+        strokeWeight(2);
         for (var _i = 0, _a = this.lines; _i < _a.length; _i++) {
             var l = _a[_i];
-            stroke(colorsArray[floor(l.start.x)]);
-            strokeWeight(2);
-            line(l.start.x, l.start.y, l.end.x, l.end.y);
+            stroke(this.colorsArray[floor(l.x1)]);
+            line(l.x1, l.y1, l.x2, l.y2);
         }
     };
     MarchingCubes.prototype.side = function (a, b) {
@@ -169,70 +171,97 @@ var MarchingCubes = (function () {
             return null;
         };
         this.squares[1] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x, y + _this.gridSpace - _this.side(p4, p1));
-            var end = createVector(x + _this.gridSpace - _this.side(p2, p1), y);
-            return { start: start, end: end };
+            var x1 = x;
+            var y1 = y + _this.gridSpace - _this.side(p4, p1);
+            var x2 = x + _this.gridSpace - _this.side(p2, p1);
+            var y2 = y;
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[2] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x + _this.side(p1, p2), y);
-            var end = createVector(x + _this.gridSpace, y + _this.gridSpace - _this.side(p8, p2));
-            return { start: start, end: end };
+            var x1 = x + _this.side(p1, p2);
+            var y1 = y;
+            var x2 = x + _this.gridSpace;
+            var y2 = y + _this.gridSpace - _this.side(p8, p2);
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[3] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x, y + _this.gridSpace - _this.side(p4, p1));
-            var end = createVector(x + _this.gridSpace, y + _this.gridSpace - _this.side(p8, p2));
-            return { start: start, end: end };
+            var x1 = x;
+            var y1 = y + _this.gridSpace - _this.side(p4, p1);
+            var x2 = x + _this.gridSpace;
+            var y2 = y + _this.gridSpace - _this.side(p8, p2);
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[4] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x, y + _this.side(p1, p4));
-            var end = createVector(x + _this.gridSpace - _this.side(p8, p4), y + _this.gridSpace);
-            return { start: start, end: end };
+            var x1 = x;
+            var y1 = y + _this.side(p1, p4);
+            var x2 = x + _this.gridSpace - _this.side(p8, p4);
+            var y2 = y + _this.gridSpace;
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[5] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x + _this.gridSpace - _this.side(p2, p1), y);
-            var end = createVector(x + _this.gridSpace - _this.side(p8, p4), y + _this.gridSpace);
-            return { start: start, end: end };
+            var x1 = x + _this.gridSpace - _this.side(p2, p1);
+            var y1 = y;
+            var x2 = x + _this.gridSpace - _this.side(p8, p4);
+            var y2 = y + _this.gridSpace;
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[6] = function (x, y, p1, p2, p4, p8) {
             return null;
         };
         this.squares[7] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x + _this.gridSpace - _this.side(p8, p4), y + _this.gridSpace);
-            var end = createVector(x + _this.gridSpace, y + _this.gridSpace - _this.side(p8, p2));
-            return { start: start, end: end };
+            var x1 = x + _this.gridSpace - _this.side(p8, p4);
+            var y1 = y + _this.gridSpace;
+            var x2 = x + _this.gridSpace;
+            var y2 = y + _this.gridSpace - _this.side(p8, p2);
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[8] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x + _this.side(p4, p8), y + _this.gridSpace);
-            var end = createVector(x + _this.gridSpace, y + _this.side(p2, p8));
-            return { start: start, end: end };
+            var x1 = x + _this.side(p4, p8);
+            var y1 = y + _this.gridSpace;
+            var x2 = x + _this.gridSpace;
+            var y2 = y + _this.side(p2, p8);
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[9] = function (x, y, p1, p2, p4, p8) {
             return null;
         };
         this.squares[10] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x + _this.side(p1, p2), y);
-            var end = createVector(x + _this.side(p4, p8), y + _this.gridSpace);
-            return { start: start, end: end };
+            var x1 = x + _this.side(p1, p2);
+            var y1 = y;
+            var x2 = x + _this.side(p4, p8);
+            var y2 = y + _this.gridSpace;
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[11] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x, y + _this.gridSpace - _this.side(p4, p1));
-            var end = createVector(x + _this.side(p4, p8), y + _this.gridSpace);
-            return { start: start, end: end };
+            var x1 = x;
+            var y1 = y + _this.gridSpace - _this.side(p4, p1);
+            var x2 = x + _this.side(p4, p8);
+            var y2 = y + _this.gridSpace;
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[12] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x, y + _this.side(p1, p4));
-            var end = createVector(x + _this.gridSpace, y + _this.side(p2, p8));
-            return { start: start, end: end };
+            var x1 = x;
+            var y1 = y + _this.side(p1, p4);
+            var x2 = x + _this.gridSpace;
+            var y2 = y + _this.side(p2, p8);
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[13] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x + _this.gridSpace - _this.side(p2, p1), y);
-            var end = createVector(x + _this.gridSpace, y + _this.side(p2, p8));
-            return { start: start, end: end };
+            var x1 = x + _this.gridSpace - _this.side(p2, p1);
+            var y1 = y;
+            var x2 = x + _this.gridSpace;
+            var y2 = y + _this.side(p2, p8);
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[14] = function (x, y, p1, p2, p4, p8) {
-            var start = createVector(x, y + _this.side(p1, p4));
-            var end = createVector(x + _this.side(p1, p2), y);
-            return { start: start, end: end };
+            var start = createVector(x);
+            var end = createVector(y);
+            var x1 = x;
+            var y1 = y + _this.side(p1, p4);
+            var x2 = x + _this.side(p1, p2);
+            var y2 = y;
+            return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[15] = function (x, y, p1, p2, p4, p8) {
             return null;
@@ -251,6 +280,7 @@ var Point = (function () {
     Point.prototype.draw = function () {
         stroke('white');
         strokeWeight(0.5);
+        noFill();
         circle(this.x, this.y, this.r);
     };
     return Point;
@@ -262,15 +292,14 @@ function setup() {
     var gridSpace = 10;
     var numpoints = 50;
     var strength = 100;
-    var purples = [
-        color(38, 58, 150),
-        color('indigo'),
-        color('violet')
-    ];
-    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength, purples.slice());
+    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength);
 }
 function draw() {
     background(1);
     marchingCubes.move();
     marchingCubes.draw();
+    textSize(15);
+    noStroke();
+    fill(255);
+    text(frameRate(), 10, 50);
 }
