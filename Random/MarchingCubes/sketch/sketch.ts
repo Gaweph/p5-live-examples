@@ -7,14 +7,21 @@ http://en.wikipedia.org/wiki/Marching_squares
 
 var marchingCubes: MarchingCubes;
 var colors: p5.Color[];
+
+var PARAMS = {
+    gridSpace: 15,
+    strength: 1.8,
+    stickyVal: 0.2
+};
+
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    var gridSpace = 10;
-    var numpoints = 50;
-    var strength = 100;
 
-    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength);
+    var numpoints = 40;
+    marchingCubes = new MarchingCubes(numpoints);
 
+    // noLoop();
+    frameRate(30);
 }
 
 function draw() {
@@ -22,8 +29,8 @@ function draw() {
 
     marchingCubes.move();
 
-    marchingCubes.drawGrid();
-    marchingCubes.drawPoints();
+    // marchingCubes.drawGrid();
+    // marchingCubes.drawPoints();
 
     marchingCubes.draw();
 

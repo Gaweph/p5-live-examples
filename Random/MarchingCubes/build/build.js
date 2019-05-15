@@ -44,10 +44,8 @@ var ColorHelper = (function () {
     return ColorHelper;
 }());
 var MarchingCubes = (function () {
-    function MarchingCubes(gridSpace, numPoints, strength) {
-        this.gridSpace = gridSpace;
+    function MarchingCubes(numPoints) {
         this.numPoints = numPoints;
-        this.strength = strength;
         this.setupSquares();
         this.setupPoints();
         this.colorsArray = ColorHelper.getColorsArray(floor(width));
@@ -84,7 +82,7 @@ var MarchingCubes = (function () {
             var y = Math.random() * height;
             var vx = Math.random() * 3 - 1;
             var vy = Math.random() * 3 - 1;
-            var r = (Math.random() * 65) + 25;
+            var r = (Math.random() * 45) + 45;
             this.points[i] = new Point(x, y, vx, vy, r);
         }
     };
@@ -99,20 +97,19 @@ var MarchingCubes = (function () {
     MarchingCubes.prototype.drawGrid = function () {
         stroke('#f00');
         strokeWeight(0.2);
-        for (var i = 0; i < width / this.gridSpace; i++) {
-            line(i * this.gridSpace, 0, i * this.gridSpace, height);
+        for (var i = 0; i < width / PARAMS.gridSpace; i++) {
+            line(i * PARAMS.gridSpace, 0, i * PARAMS.gridSpace, height);
         }
-        for (var j = 0; j < height / this.gridSpace; j++) {
+        for (var j = 0; j < height / PARAMS.gridSpace; j++) {
             ;
-            line(0, j * this.gridSpace, width, j * this.gridSpace);
+            line(0, j * PARAMS.gridSpace, width, j * PARAMS.gridSpace);
         }
     };
     ;
     MarchingCubes.prototype.generateLines = function () {
         var potentials = [];
-        var imax = Math.ceil(width / this.gridSpace);
-        var jmax = Math.ceil(height / this.gridSpace);
-        var white = color('white');
+        var imax = Math.ceil(width / PARAMS.gridSpace);
+        var jmax = Math.ceil(height / PARAMS.gridSpace);
         for (var i = 0; i < imax; i++) {
             potentials[i] = [];
             for (var j = 0; j < jmax; j++) {
@@ -121,14 +118,16 @@ var MarchingCubes = (function () {
         }
         for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
             var p = _a[_i];
-            var i = Math.max(0, Math.floor((p.x - this.strength) / this.gridSpace));
-            var j = Math.max(0, Math.floor((p.y - this.strength) / this.gridSpace));
-            var ilim = Math.min(imax, i + 1 + Math.ceil(this.strength * 2 / this.gridSpace));
-            var jlim = Math.min(jmax, j + 1 + Math.ceil(this.strength * 2 / this.gridSpace));
+            var str = (p.r / 2) * PARAMS.strength;
+            var strengthFactor = Math.ceil(str * 2 / PARAMS.gridSpace);
+            var i = Math.max(0, Math.floor((p.x - str) / PARAMS.gridSpace));
+            var j = Math.max(0, Math.floor((p.y - str) / PARAMS.gridSpace));
+            var ilim = Math.min(imax, i + 1 + strengthFactor);
+            var jlim = Math.min(jmax, j + 1 + strengthFactor);
             var j0;
             for (; i < ilim; i++) {
                 for (j0 = j; j0 < jlim; j0++) {
-                    potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i * this.gridSpace, j0 * this.gridSpace)));
+                    potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i * PARAMS.gridSpace, j0 * PARAMS.gridSpace)));
                 }
             }
         }
@@ -136,28 +135,27 @@ var MarchingCubes = (function () {
         this.lines = [];
         var p1, p2, p4, p8;
         var c1, c2, c4, c8;
-        var imax = Math.ceil(width / this.gridSpace);
-        var jmax = Math.ceil(height / this.gridSpace);
+        var imax = Math.ceil(width / PARAMS.gridSpace);
+        var jmax = Math.ceil(height / PARAMS.gridSpace);
         for (var i = 0; i < imax - 1; i++) {
             for (var j = 0; j < jmax - 1; j++) {
                 p1 = potentials[i][j] / 100;
                 p2 = potentials[i + 1][j] / 100;
                 p4 = potentials[i][j + 1] / 100;
                 p8 = potentials[i + 1][j + 1] / 100;
-                var square = (p1 >= 0.2 ? 1 : 0) +
-                    (p2 >= 0.2 ? 2 : 0) +
-                    (p4 >= 0.2 ? 4 : 0) +
-                    (p8 >= 0.2 ? 8 : 0);
-                var linePoints = this.squares[square](i * this.gridSpace, j * this.gridSpace, p1, p2, p4, p8);
+                var square = (p1 >= PARAMS.stickyVal ? 1 : 0) +
+                    (p2 >= PARAMS.stickyVal ? 2 : 0) +
+                    (p4 >= PARAMS.stickyVal ? 4 : 0) +
+                    (p8 >= PARAMS.stickyVal ? 8 : 0);
+                var linePoints = this.squares[square](i * PARAMS.gridSpace, j * PARAMS.gridSpace, p1, p2, p4, p8);
                 if (linePoints != null) {
-                    var c = random([c1, c2, c4, c8]);
                     this.lines.push(linePoints);
                 }
             }
         }
     };
     MarchingCubes.prototype.side = function (a, b) {
-        return this.gridSpace * ((0.2 - a) / (b - a));
+        return PARAMS.gridSpace * ((PARAMS.stickyVal - a) / (b - a));
     };
     MarchingCubes.prototype.setupSquares = function () {
         var _this = this;
@@ -167,53 +165,53 @@ var MarchingCubes = (function () {
         };
         this.squares[1] = function (x, y, p1, p2, p4, p8) {
             var x1 = x;
-            var y1 = y + _this.gridSpace - _this.side(p4, p1);
-            var x2 = x + _this.gridSpace - _this.side(p2, p1);
+            var y1 = y + PARAMS.gridSpace - _this.side(p4, p1);
+            var x2 = x + PARAMS.gridSpace - _this.side(p2, p1);
             var y2 = y;
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[2] = function (x, y, p1, p2, p4, p8) {
             var x1 = x + _this.side(p1, p2);
             var y1 = y;
-            var x2 = x + _this.gridSpace;
-            var y2 = y + _this.gridSpace - _this.side(p8, p2);
+            var x2 = x + PARAMS.gridSpace;
+            var y2 = y + PARAMS.gridSpace - _this.side(p8, p2);
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[3] = function (x, y, p1, p2, p4, p8) {
             var x1 = x;
-            var y1 = y + _this.gridSpace - _this.side(p4, p1);
-            var x2 = x + _this.gridSpace;
-            var y2 = y + _this.gridSpace - _this.side(p8, p2);
+            var y1 = y + PARAMS.gridSpace - _this.side(p4, p1);
+            var x2 = x + PARAMS.gridSpace;
+            var y2 = y + PARAMS.gridSpace - _this.side(p8, p2);
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[4] = function (x, y, p1, p2, p4, p8) {
             var x1 = x;
             var y1 = y + _this.side(p1, p4);
-            var x2 = x + _this.gridSpace - _this.side(p8, p4);
-            var y2 = y + _this.gridSpace;
+            var x2 = x + PARAMS.gridSpace - _this.side(p8, p4);
+            var y2 = y + PARAMS.gridSpace;
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[5] = function (x, y, p1, p2, p4, p8) {
-            var x1 = x + _this.gridSpace - _this.side(p2, p1);
+            var x1 = x + PARAMS.gridSpace - _this.side(p2, p1);
             var y1 = y;
-            var x2 = x + _this.gridSpace - _this.side(p8, p4);
-            var y2 = y + _this.gridSpace;
+            var x2 = x + PARAMS.gridSpace - _this.side(p8, p4);
+            var y2 = y + PARAMS.gridSpace;
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[6] = function (x, y, p1, p2, p4, p8) {
             return null;
         };
         this.squares[7] = function (x, y, p1, p2, p4, p8) {
-            var x1 = x + _this.gridSpace - _this.side(p8, p4);
-            var y1 = y + _this.gridSpace;
-            var x2 = x + _this.gridSpace;
-            var y2 = y + _this.gridSpace - _this.side(p8, p2);
+            var x1 = x + PARAMS.gridSpace - _this.side(p8, p4);
+            var y1 = y + PARAMS.gridSpace;
+            var x2 = x + PARAMS.gridSpace;
+            var y2 = y + PARAMS.gridSpace - _this.side(p8, p2);
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[8] = function (x, y, p1, p2, p4, p8) {
             var x1 = x + _this.side(p4, p8);
-            var y1 = y + _this.gridSpace;
-            var x2 = x + _this.gridSpace;
+            var y1 = y + PARAMS.gridSpace;
+            var x2 = x + PARAMS.gridSpace;
             var y2 = y + _this.side(p2, p8);
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
@@ -224,28 +222,27 @@ var MarchingCubes = (function () {
             var x1 = x + _this.side(p1, p2);
             var y1 = y;
             var x2 = x + _this.side(p4, p8);
-            var y2 = y + _this.gridSpace;
+            var y2 = y + PARAMS.gridSpace;
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[11] = function (x, y, p1, p2, p4, p8) {
             var x1 = x;
-            var y1 = y + _this.gridSpace - _this.side(p4, p1);
+            var y1 = y + PARAMS.gridSpace - _this.side(p4, p1);
             var x2 = x + _this.side(p4, p8);
-            var y2 = y + _this.gridSpace;
-            return { x1: x1, y1: y1, x2: x2, y2: y2 };
+            var y2 = y + PARAMS.gridSpace;
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[12] = function (x, y, p1, p2, p4, p8) {
             var x1 = x;
             var y1 = y + _this.side(p1, p4);
-            var x2 = x + _this.gridSpace;
+            var x2 = x + PARAMS.gridSpace;
             var y2 = y + _this.side(p2, p8);
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
         this.squares[13] = function (x, y, p1, p2, p4, p8) {
-            var x1 = x + _this.gridSpace - _this.side(p2, p1);
+            var x1 = x + PARAMS.gridSpace - _this.side(p2, p1);
             var y1 = y;
-            var x2 = x + _this.gridSpace;
+            var x2 = x + PARAMS.gridSpace;
             var y2 = y + _this.side(p2, p8);
             return { x1: x1, y1: y1, x2: x2, y2: y2 };
         };
@@ -280,18 +277,20 @@ var Point = (function () {
 }());
 var marchingCubes;
 var colors;
+var PARAMS = {
+    gridSpace: 15,
+    strength: 1.8,
+    stickyVal: 0.2
+};
 function setup() {
     createCanvas(windowWidth, windowHeight);
-    var gridSpace = 10;
-    var numpoints = 50;
-    var strength = 100;
-    marchingCubes = new MarchingCubes(gridSpace, numpoints, strength);
+    var numpoints = 40;
+    marchingCubes = new MarchingCubes(numpoints);
+    frameRate(30);
 }
 function draw() {
     background(1);
     marchingCubes.move();
-    marchingCubes.drawGrid();
-    marchingCubes.drawPoints();
     marchingCubes.draw();
     textSize(15);
     noStroke();
