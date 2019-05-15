@@ -80,9 +80,9 @@ var MarchingCubes = (function () {
         for (i = 0; i < this.numPoints; i++) {
             var x = Math.random() * width;
             var y = Math.random() * height;
-            var vx = Math.random() * 3 - 1;
-            var vy = Math.random() * 3 - 1;
-            var r = (Math.random() * 45) + 45;
+            var vx = Math.random() * 3;
+            var vy = Math.random() * 3;
+            var r = (Math.random() * 90) + 35;
             this.points[i] = new Point(x, y, vx, vy, r);
         }
     };
