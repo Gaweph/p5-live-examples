@@ -6,12 +6,16 @@ class MarchingCubes {
     points: Point[];
     squares: ((x: number, y: number, p1: number, p2: number, p4: number, p8: number) => Line)[];
     lines: Line[];
-    colorsArray: p5.Color[];
-    constructor(private numPoints: number) {
+    constructor(
+        private numPoints: number,
+        private colorsArray: p5.Color[],
+        private maxSpeed: number,
+        private sizeRange: number,
+        private minSize: number
+    ) {
         this.setupSquares();
         this.setupPoints();
 
-        this.colorsArray = ColorHelper.getColorsArray(floor(width));
         this.generateLines();
     }
 
@@ -40,14 +44,17 @@ class MarchingCubes {
 
     }
 
-    drawPoints() {
+    drawPoints(color: p5.Color) {       
+        stroke(color);
+        strokeWeight(0.5);
+        noFill(); 
         for (let p of this.points) {
-            p.draw();
+            p.draw(color);
         };
     };
 
-    drawGrid() {
-        stroke('#f00');
+    drawGrid(color: p5.Color) {
+        stroke(color);
         strokeWeight(0.2);
         for (var i = 0; i < width / PARAMS.gridSpace; i++) {
             line(i * PARAMS.gridSpace, 0, i * PARAMS.gridSpace, height);
@@ -64,9 +71,9 @@ class MarchingCubes {
         for (i = 0; i < this.numPoints; i++) {
             var x = Math.random() * width;
             var y = Math.random() * height;
-            var vx = Math.random() * PARAMS.maxSpeed - 1;
-            var vy = Math.random() * PARAMS.maxSpeed - 1;
-            var r = (Math.random() * PARAMS.sizeRange) + PARAMS.minSize;
+            var vx = Math.random() * this.maxSpeed - 1;
+            var vy = Math.random() * this.maxSpeed - 1;
+            var r = (Math.random() * this.sizeRange) + this.minSize;
             this.points[i] = new Point(x, y, vx, vy, r);
         }
     }
@@ -83,7 +90,6 @@ class MarchingCubes {
             }
         }
         // Add Potentials from points
-        var potentialsCount = 0;
         for (let p of this.points) {
 
              var str = (p.r / 2) * PARAMS.strength;
@@ -99,13 +105,9 @@ class MarchingCubes {
                     var d = dist(p.x, p.y, i * PARAMS.gridSpace, j0 * PARAMS.gridSpace);
                     var prDistance = (p.r - d)
                     potentials[i][j0] += Math.max(0, prDistance);
-                    //console.log(prDistance);
-                    // circle(i * PARAMS.gridSpace, j0 * PARAMS.gridSpace, 2);
-                    potentialsCount++;
                 }
             }
         };
-        text("potentialsCount: " + potentialsCount, 10, 20);;
 
         this.lines = [];
         var p1, p2, p4, p8;
@@ -126,9 +128,7 @@ class MarchingCubes {
                 var linePoints = this.squares[square](
                     i * PARAMS.gridSpace, j * PARAMS.gridSpace, p1, p2, p4, p8
                 );
-                // console.log(square, i * PARAMS.gridSpace, j * PARAMS.gridSpace, p1, p2, p4, p8);
                 if (linePoints != null) {
-                    // var c = random([c1, c2, c4, c8]);
                     this.lines.push(linePoints);
                 }
 

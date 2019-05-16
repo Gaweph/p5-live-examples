@@ -20,7 +20,7 @@ class ColorHelper
         ];
     }
 
-    public static getColorsArray (total: number, baseColorArray: p5.Color[] = null): p5.Color[] {
+    public static getColorsArray (total: number, alpha: number = 255, baseColorArray: p5.Color[] = null): p5.Color[] {
         
         if(baseColorArray == null) {
             baseColorArray = ColorHelper.rainbowColorBase();
@@ -39,7 +39,7 @@ class ColorHelper
             rainbowColors[colorIndex + 1],
             colorPercentage);
 
-            colours.push(color(nameColor.x, nameColor.y, nameColor.z))
+            colours.push(color(nameColor.x, nameColor.y, nameColor.z, alpha))
         }
 
         return colours;
