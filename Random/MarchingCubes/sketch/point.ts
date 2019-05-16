@@ -7,7 +7,7 @@ class Point {
       public r: number
    ) { }
 
-   draw(color: p5.Color) {
+   draw() {
       circle(this.x, this.y, this.r);
    }
 

@@ -1,5 +1,4 @@
 var marchingCubes: MarchingCubes;
-
 var PARAMS = {
     gridSpace: 10,
     strength: 1.8,
@@ -10,6 +9,7 @@ var PARAMS = {
 
     colors: <p5.Color[]>[]
 };
+var sliderGridSize: p5.Element;
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -27,7 +27,6 @@ function setup() {
     frameRate(30);
 }
 
-var sliderGridSize: p5.Element;
 function setupGui() {
 
     // controls

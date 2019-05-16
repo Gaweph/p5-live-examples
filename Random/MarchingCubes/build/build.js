@@ -278,7 +278,7 @@ var Point = (function () {
         this.vy = vy;
         this.r = r;
     }
-    Point.prototype.draw = function (color) {
+    Point.prototype.draw = function () {
         circle(this.x, this.y, this.r);
     };
     return Point;
@@ -292,6 +292,7 @@ var PARAMS = {
     showPoints: false,
     colors: []
 };
+var sliderGridSize;
 function setup() {
     createCanvas(windowWidth, windowHeight);
     var numpoints = 40;
@@ -302,7 +303,6 @@ function setup() {
     setupGui();
     frameRate(30);
 }
-var sliderGridSize;
 function setupGui() {
     var chkShowGrid = createCheckbox(' Grid', PARAMS.showGrid);
     chkShowGrid.position(10, 60);
