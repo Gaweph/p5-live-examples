@@ -74,18 +74,6 @@ var MarchingCubes = (function () {
             line(l.x1, l.y1, l.x2, l.y2);
         }
     };
-    MarchingCubes.prototype.setupPoints = function () {
-        this.points = [];
-        var i;
-        for (i = 0; i < this.numPoints; i++) {
-            var x = Math.random() * width;
-            var y = Math.random() * height;
-            var vx = Math.random() * 3;
-            var vy = Math.random() * 3;
-            var r = (Math.random() * width / 20) + 35;
-            this.points[i] = new Point(x, y, vx, vy, r);
-        }
-    };
     MarchingCubes.prototype.drawPoints = function () {
         for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
             var p = _a[_i];
@@ -106,6 +94,18 @@ var MarchingCubes = (function () {
         }
     };
     ;
+    MarchingCubes.prototype.setupPoints = function () {
+        this.points = [];
+        var i;
+        for (i = 0; i < this.numPoints; i++) {
+            var x = Math.random() * width;
+            var y = Math.random() * height;
+            var vx = Math.random() * PARAMS.maxSpeed - 1;
+            var vy = Math.random() * PARAMS.maxSpeed - 1;
+            var r = (Math.random() * PARAMS.sizeRange) + PARAMS.minSize;
+            this.points[i] = new Point(x, y, vx, vy, r);
+        }
+    };
     MarchingCubes.prototype.generateLines = function () {
         var potentials = [];
         var imax = Math.ceil(width / PARAMS.gridSpace);
@@ -116,6 +116,7 @@ var MarchingCubes = (function () {
                 potentials[i][j] = 0;
             }
         }
+        var potentialsCount = 0;
         for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
             var p = _a[_i];
             var str = (p.r / 2) * PARAMS.strength;
@@ -127,14 +128,18 @@ var MarchingCubes = (function () {
             var j0;
             for (; i < ilim; i++) {
                 for (j0 = j; j0 < jlim; j0++) {
-                    potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i * PARAMS.gridSpace, j0 * PARAMS.gridSpace)));
+                    var d = dist(p.x, p.y, i * PARAMS.gridSpace, j0 * PARAMS.gridSpace);
+                    var prDistance = (p.r - d);
+                    potentials[i][j0] += Math.max(0, prDistance);
+                    potentialsCount++;
                 }
             }
         }
         ;
+        text("potentialsCount: " + potentialsCount, 10, 20);
+        ;
         this.lines = [];
         var p1, p2, p4, p8;
-        var c1, c2, c4, c8;
         var imax = Math.ceil(width / PARAMS.gridSpace);
         var jmax = Math.ceil(height / PARAMS.gridSpace);
         for (var i = 0; i < imax - 1; i++) {
@@ -278,9 +283,12 @@ var Point = (function () {
 var marchingCubes;
 var colors;
 var PARAMS = {
-    gridSpace: 15,
+    gridSpace: 10,
     strength: 1.8,
-    stickyVal: 0.2
+    stickyVal: 0.2,
+    maxSpeed: 4,
+    sizeRange: 65,
+    minSize: 35
 };
 function setup() {
     createCanvas(windowWidth, windowHeight);
@@ -292,4 +300,8 @@ function draw() {
     background(1);
     marchingCubes.move();
     marchingCubes.draw();
+    textSize(15);
+    noStroke();
+    fill(255);
+    text('frameRate: ' + frameRate(), 10, 50);
 }

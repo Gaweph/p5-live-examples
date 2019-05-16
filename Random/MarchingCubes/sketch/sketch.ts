@@ -9,9 +9,12 @@ var marchingCubes: MarchingCubes;
 var colors: p5.Color[];
 
 var PARAMS = {
-    gridSpace: 15,
+    gridSpace: 10,
     strength: 1.8,
-    stickyVal: 0.2
+    stickyVal: 0.2,
+    maxSpeed: 4,
+    sizeRange: 65,
+    minSize: 35
 };
 
 function setup() {
@@ -35,8 +38,8 @@ function draw() {
     marchingCubes.draw();
 
 
-    // textSize(15);
-    // noStroke();
-    // fill(255);
-    // text(frameRate(), 10, 50);
+    textSize(15);
+    noStroke();
+    fill(255);
+    text('frameRate: ' + frameRate(), 10, 50);
 }
