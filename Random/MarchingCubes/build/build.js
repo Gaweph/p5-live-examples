@@ -15,9 +15,8 @@ var ColorHelper = (function () {
             color('violet')
         ];
     };
-    ColorHelper.getColorsArray = function (total, alpha, baseColorArray) {
+    ColorHelper.getColorsArray = function (total, baseColorArray) {
         var _this = this;
-        if (alpha === void 0) { alpha = 255; }
         if (baseColorArray === void 0) { baseColorArray = null; }
         if (baseColorArray == null) {
             baseColorArray = ColorHelper.rainbowColorBase();
@@ -31,7 +30,7 @@ var ColorHelper = (function () {
             var colorIndex = Math.floor(scaledColorPosition);
             var colorPercentage = scaledColorPosition - colorIndex;
             var nameColor = this.getColorByPercentage(rainbowColors[colorIndex], rainbowColors[colorIndex + 1], colorPercentage);
-            colours.push(color(nameColor.x, nameColor.y, nameColor.z, alpha));
+            colours.push(color(nameColor.x, nameColor.y, nameColor.z));
         }
         return colours;
     };
@@ -45,12 +44,12 @@ var ColorHelper = (function () {
     return ColorHelper;
 }());
 var MarchingCubes = (function () {
-    function MarchingCubes(numPoints, colorsArray, maxSpeed, sizeRange, minSize) {
+    function MarchingCubes(numPoints, maxSpeed, sizeRange, minSize) {
         this.numPoints = numPoints;
-        this.colorsArray = colorsArray;
         this.maxSpeed = maxSpeed;
         this.sizeRange = sizeRange;
         this.minSize = minSize;
+        this.setColors();
         this.setupSquares();
         this.setupPoints();
         this.generateLines();
@@ -69,6 +68,10 @@ var MarchingCubes = (function () {
         }
         ;
         this.generateLines();
+    };
+    MarchingCubes.prototype.setColors = function (colors) {
+        if (colors === void 0) { colors = null; }
+        this.colorsArray = ColorHelper.getColorsArray(floor(width), colors);
     };
     MarchingCubes.prototype.draw = function () {
         strokeWeight(2);
@@ -91,7 +94,7 @@ var MarchingCubes = (function () {
     ;
     MarchingCubes.prototype.drawGrid = function (color) {
         stroke(color);
-        strokeWeight(0.2);
+        strokeWeight(0.4);
         for (var i = 0; i < width / PARAMS.gridSpace; i++) {
             line(i * PARAMS.gridSpace, 0, i * PARAMS.gridSpace, height);
         }
@@ -281,41 +284,64 @@ var Point = (function () {
     return Point;
 }());
 var marchingCubes;
-var colors;
 var PARAMS = {
     gridSpace: 10,
     strength: 1.8,
     stickyVal: 0.2,
-    showGrid: true,
-    showPoints: true
+    showGrid: false,
+    showPoints: false,
+    colors: []
 };
 function setup() {
     createCanvas(windowWidth, windowHeight);
     var numpoints = 40;
-    marchingCubes = [];
-    var rainbow = ColorHelper.getColorsArray(floor(width));
     var maxSpeed = 4;
     var sizeRange = 65;
     var minSize = 35;
-    marchingCubes[0] = new MarchingCubes(numpoints, rainbow, maxSpeed, sizeRange, minSize);
+    marchingCubes = new MarchingCubes(numpoints, maxSpeed, sizeRange, minSize);
+    setupGui();
     frameRate(30);
+}
+var sliderGridSize;
+function setupGui() {
+    var chkShowGrid = createCheckbox(' Grid', PARAMS.showGrid);
+    chkShowGrid.position(10, 60);
+    chkShowGrid.style('color', 'white');
+    chkShowGrid.style('font-weight', 'bold');
+    sliderGridSize = createSlider(5, 50, 10, 1);
+    sliderGridSize.position(80, 60);
+    chkShowGrid.changed(function () { PARAMS.showGrid = chkShowGrid.checked(); });
+    var chkShowPoints = createCheckbox(' Points', PARAMS.showPoints);
+    chkShowPoints.position(10, 90);
+    chkShowPoints.style('color', 'white');
+    chkShowPoints.style('font-weight', 'bold');
+    chkShowPoints.changed(function () { PARAMS.showPoints = chkShowPoints.checked(); });
+    var colorSelect = createSelect();
+    colorSelect.position(10, 10);
+    colorSelect.option('rainbow', "");
+    colorSelect.option('red', ['red', 'orange']);
+    colorSelect.option('green', ['yellow', 'green']);
+    colorSelect.option('blue', ['blue', 'indigo', 'violet']);
+    colorSelect.changed(function () {
+        var val = colorSelect.value();
+        var colors = val === "" ? null : val.split(",").map(function (x) { return color(x); });
+        marchingCubes.setColors(colors);
+    });
 }
 function draw() {
     background(1);
     var pointColor = color('white');
-    pointColor.setAlpha(100);
+    pointColor.setAlpha(150);
     var gridColor = color('#f00');
-    for (var _i = 0, marchingCubes_1 = marchingCubes; _i < marchingCubes_1.length; _i++) {
-        var m = marchingCubes_1[_i];
-        m.move();
-        if (PARAMS.showPoints) {
-            m.drawPoints(pointColor);
-        }
-        if (PARAMS.showGrid) {
-            m.drawGrid(gridColor);
-        }
-        m.draw();
+    PARAMS.gridSpace = sliderGridSize.value();
+    marchingCubes.move();
+    if (PARAMS.showPoints) {
+        marchingCubes.drawPoints(pointColor);
     }
+    if (PARAMS.showGrid) {
+        marchingCubes.drawGrid(gridColor);
+    }
+    marchingCubes.draw();
     textSize(15);
     noStroke();
     fill(255);

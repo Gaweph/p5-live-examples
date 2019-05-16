@@ -6,19 +6,20 @@ class MarchingCubes {
     points: Point[];
     squares: ((x: number, y: number, p1: number, p2: number, p4: number, p8: number) => Line)[];
     lines: Line[];
+    colorsArray: p5.Color[];
     constructor(
         private numPoints: number,
-        private colorsArray: p5.Color[],
         private maxSpeed: number,
         private sizeRange: number,
         private minSize: number
     ) {
+
+        this.setColors();
         this.setupSquares();
         this.setupPoints();
 
         this.generateLines();
     }
-
     move() {
         for (let p of this.points) {
             p.x += p.vx;
@@ -35,6 +36,10 @@ class MarchingCubes {
         this.generateLines();
     }
 
+    setColors(colors: p5.Color[] = null) {
+        this.colorsArray = ColorHelper.getColorsArray(floor(width), colors); // null = rainbow colors
+    }
+    
     draw() {
         strokeWeight(2);
         for (let l of this.lines) {
@@ -55,7 +60,7 @@ class MarchingCubes {
 
     drawGrid(color: p5.Color) {
         stroke(color);
-        strokeWeight(0.2);
+        strokeWeight(0.4);
         for (var i = 0; i < width / PARAMS.gridSpace; i++) {
             line(i * PARAMS.gridSpace, 0, i * PARAMS.gridSpace, height);
         }
