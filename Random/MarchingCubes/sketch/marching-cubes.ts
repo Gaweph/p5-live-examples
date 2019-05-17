@@ -39,7 +39,7 @@ class MarchingCubes {
     setColors(colors: p5.Color[] = null) {
         this.colorsArray = ColorHelper.getColorsArray(floor(width), colors); // null = rainbow colors
     }
-    
+
     draw() {
         strokeWeight(2);
         for (let l of this.lines) {
@@ -49,12 +49,12 @@ class MarchingCubes {
 
     }
 
-    drawPoints(color: p5.Color) {       
+    drawPoints(color: p5.Color) {
         stroke(color);
         strokeWeight(0.5);
-        noFill(); 
+        noFill();
         for (let p of this.points) {
-            p.draw(color);
+            p.draw();
         };
     };
 
@@ -97,7 +97,7 @@ class MarchingCubes {
         // Add Potentials from points
         for (let p of this.points) {
 
-             var str = (p.r / 2) * PARAMS.strength;
+            var str = (p.r / 2) * PARAMS.strength;
             var strengthFactor = Math.ceil(str * 2 / PARAMS.gridSpace);
             var i = Math.max(0, Math.floor((p.x - str) / PARAMS.gridSpace));
             var j = Math.max(0, Math.floor((p.y - str) / PARAMS.gridSpace));
