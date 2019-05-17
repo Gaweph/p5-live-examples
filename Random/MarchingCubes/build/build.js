@@ -44,11 +44,14 @@ var ColorHelper = (function () {
     return ColorHelper;
 }());
 var MarchingCubes = (function () {
-    function MarchingCubes(numPoints) {
+    function MarchingCubes(numPoints, maxSpeed, sizeRange, minSize) {
         this.numPoints = numPoints;
+        this.maxSpeed = maxSpeed;
+        this.sizeRange = sizeRange;
+        this.minSize = minSize;
+        this.setColors();
         this.setupSquares();
         this.setupPoints();
-        this.colorsArray = ColorHelper.getColorsArray(floor(width));
         this.generateLines();
     }
     MarchingCubes.prototype.move = function () {
@@ -66,6 +69,10 @@ var MarchingCubes = (function () {
         ;
         this.generateLines();
     };
+    MarchingCubes.prototype.setColors = function (colors) {
+        if (colors === void 0) { colors = null; }
+        this.colorsArray = ColorHelper.getColorsArray(floor(width), colors);
+    };
     MarchingCubes.prototype.draw = function () {
         strokeWeight(2);
         for (var _i = 0, _a = this.lines; _i < _a.length; _i++) {
@@ -74,29 +81,20 @@ var MarchingCubes = (function () {
             line(l.x1, l.y1, l.x2, l.y2);
         }
     };
-    MarchingCubes.prototype.setupPoints = function () {
-        this.points = [];
-        var i;
-        for (i = 0; i < this.numPoints; i++) {
-            var x = Math.random() * width;
-            var y = Math.random() * height;
-            var vx = Math.random() * 3;
-            var vy = Math.random() * 3;
-            var r = (Math.random() * width / 20) + 35;
-            this.points[i] = new Point(x, y, vx, vy, r);
-        }
-    };
-    MarchingCubes.prototype.drawPoints = function () {
+    MarchingCubes.prototype.drawPoints = function (color) {
+        stroke(color);
+        strokeWeight(0.5);
+        noFill();
         for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
             var p = _a[_i];
-            p.draw();
+            p.draw(color);
         }
         ;
     };
     ;
-    MarchingCubes.prototype.drawGrid = function () {
-        stroke('#f00');
-        strokeWeight(0.2);
+    MarchingCubes.prototype.drawGrid = function (color) {
+        stroke(color);
+        strokeWeight(0.4);
         for (var i = 0; i < width / PARAMS.gridSpace; i++) {
             line(i * PARAMS.gridSpace, 0, i * PARAMS.gridSpace, height);
         }
@@ -106,6 +104,18 @@ var MarchingCubes = (function () {
         }
     };
     ;
+    MarchingCubes.prototype.setupPoints = function () {
+        this.points = [];
+        var i;
+        for (i = 0; i < this.numPoints; i++) {
+            var x = Math.random() * width;
+            var y = Math.random() * height;
+            var vx = Math.random() * this.maxSpeed - 1;
+            var vy = Math.random() * this.maxSpeed - 1;
+            var r = (Math.random() * this.sizeRange) + this.minSize;
+            this.points[i] = new Point(x, y, vx, vy, r);
+        }
+    };
     MarchingCubes.prototype.generateLines = function () {
         var potentials = [];
         var imax = Math.ceil(width / PARAMS.gridSpace);
@@ -127,14 +137,15 @@ var MarchingCubes = (function () {
             var j0;
             for (; i < ilim; i++) {
                 for (j0 = j; j0 < jlim; j0++) {
-                    potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i * PARAMS.gridSpace, j0 * PARAMS.gridSpace)));
+                    var d = dist(p.x, p.y, i * PARAMS.gridSpace, j0 * PARAMS.gridSpace);
+                    var prDistance = (p.r - d);
+                    potentials[i][j0] += Math.max(0, prDistance);
                 }
             }
         }
         ;
         this.lines = [];
         var p1, p2, p4, p8;
-        var c1, c2, c4, c8;
         var imax = Math.ceil(width / PARAMS.gridSpace);
         var jmax = Math.ceil(height / PARAMS.gridSpace);
         for (var i = 0; i < imax - 1; i++) {
@@ -268,28 +279,71 @@ var Point = (function () {
         this.r = r;
     }
     Point.prototype.draw = function () {
-        stroke('white');
-        strokeWeight(0.5);
-        noFill();
         circle(this.x, this.y, this.r);
     };
     return Point;
 }());
 var marchingCubes;
-var colors;
 var PARAMS = {
-    gridSpace: 15,
+    gridSpace: 10,
     strength: 1.8,
-    stickyVal: 0.2
+    stickyVal: 0.2,
+    showGrid: false,
+    showPoints: false,
+    colors: []
 };
+var sliderGridSize;
 function setup() {
     createCanvas(windowWidth, windowHeight);
     var numpoints = 40;
-    marchingCubes = new MarchingCubes(numpoints);
+    var maxSpeed = 4;
+    var sizeRange = 65;
+    var minSize = 35;
+    marchingCubes = new MarchingCubes(numpoints, maxSpeed, sizeRange, minSize);
+    setupGui();
     frameRate(30);
+}
+function setupGui() {
+    var chkShowGrid = createCheckbox(' Grid', PARAMS.showGrid);
+    chkShowGrid.position(10, 60);
+    chkShowGrid.style('color', 'white');
+    chkShowGrid.style('font-weight', 'bold');
+    sliderGridSize = createSlider(5, 50, 10, 1);
+    sliderGridSize.position(80, 60);
+    chkShowGrid.changed(function () { PARAMS.showGrid = chkShowGrid.checked(); });
+    var chkShowPoints = createCheckbox(' Points', PARAMS.showPoints);
+    chkShowPoints.position(10, 90);
+    chkShowPoints.style('color', 'white');
+    chkShowPoints.style('font-weight', 'bold');
+    chkShowPoints.changed(function () { PARAMS.showPoints = chkShowPoints.checked(); });
+    var colorSelect = createSelect();
+    colorSelect.position(10, 10);
+    colorSelect.option('rainbow', "");
+    colorSelect.option('red', ['red', 'orange']);
+    colorSelect.option('green', ['yellow', 'green']);
+    colorSelect.option('blue', ['blue', 'indigo', 'violet']);
+    colorSelect.changed(function () {
+        var val = colorSelect.value();
+        var colors = val === "" ? null : val.split(",").map(function (x) { return color(x); });
+        marchingCubes.setColors(colors);
+    });
 }
 function draw() {
     background(1);
+    var pointColor = color('white');
+    pointColor.setAlpha(150);
+    var gridColor = color('#f00');
+    PARAMS.gridSpace = sliderGridSize.value();
     marchingCubes.move();
+    if (PARAMS.showPoints) {
+        marchingCubes.drawPoints(pointColor);
+    }
+    if (PARAMS.showGrid) {
+        marchingCubes.drawGrid(gridColor);
+    }
     marchingCubes.draw();
+    textSize(15);
+    noStroke();
+    fill(255);
+    text('fps: ' + frameRate(), 10, 50);
 }

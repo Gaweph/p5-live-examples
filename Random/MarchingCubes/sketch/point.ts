@@ -8,9 +8,6 @@ class Point {
    ) { }
 
    draw() {
-      stroke('white');
-      strokeWeight(0.5);
-      noFill();
       circle(this.x, this.y, this.r);
    }
 

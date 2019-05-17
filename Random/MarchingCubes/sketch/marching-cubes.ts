@@ -7,14 +7,19 @@ class MarchingCubes {
     squares: ((x: number, y: number, p1: number, p2: number, p4: number, p8: number) => Line)[];
     lines: Line[];
     colorsArray: p5.Color[];
-    constructor(private numPoints: number) {
+    constructor(
+        private numPoints: number,
+        private maxSpeed: number,
+        private sizeRange: number,
+        private minSize: number
+    ) {
+
+        this.setColors();
         this.setupSquares();
         this.setupPoints();
 
-        this.colorsArray = ColorHelper.getColorsArray(floor(width));
         this.generateLines();
     }
-
     move() {
         for (let p of this.points) {
             p.x += p.vx;
@@ -31,6 +36,10 @@ class MarchingCubes {
         this.generateLines();
     }
 
+    setColors(colors: p5.Color[] = null) {
+        this.colorsArray = ColorHelper.getColorsArray(floor(width), colors); // null = rainbow colors
+    }
+    
     draw() {
         strokeWeight(2);
         for (let l of this.lines) {
@@ -40,28 +49,18 @@ class MarchingCubes {
 
     }
 
-    setupPoints() {
-        this.points = [];
-        var i;
-        for (i = 0; i < this.numPoints; i++) {
-            var x = Math.random() * width;
-            var y = Math.random() * height;
-            var vx = Math.random() * 3;
-            var vy = Math.random() * 3;
-            var r = (Math.random() * width / 20) + 35;
-            this.points[i] = new Point(x, y, vx, vy, r);
-        }
-    }
-
-    drawPoints() {
+    drawPoints(color: p5.Color) {       
+        stroke(color);
+        strokeWeight(0.5);
+        noFill(); 
         for (let p of this.points) {
-            p.draw();
+            p.draw(color);
         };
     };
 
-    drawGrid() {
-        stroke('#f00');
-        strokeWeight(0.2);
+    drawGrid(color: p5.Color) {
+        stroke(color);
+        strokeWeight(0.4);
         for (var i = 0; i < width / PARAMS.gridSpace; i++) {
             line(i * PARAMS.gridSpace, 0, i * PARAMS.gridSpace, height);
         }
@@ -70,6 +69,19 @@ class MarchingCubes {
             line(0, j * PARAMS.gridSpace, width, j * PARAMS.gridSpace);
         }
     };
+
+    setupPoints() {
+        this.points = [];
+        var i;
+        for (i = 0; i < this.numPoints; i++) {
+            var x = Math.random() * width;
+            var y = Math.random() * height;
+            var vx = Math.random() * this.maxSpeed - 1;
+            var vy = Math.random() * this.maxSpeed - 1;
+            var r = (Math.random() * this.sizeRange) + this.minSize;
+            this.points[i] = new Point(x, y, vx, vy, r);
+        }
+    }
 
     generateLines() {
         var potentials: number[][] = [];
@@ -83,10 +95,9 @@ class MarchingCubes {
             }
         }
         // Add Potentials from points
-
         for (let p of this.points) {
 
-            var str = (p.r / 2) * PARAMS.strength;
+             var str = (p.r / 2) * PARAMS.strength;
             var strengthFactor = Math.ceil(str * 2 / PARAMS.gridSpace);
             var i = Math.max(0, Math.floor((p.x - str) / PARAMS.gridSpace));
             var j = Math.max(0, Math.floor((p.y - str) / PARAMS.gridSpace));
@@ -96,18 +107,15 @@ class MarchingCubes {
             var j0;
             for (; i < ilim; i++) {
                 for (j0 = j; j0 < jlim; j0++) {
-                    potentials[i][j0] += Math.max(0, (p.r - dist(p.x, p.y, i * PARAMS.gridSpace, j0 * PARAMS.gridSpace)));
-                    // stroke('#f00');
-                    // strokeWeight(0.2);
-                    // circle(i * PARAMS.gridSpace, j0 * PARAMS.gridSpace, 2);
-                    // console.log(i, j0);
+                    var d = dist(p.x, p.y, i * PARAMS.gridSpace, j0 * PARAMS.gridSpace);
+                    var prDistance = (p.r - d)
+                    potentials[i][j0] += Math.max(0, prDistance);
                 }
             }
         };
 
         this.lines = [];
         var p1, p2, p4, p8;
-        var c1, c2, c4, c8;
         var imax = Math.ceil(width / PARAMS.gridSpace);
         var jmax = Math.ceil(height / PARAMS.gridSpace);
         for (var i = 0; i < imax - 1; i++) {
@@ -125,9 +133,7 @@ class MarchingCubes {
                 var linePoints = this.squares[square](
                     i * PARAMS.gridSpace, j * PARAMS.gridSpace, p1, p2, p4, p8
                 );
-                // console.log(square, i * PARAMS.gridSpace, j * PARAMS.gridSpace, p1, p2, p4, p8);
                 if (linePoints != null) {
-                    // var c = random([c1, c2, c4, c8]);
                     this.lines.push(linePoints);
                 }
 
