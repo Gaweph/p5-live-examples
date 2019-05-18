@@ -19,7 +19,7 @@ function setup() {
     points.push(new Point(6 * PARAMS.pointSize, 6 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
 
 
-    // PARAMS.gridSize = width / 20;
+    PARAMS.gridSize = width / 50;
     noLoop();
 }
 

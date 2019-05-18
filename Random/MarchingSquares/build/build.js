@@ -198,7 +198,17 @@ var MarchingSquaresHelper = (function () {
         }
         for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
             var p = points_1[_i];
-            res[p.y / PARAMS.gridSize][p.x / PARAMS.gridSize] += 1;
+            for (var i = 0; i < p.r; i++) {
+                var xmin = floor((p.x - i) / PARAMS.gridSize);
+                var ymin = floor((p.y - i) / PARAMS.gridSize);
+                var xmax = floor((p.x + i) / PARAMS.gridSize);
+                var ymax = floor((p.y + i) / PARAMS.gridSize);
+                for (var y = ymin; y <= ymax; y++) {
+                    for (var x = xmin; x <= xmax; x++) {
+                        res[y][x] += 1;
+                    }
+                }
+            }
         }
         return res;
     };
@@ -247,6 +257,7 @@ function setup() {
     points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
     points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
     points.push(new Point(6 * PARAMS.pointSize, 6 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
+    PARAMS.gridSize = width / 50;
     noLoop();
 }
 function draw() {

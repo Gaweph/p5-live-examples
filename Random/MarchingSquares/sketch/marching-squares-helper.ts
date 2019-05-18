@@ -160,7 +160,22 @@ class MarchingSquaresHelper {
         }
 
         for (let p of points) {
-            res[p.y / PARAMS.gridSize][p.x / PARAMS.gridSize] += 1;
+
+            for (var i = 0; i < p.r; i++) {
+                var xmin = floor((p.x - i) / PARAMS.gridSize);
+                var ymin = floor((p.y - i) / PARAMS.gridSize);
+                var xmax = floor((p.x + i) / PARAMS.gridSize);
+                var ymax = floor((p.y + i) / PARAMS.gridSize);
+
+                // all grid x and y touched by this point
+                for (var y = ymin; y <= ymax; y++) {
+                    for (var x = xmin; x <= xmax; x++) {
+                        res[y][x] += 1;
+                    }
+                }
+
+            }
+            // res[p.y / PARAMS.gridSize][p.x / PARAMS.gridSize] += 1;
         }
 
         return res;
