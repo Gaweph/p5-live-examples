@@ -1,8 +1,8 @@
 class MarchingSquaresHelper {
     // http://www.huderlem.com/demos/marchingsquares.html
-    //  4---3
+    //  1-- 2
     //  |   |
-    //  1---2
+    //  8---4
     static drawForCombination(x: number, y: number, bitmask: string) {
 
         push();
@@ -147,4 +147,47 @@ class MarchingSquaresHelper {
         }
         pop();
     }
+
+    static getCurrentPointArray(points: Point[]): number[][] {
+
+        var res: number[][] = [];
+
+        for (var y = 0; y < height / PARAMS.gridSize; y++) {
+            res[y] = [];
+            for (var x = 0; x < width / PARAMS.gridSize; x++) {
+                res[y][x] = 0;
+            }
+        }
+
+        for (let p of points) {
+            res[p.y / PARAMS.gridSize][p.x / PARAMS.gridSize] += 1;
+        }
+
+        return res;
+    }
+
+    //  1-- 2
+    //  |   |
+    //  8---4
+
+    static drawSquares(pointsArr: number[][]) {
+
+        console.log(pointsArr);
+        for (var y = 1; y < pointsArr.length - 1; y++) {
+            var point = pointsArr[y];
+            for (var x = 1; x < point.length - 1; x++) {
+
+                var p1 = pointsArr[y][x] > 0 ? '1' : '0';
+                var p2 = pointsArr[y][x + 1] > 0 ? '1' : '0';
+                var p4 = pointsArr[y + 1][x + 1] > 0 ? '1' : '0';
+                var p8 = pointsArr[y + 1][x] > 0 ? '1' : '0';
+
+                MarchingSquaresHelper.drawForCombination(x, y, p8 + p4 + p2 + p1);
+
+            }
+        }
+
+
+    }
+
 }

@@ -188,6 +188,33 @@ var MarchingSquaresHelper = (function () {
         }
         pop();
     };
+    MarchingSquaresHelper.getCurrentPointArray = function (points) {
+        var res = [];
+        for (var y = 0; y < height / PARAMS.gridSize; y++) {
+            res[y] = [];
+            for (var x = 0; x < width / PARAMS.gridSize; x++) {
+                res[y][x] = 0;
+            }
+        }
+        for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
+            var p = points_1[_i];
+            res[p.y / PARAMS.gridSize][p.x / PARAMS.gridSize] += 1;
+        }
+        return res;
+    };
+    MarchingSquaresHelper.drawSquares = function (pointsArr) {
+        console.log(pointsArr);
+        for (var y = 1; y < pointsArr.length - 1; y++) {
+            var point = pointsArr[y];
+            for (var x = 1; x < point.length - 1; x++) {
+                var p1 = pointsArr[y][x] > 0 ? '1' : '0';
+                var p2 = pointsArr[y][x + 1] > 0 ? '1' : '0';
+                var p4 = pointsArr[y + 1][x + 1] > 0 ? '1' : '0';
+                var p8 = pointsArr[y + 1][x] > 0 ? '1' : '0';
+                MarchingSquaresHelper.drawForCombination(x, y, p8 + p4 + p2 + p1);
+            }
+        }
+    };
     return MarchingSquaresHelper;
 }());
 var Point = (function () {
@@ -199,7 +226,7 @@ var Point = (function () {
         this.r = r;
     }
     Point.prototype.draw = function () {
-        square(this.x, this.y, this.r);
+        point(this.x, this.y);
     };
     return Point;
 }());
@@ -219,6 +246,7 @@ function setup() {
     points.push(new Point(5 * PARAMS.pointSize, 4 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
     points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
     points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
+    points.push(new Point(6 * PARAMS.pointSize, 6 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
     noLoop();
 }
 function draw() {
@@ -233,24 +261,14 @@ function draw() {
         line(0, j * PARAMS.gridSize, width, j * PARAMS.gridSize);
     }
     pop();
-    for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
-        var p = points_1[_i];
+    push();
+    stroke('white');
+    strokeWeight(2);
+    for (var _i = 0, points_2 = points; _i < points_2.length; _i++) {
+        var p = points_2[_i];
         p.draw();
     }
-    MarchingSquaresHelper.drawForCombination(0, 0, '0000');
-    MarchingSquaresHelper.drawForCombination(0, 1, '0001');
-    MarchingSquaresHelper.drawForCombination(0, 2, '0010');
-    MarchingSquaresHelper.drawForCombination(0, 3, '0011');
-    MarchingSquaresHelper.drawForCombination(1, 0, '0100');
-    MarchingSquaresHelper.drawForCombination(1, 1, '0101');
-    MarchingSquaresHelper.drawForCombination(1, 2, '0110');
-    MarchingSquaresHelper.drawForCombination(1, 3, '0111');
-    MarchingSquaresHelper.drawForCombination(2, 0, '1000');
-    MarchingSquaresHelper.drawForCombination(2, 1, '1001');
-    MarchingSquaresHelper.drawForCombination(2, 2, '1010');
-    MarchingSquaresHelper.drawForCombination(2, 3, '1011');
-    MarchingSquaresHelper.drawForCombination(3, 0, '1100');
-    MarchingSquaresHelper.drawForCombination(3, 1, '1101');
-    MarchingSquaresHelper.drawForCombination(3, 2, '1110');
-    MarchingSquaresHelper.drawForCombination(3, 3, '1111');
+    pop();
+    var arr = MarchingSquaresHelper.getCurrentPointArray(points);
+    MarchingSquaresHelper.drawSquares(arr);
 }

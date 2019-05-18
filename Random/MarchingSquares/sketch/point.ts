@@ -8,7 +8,8 @@ class Point {
    ) { }
 
    draw() {
-      square(this.x, this.y, this.r)
+      // square(this.x, this.y, this.r)
+      point(this.x, this.y);
    }
 
 }
