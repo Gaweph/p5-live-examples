@@ -118,6 +118,7 @@ var MarchingSquaresHelper = (function () {
             vertex(0, 1 - midpoint);
             vertex(midpoint, 1);
             vertex(0, 1);
+            y;
             endShape();
         }
         else if (bitmask == '1001') {
@@ -134,6 +135,53 @@ var MarchingSquaresHelper = (function () {
             MarchingSquaresHelper.drawForCombination(x, y, '0010');
             pop();
             MarchingSquaresHelper.drawForCombination(x, y, '1000');
+        }
+        else if (bitmask == '1011') {
+            line(1 - midpoint, 1, 1, 1 - midpoint);
+            beginShape();
+            vertex(1 - midpoint, 1);
+            vertex(1, 1 - midpoint);
+            vertex(1, 0);
+            vertex(0, 0);
+            vertex(0, 1);
+            endShape();
+        }
+        else if (bitmask == '1100') {
+            line(0, 1 - midpoint, 1, 1 - midpoint);
+            beginShape();
+            vertex(0, 1 - midpoint);
+            vertex(1, 1 - midpoint);
+            vertex(1, 1);
+            vertex(0, 1);
+            endShape();
+        }
+        else if (bitmask == '1101') {
+            line(midpoint, 0, 1, midpoint);
+            beginShape();
+            vertex(midpoint, 0);
+            vertex(1, midpoint);
+            vertex(1, 1);
+            vertex(0, 1);
+            vertex(0, 0);
+            endShape();
+        }
+        else if (bitmask == '1110') {
+            line(midpoint, 0, 0, midpoint);
+            beginShape();
+            vertex(midpoint, 0);
+            vertex(0, midpoint);
+            vertex(0, 1);
+            vertex(1, 1);
+            vertex(1, 0);
+            endShape();
+        }
+        else if (bitmask == '1111') {
+            beginShape();
+            vertex(0, 0);
+            vertex(0, 1);
+            vertex(1, 1);
+            vertex(1, 0);
+            endShape();
         }
         else {
             console.log('bad number' + bitmask);
