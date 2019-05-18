@@ -3,7 +3,8 @@ var PARAMS = {
     pointSize: 10
 };
 var points: Point[];
-var combinations: (() => void)[];
+var sliderGridSize: p5.Element;
+
 function setup() {
     createCanvas(600, 600);
 
@@ -18,14 +19,19 @@ function setup() {
     points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
     points.push(new Point(6 * PARAMS.pointSize, 6 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
 
+    sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
+    sliderGridSize.position(10, 10);
 
-    PARAMS.gridSize = width / 50;
-    noLoop();
+    //noLoop();
 }
 
 function draw() {
     background(1);
 
+    // SET PARAMS
+    PARAMS.gridSize = <number>sliderGridSize.value();
+
+    //console.log(sliderGridSize.value(), PARAMS.gridSize);
     // draw grid
     stroke('red');
     strokeWeight(0.4);
@@ -39,18 +45,18 @@ function draw() {
     }
     pop();
 
-    push();
-    stroke('white');
-    strokeWeight(2);
-    for (let p of points) {
-
-        p.draw();
-    }
-    pop();
 
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
 
+    // push();
+    // stroke('green');
+    // strokeWeight(5);
+    // for (let p of points) {
+
+    //     p.draw();
+    // }
+    // pop();
     // MarchingSquaresHelper.drawForCombination(0, 0, '0000');
     // MarchingSquaresHelper.drawForCombination(0, 1, '0001');
     // MarchingSquaresHelper.drawForCombination(0, 2, '0010');
@@ -67,6 +73,11 @@ function draw() {
     // MarchingSquaresHelper.drawForCombination(3, 1, '1101');
     // MarchingSquaresHelper.drawForCombination(3, 2, '1110');
     // MarchingSquaresHelper.drawForCombination(3, 3, '1111');
+
+    textSize(15);
+    noStroke();
+    fill(255);
+    text('fps: ' + frameRate(), 10, 50);
 
 }
 

@@ -198,11 +198,11 @@ var MarchingSquaresHelper = (function () {
         }
         for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
             var p = points_1[_i];
-            for (var i = 0; i < p.r; i++) {
+            for (var i = 0; i < p.r / 2; i++) {
                 var xmin = floor((p.x - i) / PARAMS.gridSize);
                 var ymin = floor((p.y - i) / PARAMS.gridSize);
-                var xmax = floor((p.x + i) / PARAMS.gridSize);
-                var ymax = floor((p.y + i) / PARAMS.gridSize);
+                var xmax = ceil((p.x + i) / PARAMS.gridSize);
+                var ymax = ceil((p.y + i) / PARAMS.gridSize);
                 for (var y = ymin; y <= ymax; y++) {
                     for (var x = xmin; x <= xmax; x++) {
                         res[y][x] += 1;
@@ -213,7 +213,6 @@ var MarchingSquaresHelper = (function () {
         return res;
     };
     MarchingSquaresHelper.drawSquares = function (pointsArr) {
-        console.log(pointsArr);
         for (var y = 1; y < pointsArr.length - 1; y++) {
             var point = pointsArr[y];
             for (var x = 1; x < point.length - 1; x++) {
@@ -237,6 +236,7 @@ var Point = (function () {
     }
     Point.prototype.draw = function () {
         point(this.x, this.y);
+        circle(this.x, this.y, this.r);
     };
     return Point;
 }());
@@ -245,7 +245,7 @@ var PARAMS = {
     pointSize: 10
 };
 var points;
-var combinations;
+var sliderGridSize;
 function setup() {
     createCanvas(600, 600);
     PARAMS.gridSize = width / 10;
@@ -257,11 +257,12 @@ function setup() {
     points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
     points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
     points.push(new Point(6 * PARAMS.pointSize, 6 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
-    PARAMS.gridSize = width / 50;
-    noLoop();
+    sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
+    sliderGridSize.position(10, 10);
 }
 function draw() {
     background(1);
+    PARAMS.gridSize = sliderGridSize.value();
     stroke('red');
     strokeWeight(0.4);
     push();
@@ -272,14 +273,10 @@ function draw() {
         line(0, j * PARAMS.gridSize, width, j * PARAMS.gridSize);
     }
     pop();
-    push();
-    stroke('white');
-    strokeWeight(2);
-    for (var _i = 0, points_2 = points; _i < points_2.length; _i++) {
-        var p = points_2[_i];
-        p.draw();
-    }
-    pop();
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
+    textSize(15);
+    noStroke();
+    fill(255);
+    text('fps: ' + frameRate(), 10, 50);
 }

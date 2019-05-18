@@ -10,6 +10,7 @@ class Point {
    draw() {
       // square(this.x, this.y, this.r)
       point(this.x, this.y);
+      circle(this.x, this.y, this.r);
    }
 
 }

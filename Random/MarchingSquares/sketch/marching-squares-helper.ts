@@ -161,15 +161,16 @@ class MarchingSquaresHelper {
 
         for (let p of points) {
 
-            for (var i = 0; i < p.r; i++) {
+            for (var i = 0; i < p.r / 2; i++) {
                 var xmin = floor((p.x - i) / PARAMS.gridSize);
                 var ymin = floor((p.y - i) / PARAMS.gridSize);
-                var xmax = floor((p.x + i) / PARAMS.gridSize);
-                var ymax = floor((p.y + i) / PARAMS.gridSize);
+                var xmax = ceil((p.x + i) / PARAMS.gridSize);
+                var ymax = ceil((p.y + i) / PARAMS.gridSize);
 
                 // all grid x and y touched by this point
                 for (var y = ymin; y <= ymax; y++) {
                     for (var x = xmin; x <= xmax; x++) {
+
                         res[y][x] += 1;
                     }
                 }
@@ -187,7 +188,7 @@ class MarchingSquaresHelper {
 
     static drawSquares(pointsArr: number[][]) {
 
-        console.log(pointsArr);
+        // console.log(pointsArr);
         for (var y = 1; y < pointsArr.length - 1; y++) {
             var point = pointsArr[y];
             for (var x = 1; x < point.length - 1; x++) {
