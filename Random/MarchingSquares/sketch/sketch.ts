@@ -8,9 +8,9 @@ var sliderGridSize: p5.Element;
 function setup() {
     createCanvas(600, 600);
 
-    PARAMS.gridSize = width / 10;
+    // PARAMS.gridSize = width / 10;
 
-    PARAMS.pointSize = PARAMS.gridSize;
+    PARAMS.pointSize = width / 10;
     points = [];
 
     points.push(new Point(5 * PARAMS.pointSize, 2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize))
@@ -23,7 +23,7 @@ function setup() {
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
 
-    //noLoop();
+    // noLoop();
 }
 
 function draw() {
