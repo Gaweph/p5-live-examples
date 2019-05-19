@@ -12,12 +12,12 @@ function setup() {
 
     PARAMS.pointSize = PARAMS.gridSize;
     points = [];
-    points.push(new Point(5 * PARAMS.pointSize, 2 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
-    points.push(new Point(5 * PARAMS.pointSize, 3 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
-    points.push(new Point(5 * PARAMS.pointSize, 4 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
-    points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
-    points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
-    points.push(new Point(6 * PARAMS.pointSize, 6 * PARAMS.pointSize, 0, 0, PARAMS.pointSize))
+    points.push(new Point(5 * PARAMS.pointSize, 2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize))
+    points.push(new Point(5 * PARAMS.pointSize, 3 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize))
+    points.push(new Point(5 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 1.5))
+    points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 2))
+    points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize))
+    points.push(new Point(6 * PARAMS.pointSize, 6.2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 2))
 
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
@@ -49,14 +49,18 @@ function draw() {
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
 
-    // push();
-    // stroke('green');
-    // strokeWeight(5);
-    // for (let p of points) {
+    push();
+    var c = color('green');
+    c.setAlpha(100);
+    stroke(c);
+    alpha
+    strokeWeight(1);
+    noFill();
+    for (let p of points) {
 
-    //     p.draw();
-    // }
-    // pop();
+        p.draw();
+    }
+    pop();
     // MarchingSquaresHelper.drawForCombination(0, 0, '0000');
     // MarchingSquaresHelper.drawForCombination(0, 1, '0001');
     // MarchingSquaresHelper.drawForCombination(0, 2, '0010');
@@ -73,6 +77,18 @@ function draw() {
     // MarchingSquaresHelper.drawForCombination(3, 1, '1101');
     // MarchingSquaresHelper.drawForCombination(3, 2, '1110');
     // MarchingSquaresHelper.drawForCombination(3, 3, '1111');
+
+    for (let p of this.points) {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > width) {
+            p.vx *= -1;
+        }
+        if (p.y < 0 || p.y > height) {
+            p.vy *= -1;
+        }
+    };
 
     textSize(15);
     noStroke();

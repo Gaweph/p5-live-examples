@@ -47,6 +47,8 @@ var MarchingSquaresHelper = (function () {
     function MarchingSquaresHelper() {
     }
     MarchingSquaresHelper.drawForCombination = function (x, y, bitmask) {
+        var drawMesh = false;
+        var drawLine = true;
         push();
         translate(x * PARAMS.gridSize, y * PARAMS.gridSize);
         scale(PARAMS.gridSize);
@@ -55,37 +57,49 @@ var MarchingSquaresHelper = (function () {
         if (bitmask == '0000') {
         }
         else if (bitmask == '0001') {
-            line(0, midpoint, midpoint, 0);
-            beginShape();
-            vertex(0, midpoint);
-            vertex(midpoint, 0);
-            vertex(0, 0);
-            endShape();
+            if (drawLine)
+                line(0, midpoint, midpoint, 0);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, midpoint);
+                vertex(midpoint, 0);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '0010') {
-            line(1 - midpoint, 0, 1, midpoint);
-            beginShape();
-            vertex(1 - midpoint, 0);
-            vertex(1, midpoint);
-            vertex(1, 0);
-            endShape();
+            if (drawLine)
+                line(1 - midpoint, 0, 1, midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(1 - midpoint, 0);
+                vertex(1, midpoint);
+                vertex(1, 0);
+                endShape();
+            }
         }
         else if (bitmask == '0011') {
-            line(0, midpoint, 1, midpoint);
-            beginShape();
-            vertex(0, midpoint);
-            vertex(1, midpoint);
-            vertex(1, 0);
-            vertex(0, 0);
-            endShape();
+            if (drawLine)
+                line(0, midpoint, 1, midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, midpoint);
+                vertex(1, midpoint);
+                vertex(1, 0);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '0100') {
-            line(1 - midpoint, 1, 1, 1 - midpoint);
-            beginShape();
-            vertex(1 - midpoint, 1);
-            vertex(1, 1 - midpoint);
-            vertex(1, 1);
-            endShape();
+            if (drawLine)
+                line(1 - midpoint, 1, 1, 1 - midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(1 - midpoint, 1);
+                vertex(1, 1 - midpoint);
+                vertex(1, 1);
+                endShape();
+            }
         }
         else if (bitmask == '0101') {
             pop();
@@ -94,41 +108,53 @@ var MarchingSquaresHelper = (function () {
             MarchingSquaresHelper.drawForCombination(x, y, '0100');
         }
         else if (bitmask == '0110') {
-            line(midpoint, 0, midpoint, 1);
-            beginShape();
-            vertex(midpoint, 0);
-            vertex(midpoint, 1);
-            vertex(1, 1);
-            vertex(1, 0);
-            endShape();
+            if (drawLine)
+                line(midpoint, 0, midpoint, 1);
+            if (drawMesh) {
+                beginShape();
+                vertex(midpoint, 0);
+                vertex(midpoint, 1);
+                vertex(1, 1);
+                vertex(1, 0);
+                endShape();
+            }
         }
         else if (bitmask == '0111') {
-            line(0, 1 - midpoint, midpoint, 1);
-            beginShape();
-            vertex(0, 1 - midpoint);
-            vertex(midpoint, 1);
-            vertex(1, 1);
-            vertex(1, 0);
-            vertex(0, 0);
-            endShape();
+            if (drawLine)
+                line(0, 1 - midpoint, midpoint, 1);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, 1 - midpoint);
+                vertex(midpoint, 1);
+                vertex(1, 1);
+                vertex(1, 0);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '1000') {
-            line(0, 1 - midpoint, midpoint, 1);
-            beginShape();
-            vertex(0, 1 - midpoint);
-            vertex(midpoint, 1);
-            vertex(0, 1);
-            y;
-            endShape();
+            if (drawLine)
+                line(0, 1 - midpoint, midpoint, 1);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, 1 - midpoint);
+                vertex(midpoint, 1);
+                vertex(0, 1);
+                y;
+                endShape();
+            }
         }
         else if (bitmask == '1001') {
-            line(1 - midpoint, 0, 1 - midpoint, 1);
-            beginShape();
-            vertex(1 - midpoint, 0);
-            vertex(1 - midpoint, 1);
-            vertex(0, 1);
-            vertex(0, 0);
-            endShape();
+            if (drawLine)
+                line(1 - midpoint, 0, 1 - midpoint, 1);
+            if (drawMesh) {
+                beginShape();
+                vertex(1 - midpoint, 0);
+                vertex(1 - midpoint, 1);
+                vertex(0, 1);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '1010') {
             pop();
@@ -137,51 +163,65 @@ var MarchingSquaresHelper = (function () {
             MarchingSquaresHelper.drawForCombination(x, y, '1000');
         }
         else if (bitmask == '1011') {
-            line(1 - midpoint, 1, 1, 1 - midpoint);
-            beginShape();
-            vertex(1 - midpoint, 1);
-            vertex(1, 1 - midpoint);
-            vertex(1, 0);
-            vertex(0, 0);
-            vertex(0, 1);
-            endShape();
+            if (drawLine)
+                line(1 - midpoint, 1, 1, 1 - midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(1 - midpoint, 1);
+                vertex(1, 1 - midpoint);
+                vertex(1, 0);
+                vertex(0, 0);
+                vertex(0, 1);
+                endShape();
+            }
         }
         else if (bitmask == '1100') {
-            line(0, 1 - midpoint, 1, 1 - midpoint);
-            beginShape();
-            vertex(0, 1 - midpoint);
-            vertex(1, 1 - midpoint);
-            vertex(1, 1);
-            vertex(0, 1);
-            endShape();
+            if (drawLine)
+                line(0, 1 - midpoint, 1, 1 - midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, 1 - midpoint);
+                vertex(1, 1 - midpoint);
+                vertex(1, 1);
+                vertex(0, 1);
+                endShape();
+            }
         }
         else if (bitmask == '1101') {
-            line(midpoint, 0, 1, midpoint);
-            beginShape();
-            vertex(midpoint, 0);
-            vertex(1, midpoint);
-            vertex(1, 1);
-            vertex(0, 1);
-            vertex(0, 0);
-            endShape();
+            if (drawLine)
+                line(midpoint, 0, 1, midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(midpoint, 0);
+                vertex(1, midpoint);
+                vertex(1, 1);
+                vertex(0, 1);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '1110') {
-            line(midpoint, 0, 0, midpoint);
-            beginShape();
-            vertex(midpoint, 0);
-            vertex(0, midpoint);
-            vertex(0, 1);
-            vertex(1, 1);
-            vertex(1, 0);
-            endShape();
+            if (drawLine)
+                line(midpoint, 0, 0, midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(midpoint, 0);
+                vertex(0, midpoint);
+                vertex(0, 1);
+                vertex(1, 1);
+                vertex(1, 0);
+                endShape();
+            }
         }
         else if (bitmask == '1111') {
-            beginShape();
-            vertex(0, 0);
-            vertex(0, 1);
-            vertex(1, 1);
-            vertex(1, 0);
-            endShape();
+            if (drawMesh) {
+                beginShape();
+                vertex(0, 0);
+                vertex(0, 1);
+                vertex(1, 1);
+                vertex(1, 0);
+                endShape();
+            }
         }
         else {
             console.log('bad number' + bitmask);
@@ -198,14 +238,16 @@ var MarchingSquaresHelper = (function () {
         }
         for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
             var p = points_1[_i];
-            for (var i = 0; i < p.r / 2; i++) {
-                var xmin = floor((p.x - i) / PARAMS.gridSize);
-                var ymin = floor((p.y - i) / PARAMS.gridSize);
-                var xmax = ceil((p.x + i) / PARAMS.gridSize);
-                var ymax = ceil((p.y + i) / PARAMS.gridSize);
-                for (var y = ymin; y <= ymax; y++) {
-                    for (var x = xmin; x <= xmax; x++) {
+            var xmin = floor((p.x - p.r) / PARAMS.gridSize);
+            var ymin = floor((p.y - p.r) / PARAMS.gridSize);
+            var xmax = ceil((p.x + p.r) / PARAMS.gridSize);
+            var ymax = ceil((p.y + p.r) / PARAMS.gridSize);
+            for (var y = ymin; y <= ymax; y++) {
+                for (var x = xmin; x <= xmax; x++) {
+                    var insidePoint = p.inside(x * PARAMS.gridSize, y * PARAMS.gridSize);
+                    if (insidePoint) {
                         res[y][x] += 1;
+                        point(x * PARAMS.gridSize, y * PARAMS.gridSize);
                     }
                 }
             }
@@ -238,6 +280,10 @@ var Point = (function () {
         point(this.x, this.y);
         circle(this.x, this.y, this.r);
     };
+    Point.prototype.inside = function (x, y) {
+        var res = (this.r * this.r) / (((x - this.x) * (x - this.x)) + ((y - this.y) * (y - this.y)));
+        return res >= 1;
+    };
     return Point;
 }());
 var PARAMS = {
@@ -251,12 +297,12 @@ function setup() {
     PARAMS.gridSize = width / 10;
     PARAMS.pointSize = PARAMS.gridSize;
     points = [];
-    points.push(new Point(5 * PARAMS.pointSize, 2 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
-    points.push(new Point(5 * PARAMS.pointSize, 3 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
-    points.push(new Point(5 * PARAMS.pointSize, 4 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
-    points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
-    points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
-    points.push(new Point(6 * PARAMS.pointSize, 6 * PARAMS.pointSize, 0, 0, PARAMS.pointSize));
+    points.push(new Point(5 * PARAMS.pointSize, 2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize));
+    points.push(new Point(5 * PARAMS.pointSize, 3 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize));
+    points.push(new Point(5 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 1.5));
+    points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 2));
+    points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize));
+    points.push(new Point(6 * PARAMS.pointSize, 6.2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 2));
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
 }
@@ -275,6 +321,30 @@ function draw() {
     pop();
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
+    push();
+    var c = color('green');
+    c.setAlpha(100);
+    stroke(c);
+    alpha;
+    strokeWeight(1);
+    noFill();
+    for (var _i = 0, points_2 = points; _i < points_2.length; _i++) {
+        var p = points_2[_i];
+        p.draw();
+    }
+    pop();
+    for (var _a = 0, _b = this.points; _a < _b.length; _a++) {
+        var p = _b[_a];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > width) {
+            p.vx *= -1;
+        }
+        if (p.y < 0 || p.y > height) {
+            p.vy *= -1;
+        }
+    }
+    ;
     textSize(15);
     noStroke();
     fill(255);

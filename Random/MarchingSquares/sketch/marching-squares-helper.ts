@@ -5,6 +5,8 @@ class MarchingSquaresHelper {
     //  8---4
     static drawForCombination(x: number, y: number, bitmask: string) {
 
+        var drawMesh = false;
+        var drawLine = true;
         push();
         translate(x * PARAMS.gridSize, y * PARAMS.gridSize);
         scale(PARAMS.gridSize);
@@ -14,37 +16,45 @@ class MarchingSquaresHelper {
             // nothing
         }
         else if (bitmask == '0001') {
-            line(0, midpoint, midpoint, 0);
-            beginShape();
-            vertex(0, midpoint);
-            vertex(midpoint, 0);
-            vertex(0, 0);
-            endShape();
+            if (drawLine) line(0, midpoint, midpoint, 0);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, midpoint);
+                vertex(midpoint, 0);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '0010') {
-            line(1 - midpoint, 0, 1, midpoint);
-            beginShape();
-            vertex(1 - midpoint, 0);
-            vertex(1, midpoint);
-            vertex(1, 0);
-            endShape();
+            if (drawLine) line(1 - midpoint, 0, 1, midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(1 - midpoint, 0);
+                vertex(1, midpoint);
+                vertex(1, 0);
+                endShape();
+            }
         }
         else if (bitmask == '0011') {
-            line(0, midpoint, 1, midpoint);
-            beginShape();
-            vertex(0, midpoint);
-            vertex(1, midpoint);
-            vertex(1, 0);
-            vertex(0, 0);
-            endShape();
+            if (drawLine) line(0, midpoint, 1, midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, midpoint);
+                vertex(1, midpoint);
+                vertex(1, 0);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '0100') {
-            line(1 - midpoint, 1, 1, 1 - midpoint);
-            beginShape();
-            vertex(1 - midpoint, 1);
-            vertex(1, 1 - midpoint);
-            vertex(1, 1);
-            endShape();
+            if (drawLine) line(1 - midpoint, 1, 1, 1 - midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(1 - midpoint, 1);
+                vertex(1, 1 - midpoint);
+                vertex(1, 1);
+                endShape();
+            }
         }
         else if (bitmask == '0101') {
             pop();
@@ -53,40 +63,48 @@ class MarchingSquaresHelper {
             MarchingSquaresHelper.drawForCombination(x, y, '0100');
         }
         else if (bitmask == '0110') {
-            line(midpoint, 0, midpoint, 1);
-            beginShape();
-            vertex(midpoint, 0);
-            vertex(midpoint, 1);
-            vertex(1, 1);
-            vertex(1, 0);
-            endShape();
+            if (drawLine) line(midpoint, 0, midpoint, 1);
+            if (drawMesh) {
+                beginShape();
+                vertex(midpoint, 0);
+                vertex(midpoint, 1);
+                vertex(1, 1);
+                vertex(1, 0);
+                endShape();
+            }
         }
         else if (bitmask == '0111') {
-            line(0, 1 - midpoint, midpoint, 1);
-            beginShape();
-            vertex(0, 1 - midpoint);
-            vertex(midpoint, 1);
-            vertex(1, 1);
-            vertex(1, 0);
-            vertex(0, 0);
-            endShape();
+            if (drawLine) line(0, 1 - midpoint, midpoint, 1);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, 1 - midpoint);
+                vertex(midpoint, 1);
+                vertex(1, 1);
+                vertex(1, 0);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '1000') {
-            line(0, 1 - midpoint, midpoint, 1);
-            beginShape();
-            vertex(0, 1 - midpoint);
-            vertex(midpoint, 1);
-            vertex(0, 1); y
-            endShape();
+            if (drawLine) line(0, 1 - midpoint, midpoint, 1);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, 1 - midpoint);
+                vertex(midpoint, 1);
+                vertex(0, 1); y
+                endShape();
+            }
         }
         else if (bitmask == '1001') {
-            line(1 - midpoint, 0, 1 - midpoint, 1);
-            beginShape();
-            vertex(1 - midpoint, 0);
-            vertex(1 - midpoint, 1);
-            vertex(0, 1);
-            vertex(0, 0);
-            endShape();
+            if (drawLine) line(1 - midpoint, 0, 1 - midpoint, 1);
+            if (drawMesh) {
+                beginShape();
+                vertex(1 - midpoint, 0);
+                vertex(1 - midpoint, 1);
+                vertex(0, 1);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '1010') {
             pop();
@@ -95,52 +113,62 @@ class MarchingSquaresHelper {
             MarchingSquaresHelper.drawForCombination(x, y, '1000');
         }
         else if (bitmask == '1011') {
-            line(1 - midpoint, 1, 1, 1 - midpoint);
-            beginShape();
-            vertex(1 - midpoint, 1);
-            vertex(1, 1 - midpoint);
-            vertex(1, 0);
-            vertex(0, 0);
-            vertex(0, 1);
-            endShape();
+            if (drawLine) line(1 - midpoint, 1, 1, 1 - midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(1 - midpoint, 1);
+                vertex(1, 1 - midpoint);
+                vertex(1, 0);
+                vertex(0, 0);
+                vertex(0, 1);
+                endShape();
+            }
         }
         else if (bitmask == '1100') {
-            line(0, 1 - midpoint, 1, 1 - midpoint);
-            beginShape();
-            vertex(0, 1 - midpoint);
-            vertex(1, 1 - midpoint);
-            vertex(1, 1);
-            vertex(0, 1);
-            endShape();
+            if (drawLine) line(0, 1 - midpoint, 1, 1 - midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(0, 1 - midpoint);
+                vertex(1, 1 - midpoint);
+                vertex(1, 1);
+                vertex(0, 1);
+                endShape();
+            }
         }
         else if (bitmask == '1101') {
-            line(midpoint, 0, 1, midpoint);
-            beginShape();
-            vertex(midpoint, 0);
-            vertex(1, midpoint);
-            vertex(1, 1);
-            vertex(0, 1);
-            vertex(0, 0);
-            endShape();
+            if (drawLine) line(midpoint, 0, 1, midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(midpoint, 0);
+                vertex(1, midpoint);
+                vertex(1, 1);
+                vertex(0, 1);
+                vertex(0, 0);
+                endShape();
+            }
         }
         else if (bitmask == '1110') {
-            line(midpoint, 0, 0, midpoint);
-            beginShape();
-            vertex(midpoint, 0);
-            vertex(0, midpoint);
-            vertex(0, 1);
-            vertex(1, 1);
-            vertex(1, 0);
-            endShape();
+            if (drawLine) line(midpoint, 0, 0, midpoint);
+            if (drawMesh) {
+                beginShape();
+                vertex(midpoint, 0);
+                vertex(0, midpoint);
+                vertex(0, 1);
+                vertex(1, 1);
+                vertex(1, 0);
+                endShape();
+            }
         }
         else if (bitmask == '1111') {
             // line(midpoint, 0, 0, midpoint);
-            beginShape();
-            vertex(0, 0);
-            vertex(0, 1);
-            vertex(1, 1);
-            vertex(1, 0);
-            endShape();
+            if (drawMesh) {
+                beginShape();
+                vertex(0, 0);
+                vertex(0, 1);
+                vertex(1, 1);
+                vertex(1, 0);
+                endShape();
+            }
         }
         else {
             console.log('bad number' + bitmask);
@@ -161,21 +189,29 @@ class MarchingSquaresHelper {
 
         for (let p of points) {
 
-            for (var i = 0; i < p.r / 2; i++) {
-                var xmin = floor((p.x - i) / PARAMS.gridSize);
-                var ymin = floor((p.y - i) / PARAMS.gridSize);
-                var xmax = ceil((p.x + i) / PARAMS.gridSize);
-                var ymax = ceil((p.y + i) / PARAMS.gridSize);
+            //for (var i = 0; i < p.r / 2; i++) {
+            var xmin = floor((p.x - p.r) / PARAMS.gridSize);
+            var ymin = floor((p.y - p.r) / PARAMS.gridSize);
+            var xmax = ceil((p.x + p.r) / PARAMS.gridSize);
+            var ymax = ceil((p.y + p.r) / PARAMS.gridSize);
 
-                // all grid x and y touched by this point
-                for (var y = ymin; y <= ymax; y++) {
-                    for (var x = xmin; x <= xmax; x++) {
+            // all grid x and y touched by this point
+            for (var y = ymin; y <= ymax; y++) {
+                for (var x = xmin; x <= xmax; x++) {
 
+                    var insidePoint = p.inside(x * PARAMS.gridSize, y * PARAMS.gridSize);
+                    // var d = dist(p.x, p.y, x * PARAMS.gridSize, y * PARAMS.gridSize)
+
+                    if (insidePoint) {
+                        //console.log(d, p.r);
                         res[y][x] += 1;
+                        point(x * PARAMS.gridSize, y * PARAMS.gridSize);
+                        //circle(x * PARAMS.gridSize, y * PARAMS.gridSize, PARAMS.gridSize);
                     }
                 }
-
             }
+
+            //}
             // res[p.y / PARAMS.gridSize][p.x / PARAMS.gridSize] += 1;
         }
 
