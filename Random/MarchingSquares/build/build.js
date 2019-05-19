@@ -236,17 +236,24 @@ var MarchingSquaresHelper = (function () {
                 res[y][x] = 0;
             }
         }
+        var maxGridX = width / PARAMS.gridSize;
+        var maxGridY = height / PARAMS.gridSize;
         for (var _i = 0, points_1 = points; _i < points_1.length; _i++) {
             var p = points_1[_i];
-            var xmin = floor((p.x - p.r) / PARAMS.gridSize);
-            var ymin = floor((p.y - p.r) / PARAMS.gridSize);
-            var xmax = ceil((p.x + p.r) / PARAMS.gridSize);
-            var ymax = ceil((p.y + p.r) / PARAMS.gridSize);
+            var xmin = Math.max(0, floor((p.x - p.r) / PARAMS.gridSize));
+            var ymin = Math.max(0, floor((p.y - p.r) / PARAMS.gridSize));
+            var xmax = Math.min(maxGridX - 1, ceil((p.x + p.r) / PARAMS.gridSize));
+            var ymax = Math.min(maxGridY - 1, ceil((p.y + p.r) / PARAMS.gridSize));
             for (var y = ymin; y <= ymax; y++) {
                 for (var x = xmin; x <= xmax; x++) {
                     var insidePoint = p.inside(x * PARAMS.gridSize, y * PARAMS.gridSize);
                     if (insidePoint) {
-                        res[y][x] += 1;
+                        try {
+                            res[y][x] += 1;
+                        }
+                        catch (ex) {
+                            console.log(y, x);
+                        }
                         point(x * PARAMS.gridSize, y * PARAMS.gridSize);
                     }
                 }
@@ -337,10 +344,10 @@ function draw() {
         var p = _b[_a];
         p.x += p.vx;
         p.y += p.vy;
-        if (p.x < 0 || p.x > width) {
+        if (p.x - p.r < 0 || p.x + p.r > width) {
             p.vx *= -1;
         }
-        if (p.y < 0 || p.y > height) {
+        if (p.y - p.r < 0 || p.y + p.r > height) {
             p.vy *= -1;
         }
     }

@@ -12,6 +12,7 @@ function setup() {
 
     PARAMS.pointSize = PARAMS.gridSize;
     points = [];
+
     points.push(new Point(5 * PARAMS.pointSize, 2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize))
     points.push(new Point(5 * PARAMS.pointSize, 3 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize))
     points.push(new Point(5 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 1.5))
@@ -61,31 +62,15 @@ function draw() {
         p.draw();
     }
     pop();
-    // MarchingSquaresHelper.drawForCombination(0, 0, '0000');
-    // MarchingSquaresHelper.drawForCombination(0, 1, '0001');
-    // MarchingSquaresHelper.drawForCombination(0, 2, '0010');
-    // MarchingSquaresHelper.drawForCombination(0, 3, '0011');
-    // MarchingSquaresHelper.drawForCombination(1, 0, '0100');
-    // MarchingSquaresHelper.drawForCombination(1, 1, '0101');
-    // MarchingSquaresHelper.drawForCombination(1, 2, '0110');
-    // MarchingSquaresHelper.drawForCombination(1, 3, '0111');
-    // MarchingSquaresHelper.drawForCombination(2, 0, '1000');
-    // MarchingSquaresHelper.drawForCombination(2, 1, '1001');
-    // MarchingSquaresHelper.drawForCombination(2, 2, '1010');
-    // MarchingSquaresHelper.drawForCombination(2, 3, '1011');
-    // MarchingSquaresHelper.drawForCombination(3, 0, '1100');
-    // MarchingSquaresHelper.drawForCombination(3, 1, '1101');
-    // MarchingSquaresHelper.drawForCombination(3, 2, '1110');
-    // MarchingSquaresHelper.drawForCombination(3, 3, '1111');
 
     for (let p of this.points) {
         p.x += p.vx;
         p.y += p.vy;
 
-        if (p.x < 0 || p.x > width) {
+        if (p.x - p.r < 0 || p.x + p.r > width) {
             p.vx *= -1;
         }
-        if (p.y < 0 || p.y > height) {
+        if (p.y - p.r < 0 || p.y + p.r > height) {
             p.vy *= -1;
         }
     };

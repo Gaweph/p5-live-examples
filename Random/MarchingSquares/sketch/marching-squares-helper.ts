@@ -187,13 +187,15 @@ class MarchingSquaresHelper {
             }
         }
 
+        var maxGridX = width / PARAMS.gridSize;
+        var maxGridY = height / PARAMS.gridSize;
         for (let p of points) {
 
             //for (var i = 0; i < p.r / 2; i++) {
-            var xmin = floor((p.x - p.r) / PARAMS.gridSize);
-            var ymin = floor((p.y - p.r) / PARAMS.gridSize);
-            var xmax = ceil((p.x + p.r) / PARAMS.gridSize);
-            var ymax = ceil((p.y + p.r) / PARAMS.gridSize);
+            var xmin = Math.max(0, floor((p.x - p.r) / PARAMS.gridSize));
+            var ymin = Math.max(0, floor((p.y - p.r) / PARAMS.gridSize));
+            var xmax = Math.min(maxGridX - 1, ceil((p.x + p.r) / PARAMS.gridSize));
+            var ymax = Math.min(maxGridY - 1, ceil((p.y + p.r) / PARAMS.gridSize));
 
             // all grid x and y touched by this point
             for (var y = ymin; y <= ymax; y++) {
@@ -204,7 +206,11 @@ class MarchingSquaresHelper {
 
                     if (insidePoint) {
                         //console.log(d, p.r);
-                        res[y][x] += 1;
+                        try {
+                            res[y][x] += 1;
+                        } catch (ex) {
+                            console.log(y, x);
+                        }
                         point(x * PARAMS.gridSize, y * PARAMS.gridSize);
                         //circle(x * PARAMS.gridSize, y * PARAMS.gridSize, PARAMS.gridSize);
                     }
