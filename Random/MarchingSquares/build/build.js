@@ -247,9 +247,9 @@ var MarchingSquaresHelper = (function () {
             for (var y = ymin; y <= ymax; y++) {
                 for (var x = xmin; x <= xmax; x++) {
                     var insidePoint = p.inside(x * PARAMS.gridSize, y * PARAMS.gridSize);
-                    if (insidePoint) {
+                    if (insidePoint >= 1) {
                         try {
-                            res[y][x] += 1;
+                            res[y][x] = Math.max(insidePoint, res[y][x]);
                         }
                         catch (ex) {
                             console.log(y, x);
@@ -289,26 +289,23 @@ var Point = (function () {
     };
     Point.prototype.inside = function (x, y) {
         var res = (this.r * this.r) / (((x - this.x) * (x - this.x)) + ((y - this.y) * (y - this.y)));
-        return res >= 1;
+        return res;
     };
     return Point;
 }());
 var PARAMS = {
-    gridSize: 10,
+    gridSize: 30,
     pointSize: 10
 };
 var points;
 var sliderGridSize;
 function setup() {
-    createCanvas(600, 600);
+    createCanvas(displayWidth, displayHeight);
     PARAMS.pointSize = width / 10;
     points = [];
-    points.push(new Point(5 * PARAMS.pointSize, 2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize));
-    points.push(new Point(5 * PARAMS.pointSize, 3 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize));
-    points.push(new Point(5 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 1.5));
-    points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 2));
-    points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize));
-    points.push(new Point(6 * PARAMS.pointSize, 6.2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 2));
+    for (var i = 0; i < 40; i++) {
+        points.push(new Point(Math.random() * width, Math.random() * height, Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * PARAMS.pointSize));
+    }
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
 }
@@ -329,7 +326,6 @@ function draw() {
     MarchingSquaresHelper.drawSquares(arr);
     push();
     var c = color('green');
-    c.setAlpha(100);
     stroke(c);
     alpha;
     strokeWeight(1);

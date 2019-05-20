@@ -204,10 +204,10 @@ class MarchingSquaresHelper {
                     var insidePoint = p.inside(x * PARAMS.gridSize, y * PARAMS.gridSize);
                     // var d = dist(p.x, p.y, x * PARAMS.gridSize, y * PARAMS.gridSize)
 
-                    if (insidePoint) {
+                    if (insidePoint >= 1) {
                         //console.log(d, p.r);
                         try {
-                            res[y][x] += 1;
+                            res[y][x] = Math.max(insidePoint, res[y][x]);
                         } catch (ex) {
                             console.log(y, x);
                         }
@@ -240,6 +240,7 @@ class MarchingSquaresHelper {
                 var p4 = pointsArr[y + 1][x + 1] > 0 ? '1' : '0';
                 var p8 = pointsArr[y + 1][x] > 0 ? '1' : '0';
 
+                // TODO: linear interpolation - pass in values not just 1
                 MarchingSquaresHelper.drawForCombination(x, y, p8 + p4 + p2 + p1);
 
             }

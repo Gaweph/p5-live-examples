@@ -17,7 +17,8 @@ class Point {
    inside(x: number, y: number) {
 
       var res = (this.r * this.r) / (((x - this.x) * (x - this.x)) + ((y - this.y) * (y - this.y)))
-      return res >= 1;
+      //console.log(res);
+      return res;
    }
 
 }
