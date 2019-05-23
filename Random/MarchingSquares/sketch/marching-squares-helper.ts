@@ -7,16 +7,23 @@ class MarchingSquaresHelper {
 
         var drawMesh = false;
         var drawLine = true;
-        push();
-        translate(x * PARAMS.gridSize, y * PARAMS.gridSize);
-        scale(PARAMS.gridSize);
-        strokeWeight(1 / PARAMS.gridSize);
+        //push();
+        // translate(x * PARAMS.gridSize, y * PARAMS.gridSize);
+        // scale(PARAMS.gridSize);
+        // strokeWeight(1 / PARAMS.gridSize);
         var midpoint = 0.5;
+        var xPos = (x + 1) * PARAMS.gridSize;
+        var yPos = (y + 1) * PARAMS.gridSize;
+        var xZero = (x) * PARAMS.gridSize;
+        var yZero = (y) * PARAMS.gridSize;
+        var xMidpoint = xPos - (PARAMS.gridSize / 2);
+        var yMidpoint = yPos - (PARAMS.gridSize / 2);
+
         if (bitmask == '0000') {
             // nothing
         }
         else if (bitmask == '0001') {
-            if (drawLine) line(0, midpoint, midpoint, 0);
+            if (drawLine) line(xZero, yMidpoint, xMidpoint, yZero);
             if (drawMesh) {
                 beginShape();
                 vertex(0, midpoint);
@@ -26,7 +33,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '0010') {
-            if (drawLine) line(1 - midpoint, 0, 1, midpoint);
+            if (drawLine) line(xPos - (PARAMS.gridSize / 2), yZero, xPos, yMidpoint);
             if (drawMesh) {
                 beginShape();
                 vertex(1 - midpoint, 0);
@@ -36,7 +43,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '0011') {
-            if (drawLine) line(0, midpoint, 1, midpoint);
+            if (drawLine) line(xZero, yMidpoint, xPos, yMidpoint);
             if (drawMesh) {
                 beginShape();
                 vertex(0, midpoint);
@@ -47,7 +54,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '0100') {
-            if (drawLine) line(1 - midpoint, 1, 1, 1 - midpoint);
+            if (drawLine) line(xPos - (PARAMS.gridSize / 2), yPos, xPos, yPos - (PARAMS.gridSize / 2));
             if (drawMesh) {
                 beginShape();
                 vertex(1 - midpoint, 1);
@@ -57,13 +64,13 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '0101') {
-            pop();
+            //pop();
             MarchingSquaresHelper.drawForCombination(x, y, '0001');
-            pop();
+            //pop();
             MarchingSquaresHelper.drawForCombination(x, y, '0100');
         }
         else if (bitmask == '0110') {
-            if (drawLine) line(midpoint, 0, midpoint, 1);
+            if (drawLine) line(xMidpoint, yZero, xMidpoint, yPos);
             if (drawMesh) {
                 beginShape();
                 vertex(midpoint, 0);
@@ -74,7 +81,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '0111') {
-            if (drawLine) line(0, 1 - midpoint, midpoint, 1);
+            if (drawLine) line(xZero, yPos - (PARAMS.gridSize / 2), xMidpoint, yPos);
             if (drawMesh) {
                 beginShape();
                 vertex(0, 1 - midpoint);
@@ -86,7 +93,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '1000') {
-            if (drawLine) line(0, 1 - midpoint, midpoint, 1);
+            if (drawLine) line(xZero, yPos - (PARAMS.gridSize / 2), xMidpoint, yPos);
             if (drawMesh) {
                 beginShape();
                 vertex(0, 1 - midpoint);
@@ -96,7 +103,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '1001') {
-            if (drawLine) line(1 - midpoint, 0, 1 - midpoint, 1);
+            if (drawLine) line(xPos - (PARAMS.gridSize / 2), yZero, xPos - (PARAMS.gridSize / 2), yPos);
             if (drawMesh) {
                 beginShape();
                 vertex(1 - midpoint, 0);
@@ -107,13 +114,13 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '1010') {
-            pop();
+            //pop();
             MarchingSquaresHelper.drawForCombination(x, y, '0010');
-            pop();
+            //pop();
             MarchingSquaresHelper.drawForCombination(x, y, '1000');
         }
         else if (bitmask == '1011') {
-            if (drawLine) line(1 - midpoint, 1, 1, 1 - midpoint);
+            if (drawLine) line(xPos - (PARAMS.gridSize / 2), yPos, xPos, yPos - (PARAMS.gridSize / 2));
             if (drawMesh) {
                 beginShape();
                 vertex(1 - midpoint, 1);
@@ -125,7 +132,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '1100') {
-            if (drawLine) line(0, 1 - midpoint, 1, 1 - midpoint);
+            if (drawLine) line(xZero, yPos - (PARAMS.gridSize / 2), xPos, yPos - (PARAMS.gridSize / 2));
             if (drawMesh) {
                 beginShape();
                 vertex(0, 1 - midpoint);
@@ -136,7 +143,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '1101') {
-            if (drawLine) line(midpoint, 0, 1, midpoint);
+            if (drawLine) line(xMidpoint, yZero, xPos, yMidpoint);
             if (drawMesh) {
                 beginShape();
                 vertex(midpoint, 0);
@@ -148,7 +155,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '1110') {
-            if (drawLine) line(midpoint, 0, 0, midpoint);
+            if (drawLine) line(xMidpoint, yZero, xZero, yMidpoint);
             if (drawMesh) {
                 beginShape();
                 vertex(midpoint, 0);
@@ -173,7 +180,7 @@ class MarchingSquaresHelper {
         else {
             console.log('bad number' + bitmask);
         }
-        pop();
+        //pop();
     }
 
     static getCurrentPointArray(points: Point[]): number[][] {
@@ -211,7 +218,7 @@ class MarchingSquaresHelper {
                         } catch (ex) {
                             console.log(y, x);
                         }
-                        point(x * PARAMS.gridSize, y * PARAMS.gridSize);
+                        //point(x * PARAMS.gridSize, y * PARAMS.gridSize);
                         //circle(x * PARAMS.gridSize, y * PARAMS.gridSize, PARAMS.gridSize);
                     }
                 }

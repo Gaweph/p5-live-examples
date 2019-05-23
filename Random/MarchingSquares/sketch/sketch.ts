@@ -39,15 +39,15 @@ function draw() {
     // draw grid
     stroke('red');
     strokeWeight(0.4);
-    push();
+    // push();
     //translate(PARAMS.pointSize / 2, PARAMS.pointSize / 2);
-    for (var i = 0; i < width / PARAMS.gridSize; i++) {
-        line(i * PARAMS.gridSize, 0, i * PARAMS.gridSize, height);
-    }
-    for (var j = 0; j < height / PARAMS.gridSize; j++) {
-        line(0, j * PARAMS.gridSize, width, j * PARAMS.gridSize);
-    }
-    pop();
+    // for (var i = 0; i < width / PARAMS.gridSize; i++) {
+    //     line(i * PARAMS.gridSize, 0, i * PARAMS.gridSize, height);
+    // }
+    // for (var j = 0; j < height / PARAMS.gridSize; j++) {
+    //     line(0, j * PARAMS.gridSize, width, j * PARAMS.gridSize);
+    // }
+    // pop();
 
 
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);

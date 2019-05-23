@@ -49,16 +49,18 @@ var MarchingSquaresHelper = (function () {
     MarchingSquaresHelper.drawForCombination = function (x, y, bitmask) {
         var drawMesh = false;
         var drawLine = true;
-        push();
-        translate(x * PARAMS.gridSize, y * PARAMS.gridSize);
-        scale(PARAMS.gridSize);
-        strokeWeight(1 / PARAMS.gridSize);
         var midpoint = 0.5;
+        var xPos = (x + 1) * PARAMS.gridSize;
+        var yPos = (y + 1) * PARAMS.gridSize;
+        var xZero = (x) * PARAMS.gridSize;
+        var yZero = (y) * PARAMS.gridSize;
+        var xMidpoint = xPos - (PARAMS.gridSize / 2);
+        var yMidpoint = yPos - (PARAMS.gridSize / 2);
         if (bitmask == '0000') {
         }
         else if (bitmask == '0001') {
             if (drawLine)
-                line(0, midpoint, midpoint, 0);
+                line(xZero, yMidpoint, xMidpoint, yZero);
             if (drawMesh) {
                 beginShape();
                 vertex(0, midpoint);
@@ -69,7 +71,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '0010') {
             if (drawLine)
-                line(1 - midpoint, 0, 1, midpoint);
+                line(xPos - (PARAMS.gridSize / 2), yZero, xPos, yMidpoint);
             if (drawMesh) {
                 beginShape();
                 vertex(1 - midpoint, 0);
@@ -80,7 +82,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '0011') {
             if (drawLine)
-                line(0, midpoint, 1, midpoint);
+                line(xZero, yMidpoint, xPos, yMidpoint);
             if (drawMesh) {
                 beginShape();
                 vertex(0, midpoint);
@@ -92,7 +94,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '0100') {
             if (drawLine)
-                line(1 - midpoint, 1, 1, 1 - midpoint);
+                line(xPos - (PARAMS.gridSize / 2), yPos, xPos, yPos - (PARAMS.gridSize / 2));
             if (drawMesh) {
                 beginShape();
                 vertex(1 - midpoint, 1);
@@ -102,14 +104,12 @@ var MarchingSquaresHelper = (function () {
             }
         }
         else if (bitmask == '0101') {
-            pop();
             MarchingSquaresHelper.drawForCombination(x, y, '0001');
-            pop();
             MarchingSquaresHelper.drawForCombination(x, y, '0100');
         }
         else if (bitmask == '0110') {
             if (drawLine)
-                line(midpoint, 0, midpoint, 1);
+                line(xMidpoint, yZero, xMidpoint, yPos);
             if (drawMesh) {
                 beginShape();
                 vertex(midpoint, 0);
@@ -121,7 +121,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '0111') {
             if (drawLine)
-                line(0, 1 - midpoint, midpoint, 1);
+                line(xZero, yPos - (PARAMS.gridSize / 2), xMidpoint, yPos);
             if (drawMesh) {
                 beginShape();
                 vertex(0, 1 - midpoint);
@@ -134,7 +134,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '1000') {
             if (drawLine)
-                line(0, 1 - midpoint, midpoint, 1);
+                line(xZero, yPos - (PARAMS.gridSize / 2), xMidpoint, yPos);
             if (drawMesh) {
                 beginShape();
                 vertex(0, 1 - midpoint);
@@ -146,7 +146,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '1001') {
             if (drawLine)
-                line(1 - midpoint, 0, 1 - midpoint, 1);
+                line(xPos - (PARAMS.gridSize / 2), yZero, xPos - (PARAMS.gridSize / 2), yPos);
             if (drawMesh) {
                 beginShape();
                 vertex(1 - midpoint, 0);
@@ -157,14 +157,12 @@ var MarchingSquaresHelper = (function () {
             }
         }
         else if (bitmask == '1010') {
-            pop();
             MarchingSquaresHelper.drawForCombination(x, y, '0010');
-            pop();
             MarchingSquaresHelper.drawForCombination(x, y, '1000');
         }
         else if (bitmask == '1011') {
             if (drawLine)
-                line(1 - midpoint, 1, 1, 1 - midpoint);
+                line(xPos - (PARAMS.gridSize / 2), yPos, xPos, yPos - (PARAMS.gridSize / 2));
             if (drawMesh) {
                 beginShape();
                 vertex(1 - midpoint, 1);
@@ -177,7 +175,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '1100') {
             if (drawLine)
-                line(0, 1 - midpoint, 1, 1 - midpoint);
+                line(xZero, yPos - (PARAMS.gridSize / 2), xPos, yPos - (PARAMS.gridSize / 2));
             if (drawMesh) {
                 beginShape();
                 vertex(0, 1 - midpoint);
@@ -189,7 +187,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '1101') {
             if (drawLine)
-                line(midpoint, 0, 1, midpoint);
+                line(xMidpoint, yZero, xPos, yMidpoint);
             if (drawMesh) {
                 beginShape();
                 vertex(midpoint, 0);
@@ -202,7 +200,7 @@ var MarchingSquaresHelper = (function () {
         }
         else if (bitmask == '1110') {
             if (drawLine)
-                line(midpoint, 0, 0, midpoint);
+                line(xMidpoint, yZero, xZero, yMidpoint);
             if (drawMesh) {
                 beginShape();
                 vertex(midpoint, 0);
@@ -226,7 +224,6 @@ var MarchingSquaresHelper = (function () {
         else {
             console.log('bad number' + bitmask);
         }
-        pop();
     };
     MarchingSquaresHelper.getCurrentPointArray = function (points) {
         var res = [];
@@ -254,7 +251,6 @@ var MarchingSquaresHelper = (function () {
                         catch (ex) {
                             console.log(y, x);
                         }
-                        point(x * PARAMS.gridSize, y * PARAMS.gridSize);
                     }
                 }
             }
@@ -314,14 +310,6 @@ function draw() {
     PARAMS.gridSize = sliderGridSize.value();
     stroke('red');
     strokeWeight(0.4);
-    push();
-    for (var i = 0; i < width / PARAMS.gridSize; i++) {
-        line(i * PARAMS.gridSize, 0, i * PARAMS.gridSize, height);
-    }
-    for (var j = 0; j < height / PARAMS.gridSize; j++) {
-        line(0, j * PARAMS.gridSize, width, j * PARAMS.gridSize);
-    }
-    pop();
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
     push();
