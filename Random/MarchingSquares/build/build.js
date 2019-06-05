@@ -265,6 +265,7 @@ var MarchingSquaresHelper = (function () {
                 var p2 = pointsArr[y][x + 1] > 0 ? '1' : '0';
                 var p4 = pointsArr[y + 1][x + 1] > 0 ? '1' : '0';
                 var p8 = pointsArr[y + 1][x] > 0 ? '1' : '0';
+                stroke(PARAMS.colorsArray[floor(x * PARAMS.gridSize)]);
                 MarchingSquaresHelper.drawForCombination(x, y, p8 + p4 + p2 + p1);
             }
         }
@@ -290,41 +291,37 @@ var Point = (function () {
     return Point;
 }());
 var PARAMS = {
-    gridSize: 30,
-    pointSize: 10
+    gridSize: 15,
+    maxPointSize: 10,
+    numberOfpoints: 100,
+    colorsArray: []
 };
 var points;
 var sliderGridSize;
 function setup() {
     createCanvas(displayWidth, displayHeight);
-    PARAMS.pointSize = width / 10;
+    PARAMS.maxPointSize = width / 15;
     points = [];
-    for (var i = 0; i < 40; i++) {
-        points.push(new Point(Math.random() * width, Math.random() * height, Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * PARAMS.pointSize));
+    for (var i = 0; i < PARAMS.numberOfpoints; i++) {
+        var x = Math.random() * width;
+        var y = Math.random() * height;
+        var velocityX = Math.random() * 2 - 1;
+        var velocityY = Math.random() * 2 - 1;
+        var size = Math.random() * PARAMS.maxPointSize;
+        points.push(new Point(x, y, velocityX, velocityY, size));
     }
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
+    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
 }
 function draw() {
     background(1);
     PARAMS.gridSize = sliderGridSize.value();
-    stroke('red');
-    strokeWeight(0.4);
+    strokeWeight(1);
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
-    push();
-    var c = color('green');
-    stroke(c);
-    alpha;
-    strokeWeight(1);
-    noFill();
-    for (var _i = 0, points_2 = points; _i < points_2.length; _i++) {
-        var p = points_2[_i];
-        p.draw();
-    }
-    pop();
-    for (var _a = 0, _b = this.points; _a < _b.length; _a++) {
-        var p = _b[_a];
+    for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
+        var p = _a[_i];
         p.x += p.vx;
         p.y += p.vy;
         if (p.x - p.r < 0 || p.x + p.r > width) {

@@ -1,6 +1,8 @@
 var PARAMS = {
-    gridSize: 30,
-    pointSize: 10
+    gridSize: 15,
+    maxPointSize: 10,
+    numberOfpoints: 100,
+    colorsArray: <p5.Color[]>[]
 };
 var points: Point[];
 var sliderGridSize: p5.Element;
@@ -10,61 +12,35 @@ function setup() {
 
     // PARAMS.gridSize = width / 10;
 
-    PARAMS.pointSize = width / 10;
+    PARAMS.maxPointSize = width / 15;
     points = [];
 
-    for (var i = 0; i < 40; i++) {
-        points.push(new Point(Math.random() * width, Math.random() * height, Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * PARAMS.pointSize))
+    for (var i = 0; i < PARAMS.numberOfpoints; i++) {
+        var x = Math.random() * width;
+        var y = Math.random() * height;
+        var velocityX = Math.random() * 2 - 1;
+        var velocityY = Math.random() * 2 - 1;
+        var size = Math.random() * PARAMS.maxPointSize;
+        points.push(new Point(x, y, velocityX, velocityY, size))
 
     }
-    // points.push(new Point(5 * PARAMS.pointSize, 3 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize))
-    // points.push(new Point(5 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 1.5))
-    // points.push(new Point(6 * PARAMS.pointSize, 4 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 2))
-    // points.push(new Point(6 * PARAMS.pointSize, 5 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize))
-    // points.push(new Point(6 * PARAMS.pointSize, 6.2 * PARAMS.pointSize, Math.random() * 2 - 1, Math.random() * 2 - 1, PARAMS.pointSize * 2))
-
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
 
     // noLoop();
+    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
 }
 
 function draw() {
     background(1);
 
-    // SET PARAMS
     PARAMS.gridSize = <number>sliderGridSize.value();
 
-    //console.log(sliderGridSize.value(), PARAMS.gridSize);
-    // draw grid
-    stroke('red');
-    strokeWeight(0.4);
-    // push();
-    //translate(PARAMS.pointSize / 2, PARAMS.pointSize / 2);
-    // for (var i = 0; i < width / PARAMS.gridSize; i++) {
-    //     line(i * PARAMS.gridSize, 0, i * PARAMS.gridSize, height);
-    // }
-    // for (var j = 0; j < height / PARAMS.gridSize; j++) {
-    //     line(0, j * PARAMS.gridSize, width, j * PARAMS.gridSize);
-    // }
-    // pop();
-
+    //stroke('red');
+    strokeWeight(1);
 
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
-
-    push();
-    var c = color('green');
-    // c.setAlpha(100);
-    stroke(c);
-    alpha
-    strokeWeight(1);
-    noFill();
-    for (let p of points) {
-
-        p.draw();
-    }
-    pop();
 
     for (let p of this.points) {
         p.x += p.vx;

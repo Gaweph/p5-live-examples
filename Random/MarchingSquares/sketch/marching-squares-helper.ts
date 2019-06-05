@@ -235,7 +235,7 @@ class MarchingSquaresHelper {
     //  |   |
     //  8---4
 
-    static drawSquares(pointsArr: number[][]) {
+    static drawSquares(pointsArr: number[][], ) {
 
         // console.log(pointsArr);
         for (var y = 1; y < pointsArr.length - 1; y++) {
@@ -248,6 +248,8 @@ class MarchingSquaresHelper {
                 var p8 = pointsArr[y + 1][x] > 0 ? '1' : '0';
 
                 // TODO: linear interpolation - pass in values not just 1
+                
+                stroke(PARAMS.colorsArray[floor(x * PARAMS.gridSize)]);
                 MarchingSquaresHelper.drawForCombination(x, y, p8 + p4 + p2 + p1);
 
             }
