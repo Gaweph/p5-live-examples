@@ -317,7 +317,7 @@ function setup() {
 function draw() {
     background(1);
     PARAMS.gridSize = sliderGridSize.value();
-    strokeWeight(1);
+    strokeWeight(2);
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
     for (var _i = 0, _a = this.points; _i < _a.length; _i++) {

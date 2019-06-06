@@ -27,7 +27,6 @@ function setup() {
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
 
-    // noLoop();
     PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
 }
 
@@ -36,9 +35,7 @@ function draw() {
 
     PARAMS.gridSize = <number>sliderGridSize.value();
 
-    //stroke('red');
-    strokeWeight(1);
-
+    strokeWeight(2);
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
 

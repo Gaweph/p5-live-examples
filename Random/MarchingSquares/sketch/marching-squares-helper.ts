@@ -7,10 +7,7 @@ class MarchingSquaresHelper {
 
         var drawMesh = false;
         var drawLine = true;
-        //push();
-        // translate(x * PARAMS.gridSize, y * PARAMS.gridSize);
-        // scale(PARAMS.gridSize);
-        // strokeWeight(1 / PARAMS.gridSize);
+        
         var midpoint = 0.5;
         var xPos = (x + 1) * PARAMS.gridSize;
         var yPos = (y + 1) * PARAMS.gridSize;
@@ -114,9 +111,7 @@ class MarchingSquaresHelper {
             }
         }
         else if (bitmask == '1010') {
-            //pop();
             MarchingSquaresHelper.drawForCombination(x, y, '0010');
-            //pop();
             MarchingSquaresHelper.drawForCombination(x, y, '1000');
         }
         else if (bitmask == '1011') {
@@ -180,7 +175,6 @@ class MarchingSquaresHelper {
         else {
             console.log('bad number' + bitmask);
         }
-        //pop();
     }
 
     static getCurrentPointArray(points: Point[]): number[][] {
@@ -218,14 +212,9 @@ class MarchingSquaresHelper {
                         } catch (ex) {
                             console.log(y, x);
                         }
-                        //point(x * PARAMS.gridSize, y * PARAMS.gridSize);
-                        //circle(x * PARAMS.gridSize, y * PARAMS.gridSize, PARAMS.gridSize);
                     }
                 }
             }
-
-            //}
-            // res[p.y / PARAMS.gridSize][p.x / PARAMS.gridSize] += 1;
         }
 
         return res;
@@ -237,7 +226,6 @@ class MarchingSquaresHelper {
 
     static drawSquares(pointsArr: number[][], ) {
 
-        // console.log(pointsArr);
         for (var y = 1; y < pointsArr.length - 1; y++) {
             var point = pointsArr[y];
             for (var x = 1; x < point.length - 1; x++) {
@@ -247,7 +235,7 @@ class MarchingSquaresHelper {
                 var p4 = pointsArr[y + 1][x + 1] > 0 ? '1' : '0';
                 var p8 = pointsArr[y + 1][x] > 0 ? '1' : '0';
 
-                // TODO: linear interpolation - pass in values not just 1
+                // TODO: linear interpolation - pass in values not just 1 or 0
                 
                 stroke(PARAMS.colorsArray[floor(x * PARAMS.gridSize)]);
                 MarchingSquaresHelper.drawForCombination(x, y, p8 + p4 + p2 + p1);
