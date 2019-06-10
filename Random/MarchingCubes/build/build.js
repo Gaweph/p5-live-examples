@@ -87,7 +87,7 @@ var MarchingCubes = (function () {
         noFill();
         for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
             var p = _a[_i];
-            p.draw(color);
+            p.draw();
         }
         ;
     };
