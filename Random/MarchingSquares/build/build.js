@@ -298,8 +298,9 @@ var PARAMS = {
 };
 var points;
 var sliderGridSize;
+var canvas;
 function setup() {
-    createCanvas(windowWidth,windowHeight)
+    canvas = createCanvas(windowWidth,windowHeight)
     PARAMS.maxPointSize = width / 15;
     points = [];
     for (var i = 0; i < PARAMS.numberOfpoints; i++) {
@@ -314,6 +315,9 @@ function setup() {
     sliderGridSize.position(10, 10);
     PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
 }
+window.onresize = function() {
+  canvas.size(windowWidth, windowHeight);
+};
 function draw() {
     background(1);
     PARAMS.gridSize = sliderGridSize.value();
