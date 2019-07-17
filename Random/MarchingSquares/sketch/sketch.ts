@@ -28,9 +28,12 @@ function setup() {
 
     PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
 }
-window.onresize = function () {
+
+window.addEventListener('resize', function () {
     canvas.size(windowWidth, windowHeight);
-};
+    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
+});
+
 function draw() {
     background(1);
 
