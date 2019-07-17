@@ -6,10 +6,9 @@ var PARAMS = {
 };
 var points: Point[];
 var sliderGridSize: p5.Element;
-
+var canvas: p5.Renderer;
 function setup() {
-    createCanvas(displayWidth, displayHeight);
-
+    canvas = createCanvas(windowWidth, windowHeight)
     // PARAMS.gridSize = width / 10;
 
     PARAMS.maxPointSize = width / 15;
@@ -29,7 +28,9 @@ function setup() {
 
     PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
 }
-
+window.onresize = function () {
+    canvas.size(windowWidth, windowHeight);
+};
 function draw() {
     background(1);
 
