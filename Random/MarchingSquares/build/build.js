@@ -299,7 +299,7 @@ var PARAMS = {
 var points;
 var sliderGridSize;
 function setup() {
-    createCanvas(displayWidth, displayHeight);
+    createCanvas(windowWidth,windowHeight)
     PARAMS.maxPointSize = width / 15;
     points = [];
     for (var i = 0; i < PARAMS.numberOfpoints; i++) {
