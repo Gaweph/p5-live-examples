@@ -29,8 +29,10 @@ function setup() {
 }
 
 window.addEventListener('resize', function () {
-    canvas.size(windowWidth, windowHeight);
-    setParams();
+    if (canvas != null) {
+        canvas.size(windowWidth, windowHeight);
+        setParams();
+    }
 });
 
 function setParams() {

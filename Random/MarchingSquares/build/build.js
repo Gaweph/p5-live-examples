@@ -346,8 +346,10 @@ function setup() {
     setParams();
 }
 window.addEventListener('resize', function () {
-    canvas.size(windowWidth, windowHeight);
-    setParams();
+    if (canvas != null) {
+        canvas.size(windowWidth, windowHeight);
+        setParams();
+    }
 });
 function setParams() {
     PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
