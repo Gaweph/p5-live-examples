@@ -273,12 +273,12 @@ var MarchingSquaresHelper = (function () {
     return MarchingSquaresHelper;
 }());
 var Point = (function () {
-    function Point(x, y, vx, vy, r) {
-        this.x = x;
-        this.y = y;
+    function Point(pointX, pointY, vx, vy, radius) {
+        this.pointX = pointX;
+        this.pointY = pointY;
         this.vx = vx;
         this.vy = vy;
-        this.r = r;
+        this.radius = radius;
     }
     Point.prototype.draw = function () {
         point(this.x, this.y);
@@ -288,6 +288,37 @@ var Point = (function () {
         var res = (this.r * this.r) / (((x - this.x) * (x - this.x)) + ((y - this.y) * (y - this.y)));
         return res;
     };
+    Point.prototype.move = function () {
+        this.pointX += this.vx / width;
+        this.pointY += this.vy / height;
+        if (this.x - this.r < 0 || this.x + this.r > width) {
+            this.vx *= -1;
+        }
+        if (this.y - this.r < 0 || this.y + this.r > height) {
+            this.vy *= -1;
+        }
+    };
+    Object.defineProperty(Point.prototype, "r", {
+        get: function () {
+            return this.radius * PARAMS.maxPointSize;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Point.prototype, "x", {
+        get: function () {
+            return this.pointX * width;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Point.prototype, "y", {
+        get: function () {
+            return this.pointY * height;
+        },
+        enumerable: true,
+        configurable: true
+    });
     return Point;
 }());
 var PARAMS = {
@@ -301,40 +332,36 @@ var sliderGridSize;
 var canvas;
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
-    PARAMS.maxPointSize = width / 15;
     points = [];
     for (var i = 0; i < PARAMS.numberOfpoints; i++) {
-        var x = Math.random() * width;
-        var y = Math.random() * height;
+        var x = Math.random();
+        var y = Math.random();
         var velocityX = Math.random() * 2 - 1;
         var velocityY = Math.random() * 2 - 1;
-        var size = Math.random() * PARAMS.maxPointSize;
+        var size = Math.random();
         points.push(new Point(x, y, velocityX, velocityY, size));
     }
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
-    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
+    setParams();
 }
 window.addEventListener('resize', function () {
     canvas.size(windowWidth, windowHeight);
-    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
+    setParams();
 });
+function setParams() {
+    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
+    PARAMS.maxPointSize = width / 15;
+}
 function draw() {
     background(1);
     PARAMS.gridSize = sliderGridSize.value();
     strokeWeight(2);
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
-    for (var _i = 0, _a = this.points; _i < _a.length; _i++) {
-        var p = _a[_i];
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x - p.r < 0 || p.x + p.r > width) {
-            p.vx *= -1;
-        }
-        if (p.y - p.r < 0 || p.y + p.r > height) {
-            p.vy *= -1;
-        }
+    for (var _i = 0, points_2 = points; _i < points_2.length; _i++) {
+        var p = points_2[_i];
+        p.move();
     }
     ;
     textSize(15);

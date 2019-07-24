@@ -7,7 +7,7 @@ class MarchingSquaresHelper {
 
         var drawMesh = false;
         var drawLine = true;
-        
+
         var midpoint = 0.5;
         var xPos = (x + 1) * PARAMS.gridSize;
         var yPos = (y + 1) * PARAMS.gridSize;
@@ -236,7 +236,7 @@ class MarchingSquaresHelper {
                 var p8 = pointsArr[y + 1][x] > 0 ? '1' : '0';
 
                 // TODO: linear interpolation - pass in values not just 1 or 0
-                
+
                 stroke(PARAMS.colorsArray[floor(x * PARAMS.gridSize)]);
                 MarchingSquaresHelper.drawForCombination(x, y, p8 + p4 + p2 + p1);
 

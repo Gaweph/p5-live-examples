@@ -8,32 +8,35 @@ var points: Point[];
 var sliderGridSize: p5.Element;
 var canvas: p5.Renderer;
 function setup() {
-    canvas = createCanvas(windowWidth, windowHeight)
-    // PARAMS.gridSize = width / 10;
+    canvas = createCanvas(windowWidth, windowHeight);
 
-    PARAMS.maxPointSize = width / 15;
+
     points = [];
 
     for (var i = 0; i < PARAMS.numberOfpoints; i++) {
-        var x = Math.random() * width;
-        var y = Math.random() * height;
+        var x = Math.random();
+        var y = Math.random();
         var velocityX = Math.random() * 2 - 1;
         var velocityY = Math.random() * 2 - 1;
-        var size = Math.random() * PARAMS.maxPointSize;
+        var size = Math.random();// * PARAMS.maxPointSize;
         points.push(new Point(x, y, velocityX, velocityY, size))
 
     }
     sliderGridSize = createSlider(2, 30, PARAMS.gridSize, 2);
     sliderGridSize.position(10, 10);
 
-    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
+    setParams();
 }
 
 window.addEventListener('resize', function () {
     canvas.size(windowWidth, windowHeight);
-    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
+    setParams();
 });
 
+function setParams() {
+    PARAMS.colorsArray = ColorHelper.getColorsArray(floor(width));
+    PARAMS.maxPointSize = width / 15;
+}
 function draw() {
     background(1);
 
@@ -43,16 +46,8 @@ function draw() {
     var arr = MarchingSquaresHelper.getCurrentPointArray(points);
     MarchingSquaresHelper.drawSquares(arr);
 
-    for (let p of this.points) {
-        p.x += p.vx;
-        p.y += p.vy;
-
-        if (p.x - p.r < 0 || p.x + p.r > width) {
-            p.vx *= -1;
-        }
-        if (p.y - p.r < 0 || p.y + p.r > height) {
-            p.vy *= -1;
-        }
+    for (let p of points) {
+        p.move();
     };
 
     textSize(15);
