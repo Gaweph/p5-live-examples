@@ -1,3 +1,6 @@
+//GUARD
+if(canvas) return;
+
 var p = new p5();
 let canvasWidth = 400;
 let canvasHeight = 400;
