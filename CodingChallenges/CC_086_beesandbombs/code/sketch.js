@@ -1,8 +1,4 @@
-//GUARD
-var p = {};
-if(!canvas) {
-   p = new p5();
-}
+var p = new p5();
 
 let canvasWidth = 400;
 let canvasHeight = 400;
