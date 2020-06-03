@@ -1,0 +1,17 @@
+{
+  "name": "cc_086_beesandbombs",
+  "version": "1.0.0",
+  "description": "Live version: https://gaweph.github.io/p5-live-examples/CodingChallenges/CC_086_beesandbombs/",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"browser-sync start --server -w\" \" tsc --watch\""
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/p5": "^0.7.2",
+    "browser-sync": "^2.26.7",
+    "concurrently": "^4.1.0",
+    "typescript": "^3.5.1"
+  }
+}

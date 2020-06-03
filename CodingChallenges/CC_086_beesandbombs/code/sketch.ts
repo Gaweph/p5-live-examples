@@ -4,7 +4,7 @@
 // Video: https://youtu.be/H81Tdrmz2LA
 // Original GIF: https://beesandbombs.tumblr.com/post/149654056864/cube-wave
 
-var p = new p5();
+// var p = new p5();
 
 let canvasWidth = 400;
 let canvasHeight = 400;
@@ -23,69 +23,64 @@ var speed = 0.06;
 var heightsColors;
 var rowColors;
 function setup() {
-    p.createCanvas(canvasWidth, canvasHeight, p.WEBGL);
-    ma = p.atan(p.cos(p.QUARTER_PI));
-    maxD = p.dist(0, 0, 200, 200);
+  createCanvas(canvasWidth, canvasHeight, WEBGL);
+  ma = atan(cos(QUARTER_PI));
+  maxD = dist(0, 0, 200, 200);
 
-    var button = (<any>p).createButton('Toggle RAINBOW');
-    button.position(0, 0);
-    button.mousePressed(toggleRainbow);
-    
-    let cols = (canvasHeight / w);
-    let rows = (canvasHeight / w);
-    heightsColors = ColorHelper.getColorsArray(maxHeight - minHeight);
-    rowColors = ColorHelper.getColorsArray(rows);
+  var button = createButton("Toggle RAINBOW");
+  button.position(0, 0);
+  button.mousePressed(toggleRainbow);
+
+  let cols = canvasHeight / w;
+  let rows = canvasHeight / w;
+  heightsColors = ColorHelper.getColorsArray(maxHeight - minHeight);
+  rowColors = ColorHelper.getColorsArray(rows);
 }
 
 let showRainbowColors = false;
 function draw() {
+  background(100);
 
+  ortho(-400, 400, 400, -400, 0, 1000);
+  rotateX(-ma);
+  rotateY(-QUARTER_PI);
 
-    p.background(100);
+  // lighting copied from Davenewt's variant: https://codepen.io/anon/pen/wprwdP?editors=0010
+  //colorMode(HSB);
+  pointLight(255, 255, 255, 0, 0, 400);
+  pointLight(100, 50, 100, -300, -300, canvasHeight / 2);
+  directionalLight(150, 150, 150, -0.8, -0.8, 0);
 
-    p.ortho(-400, 400, 400, -400, 0, 1000);
-    p.rotateX(-ma);
-    p.rotateY(-p.QUARTER_PI);
+  for (let z = 0; z < canvasHeight; z += w) {
+    for (let x = 0; x < canvasHeight; x += w) {
+      push();
 
-    // lighting copied from Davenewt's variant: https://codepen.io/anon/pen/wprwdP?editors=0010
-    //p.colorMode(p.HSB);
-    p.pointLight(255, 255, 255, 0, 0, 400);
-    p.pointLight(100, 50, 100, -300, -300, canvasHeight / 2);
-    p.directionalLight(150, 150, 150, -0.8, -0.8, 0);
+      let d = dist(x, z, canvasHeight / 2, canvasHeight / 2);
+      let offset = map(d, 0, maxD, -PI, PI);
+      let a = angle + offset;
+      let h = mapHeight(a);
 
-    for (let z = 0; z < canvasHeight; z += w) {
-        for (let x = 0; x < canvasHeight; x += w) {
-            
-            p.push();
+      if (showRainbowColors) {
+        let heightColor = heightsColors[h - minHeight];
+        ambientMaterial(heightColor);
+      } else {
+        let row = floor(z / w);
+        let rowColor = rowColors[row];
+        ambientMaterial(rowColor);
+      }
+      translate(x - canvasHeight / 2, 0, z - canvasHeight / 2);
+      box(w, h, w);
 
-            let d = p.dist(x, z, canvasHeight / 2, canvasHeight / 2);
-            let offset = p.map(d, 0, maxD, -p.PI, p.PI);
-            let a = angle + offset;
-            let h = mapHeight(a);
-
-            if(showRainbowColors) {
-                let heightColor = heightsColors[h - (minHeight)]   
-                p.ambientMaterial(heightColor);
-            }
-            else {
-                let row = p.floor(z / w);
-                let rowColor = rowColors[row];
-                p.ambientMaterial(rowColor);
-    
-            }
-            (<any>p).translate(x - canvasHeight / 2, 0, z - canvasHeight / 2);       
-            p.box(w, h, w);   
-
-            p.pop();
-        }
+      pop();
     }
-  angle -= speed;  
+  }
+  angle -= speed;
 }
 
 var toggleRainbow = () => {
-    showRainbowColors = !showRainbowColors;
-}
+  showRainbowColors = !showRainbowColors;
+};
 
 var mapHeight = (angle) => {
-    return p.floor(p.map(p.sin(angle), -1, 1, minHeight, maxHeight));
+  return floor(map(sin(angle), -1, 1, minHeight, maxHeight));
 };
