@@ -6,6 +6,7 @@
     "removeComments": true,
     "preserveConstEnums": true,
     //"out": "output/project.js",
-    "sourceMap": true
+    "sourceMap": true,
+    "outFile": "./build/build.js"
   }
 }

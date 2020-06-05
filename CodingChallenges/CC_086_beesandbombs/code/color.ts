@@ -1,17 +1,17 @@
 class ColorHelper {
-  private static getColorVector(c: p5.Color) {
-    return createVector(red(c), green(c), blue(c));
+  private static getColorVector(p: p5, c: p5.Color) {
+    return p.createVector(p.red(c), p.green(c), p.blue(c));
   }
 
-  public static getColorsArray(total: number): p5.Color[] {
+  public static getColorsArray(p: p5, total: number): p5.Color[] {
     var rainbowColors = [
-      this.getColorVector(color("red")),
-      this.getColorVector(color("orange")),
-      this.getColorVector(color("yellow")),
-      this.getColorVector(color("green")),
-      createVector(38, 58, 150), // blue
-      this.getColorVector(color("indigo")),
-      this.getColorVector(color("violet")),
+      this.getColorVector(p, p.color("red")),
+      this.getColorVector(p, p.color("orange")),
+      this.getColorVector(p, p.color("yellow")),
+      this.getColorVector(p, p.color("green")),
+      p.createVector(38, 58, 150), // blue
+      this.getColorVector(p, p.color("indigo")),
+      this.getColorVector(p, p.color("violet")),
     ];
 
     let colours = new Array<p5.Color>();
@@ -28,13 +28,17 @@ class ColorHelper {
         colorPercentage
       );
 
-      colours.push(color(nameColor.x, nameColor.y, nameColor.z));
+      colours.push(p.color(nameColor.x, nameColor.y, nameColor.z));
     }
 
     return colours;
   }
 
-  private static getColorByPercentage(firstColor, secondColor, percentage) {
+  private static getColorByPercentage(
+    firstColor: p5.Vector,
+    secondColor: p5.Vector,
+    percentage: number
+  ) {
     // assumes colors are p5js vectors
     var firstColorCopy = firstColor.copy();
     var secondColorCopy = secondColor.copy();
